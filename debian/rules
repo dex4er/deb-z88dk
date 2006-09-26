@@ -1,0 +1,577 @@
+#!/usr/bin/make -f
+# Generated automatically from debian/packages
+# by yada v0.48, of Wed, 28 Sep 2005
+
+hostarch := $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+ifneq "$(hostarch)" "arm"
+ifneq "$(hostarch)" "mips"
+ifneq "$(hostarch)" "m68k"
+ifneq "$(hostarch)" "s390"
+ifneq "$(hostarch)" "hurd-i386"
+ifneq "$(hostarch)" "hppa"
+ifneq "$(hostarch)" "powerpc"
+ifneq "$(hostarch)" "kfreebsd-i386"
+ifneq "$(hostarch)" "mipsel"
+ifneq "$(hostarch)" "sparc"
+ifneq "$(hostarch)" "i386"
+hostarch := any
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+endif
+
+DEB_HOST_ARCH        := $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+DEB_HOST_ARCH_OS     := $(shell dpkg-architecture -qDEB_HOST_ARCH_OS 2>/dev/null)
+DEB_HOST_ARCH_CPU    := $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
+DEB_HOST_GNU_CPU     := $(shell dpkg-architecture -qDEB_HOST_GNU_CPU 2>/dev/null)
+DEB_HOST_GNU_TYPE    := $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE 2>/dev/null)
+DEB_HOST_GNU_SYSTEM  := $(shell dpkg-architecture -qDEB_HOST_GNU_SYSTEM 2>/dev/null)
+
+DEB_BUILD_ARCH       := $(shell dpkg-architecture -qDEB_BUILD_ARCH 2>/dev/null)
+DEB_BUILD_ARCH_OS    := $(shell dpkg-architecture -qDEB_BUILD_ARCH_OS 2>/dev/null)
+DEB_BUILD_ARCH_CPU   := $(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU 2>/dev/null)
+DEB_BUILD_GNU_CPU    := $(shell dpkg-architecture -qDEB_BUILD_GNU_CPU 2>/dev/null)
+DEB_BUILD_GNU_TYPE   := $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE 2>/dev/null)
+DEB_BUILD_GNU_SYSTEM := $(shell dpkg-architecture -qDEB_BUILD_GNU_SYSTEM 2>/dev/null)
+
+# Take account of old dpkg-architecture output.
+ifeq ($(DEB_HOST_ARCH_CPU),)
+  DEB_HOST_ARCH_CPU := $(DEB_HOST_GNU_CPU))
+  ifeq ($(DEB_HOST_ARCH_CPU),i486)
+    DEB_HOST_ARCH_OS := i386
+  else
+  ifeq ($(DEB_HOST_ARCH_CPU),x86_64)
+    DEB_HOST_ARCH_OS := amd64
+  endif
+  endif
+endif
+ifeq ($(DEB_HOST_ARCH_OS),)
+  DEB_HOST_ARCH_OS := $(subst -gnu,,$(DEB_HOST_GNU_SYSTEM))
+  ifeq ($(DEB_HOST_ARCH_OS),gnu)
+    DEB_HOST_ARCH_OS := hurd
+  endif
+endif
+ifeq ($(DEB_BUILD_ARCH_CPU),)
+  DEB_BUILD_ARCH_CPU := $(DEB_BUILD_GNU_CPU))
+  ifeq ($(DEB_BUILD_ARCH_CPU),i486)
+    DEB_BUILD_ARCH_OS := i386
+  else
+  ifeq ($(DEB_BUILD_ARCH_CPU),x86_64)
+    DEB_BUILD_ARCH_OS := amd64
+  endif
+  endif
+endif
+ifeq ($(DEB_BUILD_ARCH_OS),)
+  DEB_BUILD_ARCH_OS := $(subst -gnu,,$(DEB_BUILD_GNU_SYSTEM))
+  ifeq ($(DEB_BUILD_ARCH_OS),gnu)
+    DEB_BUILD_ARCH_OS := hurd
+  endif
+endif
+
+LEFT_PARENTHESIS:=(
+VERSION:=$(shell head -n1 debian/changelog | sed -e "s/^[0-9a-zA-Z.-]* $(LEFT_PARENTHESIS)//" -e "s/[^0-9a-zA-Z.:+~-].*//")
+
+SHELL=/bin/bash
+
+.PHONY: default
+default:
+	@echo "Specify a target:"; \
+	echo " build              compile the package"; \
+	echo " build-arch         compile the architecture-dependent package"; \
+	echo " build-indep        compile the architecture-independent package"; \
+	echo " binary             make all binary packages"; \
+	echo " binary-arch        make all architecture-dependent binary packages"; \
+	echo " binary-indep       make all architecture-independent binary packages"; \
+	echo " clean              clean up the source package"; \
+	echo; \
+	echo " clean-install-tree clean up only under debian/"; \
+	echo
+
+# Build the package and prepare the install tree
+
+.PHONY: build-only build
+build-only: debian/build-stamp
+build: build-only
+
+.PHONY: build-arch-only build-arch
+build-arch-only: debian/build-arch-stamp
+build-arch: build-arch-only
+
+.PHONY: build-indep-only build-indep
+build-indep-only: debian/build-indep-stamp
+build-indep: build-indep-only
+
+# Make sure these rules and the control file are up-to-date
+
+.PHONY: rules control templates
+rules: debian/rules
+debian/rules: $(shell which yada) debian/packages-tmp
+	yada rebuild rules
+
+control: debian/control
+debian/control: $(shell which yada) debian/packages-tmp
+	yada rebuild control
+
+templates: debian/templates debian/po/POTFILES.in
+debian/templates: $(shell which yada) debian/packages-tmp
+	yada rebuild templates
+debian/po/POTFILES.in: $(shell which yada) debian/packages-tmp
+	yada rebuild templates
+
+debian/build-stamp: debian/build-arch-stamp debian/build-indep-stamp
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	yada patch "debian/patches/*.diff"
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'rm -rf bin usr';\
+	echo -E 'mkdir -p bin usr';\
+	echo -E 'make -e prefix=/usr CC="gcc" CFLAGS="-g -O2 -Wall"') | /bin/bash
+	touch debian/build-stamp
+
+debian/build-arch-stamp:
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	yada patch "debian/patches/*.diff"
+	touch debian/build-arch-stamp
+
+debian/build-indep-stamp:
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	yada patch "debian/patches/*.diff"
+	touch debian/build-indep-stamp
+
+.PHONY: install-tree
+install-tree: install-tree-$(hostarch)
+install-tree-arm: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-mips: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-m68k: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-s390: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-hurd-i386: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-hppa: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-powerpc: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-kfreebsd-i386: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-mipsel: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-sparc: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-i386: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+install-tree-any: \
+	debian/tmp-z88dk/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control
+
+debian/tmp-z88dk/DEBIAN/control: debian/build-stamp debian/control
+	rm -rf debian/tmp-z88dk
+	umask 022 && install -d debian/tmp-z88dk/DEBIAN
+	install -d debian/tmp-z88dk/usr/share/doc/z88dk
+	umask 022; yada generate copyright \
+	  > debian/tmp-z88dk/usr/share/doc/z88dk/copyright
+	install -m 644 -p debian/changelog \
+	  debian/tmp-z88dk/usr/share/doc/z88dk/changelog.Debian
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk/DEBIAN" \
+	  && export PACKAGE="z88dk" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'export Z80_OZFILES=$$(pwd)/lib/';\
+	echo -E 'export ZCCCFG=$$(pwd)/lib/config/';\
+	echo -E 'PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc';\
+	echo -E 'PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc install';\
+	echo -E 'make prefix=/usr DESTDIR=$$ROOT install';\
+	echo -E '# no executable files';\
+	echo -E 'rm -rf $$ROOT/usr/bin';\
+	echo -E '# no default config';\
+	echo -E 'rm -f $$ROOT/usr/share/z88dk/lib/config/zcc.cfg';\
+	echo -E 'rm -f $$ROOT/usr/share/z88dk/lib/config/*.lnx';\
+	echo -E 'for i in $$ROOT/usr/share/z88dk/lib/config/*.cfg; do echo "file: $$i";';\
+	echo -E '   mv $$i $$i.tmp; cat $$i.tmp | \';\
+	echo -E '   sed '\''s/^Z80EXE.*$$/Z80EXE\t\tz88dk-z80asm/g'\'' | sed '\''s/^CPP.*$$/CPP\t\tz88dk-zcpp/g'\'' | \';\
+	echo -E '   sed '\''s/^LINKER.*$$/LINKER\t\tz88dk-z80asm/g'\'' | sed '\''s/^COMPILER.*$$/COMPILER\tz88dk-sccz80/g'\'' | \';\
+	echo -E '   sed '\''s/^COPTEXE.*$$/COPTEXE\t\tz88dk-copt/g'\'' | sed '\''s/^APPMAKER.*$$/APPMAKER\tz88dk-appmake/g'\'' > $$i;';\
+	echo -E '    rm $$i.tmp;';\
+	echo -E 'done';\
+	echo -E 'yada install -doc EXTENSIONS README.1st';\
+	echo -E 'yada install -man debian/manpages/z88dk.1') | /bin/bash
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk/DEBIAN" \
+	  && export PACKAGE="z88dk" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada perl';\
+	echo -E 'yada python';\
+	echo -E 'yada strip';\
+	echo -E 'yada shlibdeps') | /bin/sh
+	yada compress z88dk
+	yada generate maintscripts z88dk
+	find debian/tmp-z88dk -type f -print \
+	  | sed -n 's/^debian\/tmp-z88dk\(\/etc\/.*\)$$/\1/p' \
+	  > debian/tmp-z88dk/DEBIAN/conffiles
+	test -s debian/tmp-z88dk/DEBIAN/conffiles || rm -f debian/tmp-z88dk/DEBIAN/conffiles
+	yada rebuild control
+	yada generate substvars z88dk
+	umask 022 && dpkg-gencontrol -isp -pz88dk -Pdebian/tmp-z88dk
+
+debian/tmp-z88dk-bin/DEBIAN/control: debian/build-stamp debian/control
+	rm -rf debian/tmp-z88dk-bin
+	umask 022 && install -d debian/tmp-z88dk-bin/DEBIAN
+	install -d debian/tmp-z88dk-bin/usr/share/doc/z88dk-bin
+	umask 022; yada generate copyright \
+	  > debian/tmp-z88dk-bin/usr/share/doc/z88dk-bin/copyright
+	install -m 644 -p debian/changelog \
+	  debian/tmp-z88dk-bin/usr/share/doc/z88dk-bin/changelog.Debian
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-bin" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-bin/DEBIAN" \
+	  && export PACKAGE="z88dk-bin" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada copy -bin bin/*';\
+	echo -E 'APPS="zcc appmake copt sccz80 z80asm zcpp"';\
+	echo -E 'PREFIX="z88dk-"';\
+	echo -E 'for a in $$APPS; do';\
+	echo -E '   mv -v $$ROOT/usr/bin/$$a $$ROOT/usr/bin/$${PREFIX}$$a';\
+	echo -E 'done';\
+	echo -E 'yada install -man debian/manpages/zcc.1 -as z88dk-zcc.1';\
+	echo -E 'yada symlink -man z88dk-zcc.1 -as zcc.1';\
+	echo -E 'yada install -man debian/manpages/appmake.1 -as z88dk-appmake.1';\
+	echo -E 'yada symlink -man z88dk-appmake.1 -as appmake.1';\
+	echo -E 'yada install -man debian/manpages/copt.1 -as z88dk-copt.1';\
+	echo -E 'yada symlink -man z88dk-copt.1 -as copt.1';\
+	echo -E 'yada install -man debian/manpages/z80asm.1 -as z88dk-z80asm.1';\
+	echo -E 'yada symlink -man z88dk-z80asm.1 -as z80asm.1';\
+	echo -E '# sccz80 is link to zcc';\
+	echo -E 'yada symlink -man  z88dk-zcc.1 -as z88dk-sccz80.1';\
+	echo -E 'yada symlink -man  z88dk-zcc.1 -as sccz80.1';\
+	echo -E '';\
+	echo -E 'yada symlink -into /usr/lib /usr/share/z88dk';\
+	echo -E '# no manpages for zcpp #yada install -man debian/manpages/zcpp.1 -as z88dk-zcpp.1') | /bin/sh
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-bin" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-bin/DEBIAN" \
+	  && export PACKAGE="z88dk-bin" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada perl';\
+	echo -E 'yada python';\
+	echo -E 'yada strip';\
+	echo -E 'yada shlibdeps') | /bin/sh
+	yada compress z88dk-bin
+	yada generate maintscripts z88dk-bin
+	find debian/tmp-z88dk-bin -type f -print \
+	  | sed -n 's/^debian\/tmp-z88dk-bin\(\/etc\/.*\)$$/\1/p' \
+	  > debian/tmp-z88dk-bin/DEBIAN/conffiles
+	test -s debian/tmp-z88dk-bin/DEBIAN/conffiles || rm -f debian/tmp-z88dk-bin/DEBIAN/conffiles
+	yada rebuild control
+	yada generate substvars z88dk-bin
+	umask 022 && dpkg-gencontrol -isp -pz88dk-bin -Pdebian/tmp-z88dk-bin
+
+debian/tmp-z88dk-examples/DEBIAN/control: debian/build-stamp debian/control
+	rm -rf debian/tmp-z88dk-examples
+	umask 022 && install -d debian/tmp-z88dk-examples/DEBIAN
+	install -d debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples
+	umask 022; yada generate copyright \
+	  > debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples/copyright
+	install -m 644 -p debian/changelog \
+	  debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples/changelog.Debian
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-examples" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-examples/DEBIAN" \
+	  && export PACKAGE="z88dk-examples" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada copy -doc -subdir examples examples/*';\
+	echo -E '#fix perms';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type d -exec chmod 755 {} \;';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type f -exec chmod 644 {} \;') | /bin/sh
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-examples" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-examples/DEBIAN" \
+	  && export PACKAGE="z88dk-examples" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada perl';\
+	echo -E 'yada python';\
+	echo -E 'yada strip';\
+	echo -E 'yada shlibdeps') | /bin/sh
+	yada compress z88dk-examples
+	yada generate maintscripts z88dk-examples
+	find debian/tmp-z88dk-examples -type f -print \
+	  | sed -n 's/^debian\/tmp-z88dk-examples\(\/etc\/.*\)$$/\1/p' \
+	  > debian/tmp-z88dk-examples/DEBIAN/conffiles
+	test -s debian/tmp-z88dk-examples/DEBIAN/conffiles || rm -f debian/tmp-z88dk-examples/DEBIAN/conffiles
+	yada rebuild control
+	yada generate substvars z88dk-examples
+	umask 022 && dpkg-gencontrol -isp -pz88dk-examples -Pdebian/tmp-z88dk-examples
+
+debian/tmp-z88dk-doc/DEBIAN/control: debian/build-stamp debian/control
+	rm -rf debian/tmp-z88dk-doc
+	umask 022 && install -d debian/tmp-z88dk-doc/DEBIAN
+	install -d debian/tmp-z88dk-doc/usr/share/doc/z88dk-doc
+	umask 022; yada generate copyright \
+	  > debian/tmp-z88dk-doc/usr/share/doc/z88dk-doc/copyright
+	install -m 644 -p debian/changelog \
+	  debian/tmp-z88dk-doc/usr/share/doc/z88dk-doc/changelog.Debian
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-doc" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-doc/DEBIAN" \
+	  && export PACKAGE="z88dk-doc" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada copy -doc -subdir doc doc/*';\
+	echo -E '#no strange manpages yet';\
+	echo -E 'rm -rf $$ROOT/usr/share/doc/$$PACKAGE/doc/netman';\
+	echo -E '#fix perms';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/doc -type d -exec chmod 755 {} \;';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/doc -type f -exec chmod 644 {} \;') | /bin/sh
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-doc" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-doc/DEBIAN" \
+	  && export PACKAGE="z88dk-doc" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada perl';\
+	echo -E 'yada python';\
+	echo -E 'yada strip';\
+	echo -E 'yada shlibdeps') | /bin/sh
+	yada compress z88dk-doc
+	yada generate maintscripts z88dk-doc
+	find debian/tmp-z88dk-doc -type f -print \
+	  | sed -n 's/^debian\/tmp-z88dk-doc\(\/etc\/.*\)$$/\1/p' \
+	  > debian/tmp-z88dk-doc/DEBIAN/conffiles
+	test -s debian/tmp-z88dk-doc/DEBIAN/conffiles || rm -f debian/tmp-z88dk-doc/DEBIAN/conffiles
+	yada rebuild control
+	yada generate substvars z88dk-doc
+	umask 022 && dpkg-gencontrol -isp -pz88dk-doc -Pdebian/tmp-z88dk-doc
+
+# Build package files
+
+.PHONY: binary binary-arch binary-indep
+binary: binary-arch binary-indep
+binary-arch: binary-arch-$(hostarch)
+
+.PHONY: binary-arch-arm
+binary-arch-arm: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-mips
+binary-arch-mips: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-m68k
+binary-arch-m68k: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-s390
+binary-arch-s390: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-hurd-i386
+binary-arch-hurd-i386: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-hppa
+binary-arch-hppa: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-powerpc
+binary-arch-powerpc: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-kfreebsd-i386
+binary-arch-kfreebsd-i386: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-mipsel
+binary-arch-mipsel: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-sparc
+binary-arch-sparc: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-i386
+binary-arch-i386: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-any
+binary-arch-any:
+binary-indep: \
+	binary-package-z88dk \
+	binary-package-z88dk-examples \
+	binary-package-z88dk-doc
+
+.PHONY: binary-package-z88dk
+binary-package-z88dk: check-root debian/tmp-z88dk/DEBIAN/control
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	chown -R 0.0 debian/tmp-z88dk
+	chmod -R u=rwX,go=rX debian/tmp-z88dk
+	@if [ -d debian/tmp-z88dk/usr/doc/z88dk ]; then \
+	  echo "*** Yada warning: /usr/doc/z88dk should be /usr/share/doc/z88dk";\
+	fi
+	dpkg-deb --build debian/tmp-z88dk ..
+
+.PHONY: binary-package-z88dk-bin
+binary-package-z88dk-bin: check-root debian/tmp-z88dk-bin/DEBIAN/control
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	chown -R 0.0 debian/tmp-z88dk-bin
+	chmod -R u=rwX,go=rX debian/tmp-z88dk-bin
+	@if [ -d debian/tmp-z88dk-bin/usr/doc/z88dk-bin ]; then \
+	  echo "*** Yada warning: /usr/doc/z88dk-bin should be /usr/share/doc/z88dk-bin";\
+	fi
+	dpkg-deb --build debian/tmp-z88dk-bin ..
+
+.PHONY: binary-package-z88dk-examples
+binary-package-z88dk-examples: check-root debian/tmp-z88dk-examples/DEBIAN/control
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	chown -R 0.0 debian/tmp-z88dk-examples
+	chmod -R u=rwX,go=rX debian/tmp-z88dk-examples
+	@if [ -d debian/tmp-z88dk-examples/usr/doc/z88dk-examples ]; then \
+	  echo "*** Yada warning: /usr/doc/z88dk-examples should be /usr/share/doc/z88dk-examples";\
+	fi
+	dpkg-deb --build debian/tmp-z88dk-examples ..
+
+.PHONY: binary-package-z88dk-doc
+binary-package-z88dk-doc: check-root debian/tmp-z88dk-doc/DEBIAN/control
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	chown -R 0.0 debian/tmp-z88dk-doc
+	chmod -R u=rwX,go=rX debian/tmp-z88dk-doc
+	@if [ -d debian/tmp-z88dk-doc/usr/doc/z88dk-doc ]; then \
+	  echo "*** Yada warning: /usr/doc/z88dk-doc should be /usr/share/doc/z88dk-doc";\
+	fi
+	dpkg-deb --build debian/tmp-z88dk-doc ..
+
+.PHONY: check-root
+check-root:
+	@[ `id -u` = 0 ] || (echo "You must be root to do this!"; false)
+
+debian/packages-tmp: debian/packages 
+	yada rebuild packages
+
+## Clean up afterwards
+
+.PHONY: clean clean-install-tree clean-build
+
+clean: clean-install-tree clean-build debian/control debian/rules
+	rm -f debian/packages-tmp debian/packages-tmp-new debian/packages-tmp-include
+
+clean-build:
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	rm -f debian/build-stamp debian/build-arch-stamp debian/build-indep-stamp
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" \
+	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
+	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
+	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
+	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
+	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
+	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def';\
+	echo -E 'make clean || true') | /bin/sh
+	yada unpatch
+	rm -rf debian/tmp
+
+clean-install-tree: debian/rules
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	rm -f debian/install-tree-stamp
+	rm -rf debian/tmp-* debian/files* debian/substvars debian/shlibs.local debian/ucf

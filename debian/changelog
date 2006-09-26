@@ -1,0 +1,7 @@
+z88dk (1.6.ds1-1) unstable; urgency=low
+
+  * Initial Debian version.
+  * ITP was done, Closes: #224723
+  * 64bit architecture are off
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Wed, 26 Sep 2006 12:42:14 +0200

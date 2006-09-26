@@ -1,0 +1,4 @@
+* Repackage upstream source:
+  - remove CVS directories
+  - remove binary files
+

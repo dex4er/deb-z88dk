@@ -1,0 +1,139 @@
+NAME
+  zcc - The frontend of z88dk
+SYSNOPIS
+  zcc [flags] [files to be compiled/linked]
+DESCRIPTION
+  This manual page documents briefly the z88dk tools. This manual page
+  was written for the Debian GNU/Linux distribution (but may be used
+  by others), because the original program does not have a manual page.
+
+
+  Please refer to the z88dk documentation in /usr/share/doc/z88dk-doc/ for the complete description of the system.
+  If /usr/share/doc/z88dk-doc not exists, please install the package z88dk-doc.
+
+  The frontend of z88dk is called zcc, it is this that you should call
+  if you want to do any compilations.
+
+  The files can be either C files (.c), preprocessed C files(.i),
+  compiled C files (.asm), optimised compiled file (.opt) or assembled
+  files (.obj), any combination of them can be mixed together and the
+  relevant processed done on them.
+
+  Processing of a file list is done on each file in turn (i.e. preprocess,
+  compile, optimise, assemble) at the end all files may be linked into
+  a single executable if desired.
+
+OPTIONS
+  Options to control the action of the frontend:
+  +[file]       Name of alternate config file (must be the first argument).
+
+   Predefined alternate configs:
+     abc80        ABC80
+     aceansi      Jupiter ACE, using VT-ANSI engine
+     cpm          CP/M
+     msx          MSX 1
+     mz           Sharp MZ
+     mzansi       Sharp MZ, using VT-ANSI
+     nc           Amstrad NC100
+     rex          REX 6000
+     sam          Sam Coupe
+     svi          Spectravideo SVI
+     m5           SORD M5
+     ti82         Ti82, using ROM text routines
+     ti82ansi     Ti82, using VT-ANSI
+     ti83         Ti83, using ROM text routines
+     ti83ansi     Ti83, using VT-ANSI
+     ti85         Ti85, using ROM text routines
+     ti85ansi     Ti85, using VT-ANSI
+     ti86         Ti86, using ROM text routines
+     ti86ansi     Ti86, using VT-ANSI
+     ti8x         Ti83+, using ROM text routines
+     [ti8xansi]   Ti83+, using VT-ANSI
+     vz           VZ / Laser 200
+     vzansi       VZ / Laser 200, using VT-ANSI
+     z88          Cambridge Z88
+     z88ansi      Cambridge Z88, using VT-ANSI
+     z88net       Cambridge Z88 with TCP/IP
+     zx           ZX Spectrum
+     zx81         ZX 81
+     zx81ansi     ZX 81, using VT-ANSI
+     zxansi       ZX Spectrum, using VT-ANSI
+ 
+  -a            Produce .asm (or .opt) file only
+  -c            Do not link object files
+  -E            Preprocess files only, leave output in .i file
+  -o [file]     Specify output file for binary (default is a.bas for BASIC programs and a.bin for application binaries)
+  -On           Optimize compiler output (to .opt file) n can be either 0 (none) 1,2,3, level 2 is recommended. Level 3 is suitable for large programs (includes certain lib functions to reduce size of code(!))
+  -v            Verbose - echo commands as they are executed
+  -vn           Don't be verbose
+
+
+
+  Options to control library usage:
+  -l[name]      Link in a library - supply just the name (after placing them in the correct directory).
+
+      The 'name' are:
+      farz88       Z88 far support
+      gfx          Z88 BASIC graphics lib
+      gfxapp       Z88 application graphics lib
+      m            Generic math routines
+      malloc       Generic near malloc routine
+      mz           OZ's math routines
+      ndos         Fake file-routines, return errors only
+      net          Z88 socket routines for ZSock
+      netdev       Z88 socket routines for devices
+      p3           +3 file support library
+      tigray82     Ti82 graylib routines
+      tigray83     Ti83 graylib routines
+      tigray83p    Ti83+ graylib routines
+      tigray85     Ti85 graylib routines
+      tigray86     Ti86 graylib routines
+      z88          Some Z88 application routines, like mailboxing
+      zxmath       ZX Spectrum ROM based math routines
+      zxvgs        ZXVGS hardware support
+  
+  -m            Generate .map files when assembling/linking
+
+
+
+  Options to control the type code produced:
+  -unsigned     Implicitly define everything as unsigned unless explicitly told otherwise.
+  -create-app   Create an application image (i.e. bank 63,62 etc)
+  -make-app     (App) Notify the compiler that you're trying to make an application
+  -reqpag=      (App) Number of 256 byte pages required for bad application
+  -zorg=        (App) Origin for a Z88 application
+  -safedata=    (App) Amount of safedata required by your code
+  -defvars=     (App) Where static variables should be dropped (only valid for single file compilations, but see later)
+  -expandz88    (App) Expanded z88 required
+  -no-expandz88 (App) Expanded z88 not required (these two flags toggle some startup code to check for an expanded machine)
+  -startup=3    Produce standalone code that can be run from a set address from BASIC. Use -zorg= to change the address
+  -R            (Use with above) produces relocatable code that can be loaded into a DIM'd BASIC array.
+  -smartpf      Intelligent printf routine handling
+  -no-smartpf   Turn off the intelligent printf handling
+  -make-lib     Shortcut to generate .o files from library .c files
+  -stackoffset  Sets the stack offset for shared libs (see package.txt for details)
+                   
+
+
+  Miscellaneous options:
+  -z80-verb     Allow z80asm to be verbose, this tends to generate a lot
+                   of output to the screen so may not be desired.
+  -cc           Intersperse C code as comments in the assembler output, warning:
+                   this *will* clobber some optimizations.
+  -Wall         Turn on all the compiler warnings
+  -Wnone        Turn off all compiler warnings
+  -Wn[num]      Turn off the compiler warning [num]
+  -W[num]       Turn on the compiler warning [num]
+  -asxx	        Cause the compiler to emit asxx compatible code
+  -Cp[option]   Pass an option through to the pre-processor
+  -Ca[option]   Pass an option through to the assembler
+
+  In addition, the flags, -D, -I, -U are passed through to the preprocessor.
+
+SEE ALSO
+  z88dk(1), z88dk-zcc(1), z88dk-z80asm(1), z88dk-appmake(1), z88dk-copt(1).
+
+
+AUTHOR
+  z88dk was written by Dominic Morris <dom@z88dk.org>, and others.
+  This manual page was written by Krystian Wlosek <tygrys@waw.pdi.net> using exists documentation, for the Debian GNU/Linux system.

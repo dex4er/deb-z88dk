@@ -1,0 +1,114 @@
+NAME
+  appmake - The z88dk application generator
+SYSNOPIS
+  appmake [+target] [options]
+DESCRIPIONS
+  This manual page documents briefly the z88dk tools. This manual page
+  was written for the Debian GNU/Linux distribution (but may be used
+  by others), because the original program does not have a manual page.
+
+  Please refer to the z88dk documentation in /usr/share/doc/z88dk-doc/ for the complete description of the system.
+  If /usr/share/doc/z88dk-doc not exists, please install the package z88dk-doc.
+
+  This program is used to produce files which are suitable for use in
+  emulators or on the real hardware.
+
+OPTIONS
+  Options used in all targets:
+  -h   --help            Display help
+  -b   --binfile [file]  Linked binary file
+  -o   --output [name]   Name of output file
+
+
+  +[target]      generate file for target machine.
+   Targets with additional options are:
+   
+   abc80        
+   ace           Generates a .byt file suitable for loading into emulators
+   acetap        Generates a .TAP for the Ace32 emulator
+   aquarius     Creates a BASIC loader file and binary stored in variable array format
+   cpc          Gegerates file for Amstrad CPC
+
+   Additional options:
+     -c   --crt0file [file]  crt0 file used in linking
+          --exec [nnnn]      Location address to start execution
+          --org [nnnn]       Origin of the binary
+
+   hex          Creates an intel hex record suitable for embedded devices
+
+   Additional options:
+     --org [nnnn]    Origin of the binary
+
+   msx          Adds a file header to enable the program to be loaded using 'bload "file.bin",r
+   mz           
+   nas          Generates a .NAS file suitable for use by emulators
+
+   Additional options:
+     --org [nnnn]    Origin of the binary
+
+   rex         
+
+   Additional options:
+     -n   --appname [name] Application Name
+     -c   --comment [text] Application Comment
+          --nt              Don't pad out to 8k addin
+
+   ti82         Creates a .82p file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+
+   ti83         Creates a .83p file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+
+   ti8x         Creates a .8xp file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+
+   ti85         Creates a .85p file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+
+   ti86         Creates a .86p file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+   ti86s       Creates a .86s file
+
+   Additional options:
+     --comment [text]  File comment (42 chars)
+
+   svi          Creates a .cas file loadable with the SVI emulator
+   z88          Generates .63 and .62 files suitable for burning to EPROM
+
+   Additional options:
+     -c   --crt0file [file]   crt0 file used in linking
+          --nt                Do not truncate bank 63
+
+   z88shell     Patches the header to ensure that the program is recognised by the shell
+
+   Additional options:
+     -c   --crt0file [file]   crt0 file used in linking
+
+   zxvgs        Creates a zxvgs application file
+
+   Additional options:
+     -c   --crt0file [file]   crt0 file used in linking
+
+   zx           Generates a .TAP file complete with BASIC header
+
+   Additional options:
+     -c   --crt0file [file]    crt0 file used in linking
+          --org [nnnn]         Origin of the binary
+          --blockname [name]   Name of the code block in tap file
+
+SEE ALSO
+  z88dk(1), z88dk-zcc(1), z88dk-z80asm(1), z88dk-appmake(1), z88dk-copt(1).
+
+AUTHOR
+  z88dk was written by Dominic Morris <dom@z88dk.org>, and others.
+  This manual page was written by Krystian Wlosek <tygrys@waw.pdi.net> using exists documentation, for the Debian GNU/Linux system.

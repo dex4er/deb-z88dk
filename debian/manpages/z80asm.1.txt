@@ -1,0 +1,44 @@
+NAME
+  z88dk-z80asm - Z80 assembler compiler.
+SYSNOPIS
+  z88dk-z80asm [options] [ @<modulefile> | {<filename>} ]
+
+DESCRIPTION
+  This manual page documents briefly the z88dk tools. This manual page
+  was written for the Debian GNU/Linux distribution (but may be used
+  by others), because the original program does not have a manual page.
+
+  z88dk-z80asm is a Z80 assembler cross compiler.
+
+  Please refer to the z88dk documentation in /usr/share/doc/z88dk-doc/ for the complete description of the system.
+  If /usr/share/doc/z88dk-doc not exists, please install the package z88dk-doc.
+
+OPTIONS
+  -h       display help
+  -n       defines option to be turned OFF (except -r -R -i -x -D -t -o)
+  -v       verbose
+  -l       listing file
+  -s       symbol table,
+  -m       map listing file
+  -r<ORG>  Explicit relocation <ORG> defined in hex (ignore ORG in first module)
+  -plus    Interpret 'Invoke' as RST 28h
+  -R       Generate relocatable code (Automatical relocation before execution)
+  -D<symbol>   define symbol as logically TRUE (used for conditional assembly)
+  -b       assemble files & link to ORG address. -c split code in 16K banks
+  -d       date stamp control, assemble only if source file > object file
+  -a: -b & -d (assemble only updated source files, then link & relocate)
+  -o<bin filename>     expl. output filename, -g XDEF reloc. addr. from all modules
+  -i<library>       include <library> LIB modules with .obj modules during linking
+  -x<library>       create library from specified modules ( e.g. with @<modules> )
+  -t<n>      tabulator width for .map, .def, .sym files. Column width is 4 times -t
+
+  Default options: -nv -nd -nb -nl -s -m -ng -nc -nR -t8
+
+SEE ALSO
+  z88dk(1), z88dk-zcc(1), z88dk-z80asm(1), z88dk-appmake(1), z88dk-copt(1).
+
+
+AUTHOR
+  z88dk was written by Dominic Morris <dom@z88dk.org>, and others.
+  z80asm was written by Gunther Strube <gbs@image.dk>.
+  This manual page was written by Krystian Wlosek <tygrys@waw.pdi.net> using exists documentation, for the Debian GNU/Linux system.

@@ -1,0 +1,22 @@
+# z88dk
+# Copyright (C) 2006
+# This file is distributed under the same license as the z88dk package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: z88dk\n"
+"Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
+"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"PO-Revision-Date: 2006-10-29 12:38+0100\n"
+"Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
+"Language-Team: french <debian-l10n-french@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Default z88dk target:"
+msgstr "Veuillez choisir la cible par défaut du compilateur z88dk :"

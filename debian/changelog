@@ -1,3 +1,14 @@
+z88dk (1.6.ds1-2) unstable; urgency=low
+
+  * Fixed typo and bullet lists in long description. (Closes: #395997)
+    Patch by Guillem Jover.
+  * z88dk-bin depends on libc6. Thanks to Guillem Jover. (Closes: #395998)
+  * Circular dependency fixed. Thanks to Bill Allombert. (Closes: #396213)
+  * Added French debconf translation. (Closes: #397102)
+    Patch by Steve <dlist@bluewin.ch>.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Mon, 13 Nov 2006 14:49:28 +0100
+
 z88dk (1.6.ds1-1) unstable; urgency=low
 
   * Initial Debian version.

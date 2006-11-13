@@ -21,6 +21,3 @@ msgstr ""
 #: ../templates:1001
 msgid "Default z88dk target:"
 msgstr "Domy¶lny cel dla z88dk:"
-
-#~ msgid "Which platform would you like as default z88dk target?"
-#~ msgstr "Która platforma ma byæ domy¶lna dla z88dk?"

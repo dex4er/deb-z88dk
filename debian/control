@@ -4,7 +4,7 @@ Uploaders: Piotr Roszatycki <dexter@debian.org>
 Section: devel
 Priority: extra
 Standards-Version: 3.7.2
-Build-Depends: po-debconf, patch, yada (>= 0.49)
+Build-Depends: po-debconf, patch, yada
 
 Package: z88dk-bin
 Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc s390 sparc

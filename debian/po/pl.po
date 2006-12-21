@@ -1,12 +1,11 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# z88dk
+# Copyright (C) 2006
+# This file is distributed under the same license as the z88dk package.
+# Krystian Wlosek <tygrys@waw.pdi.net>, 2006.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: z88dk 1.6\n"
+"Project-Id-Version: z88dk\n"
 "Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
 "POT-Creation-Date: 2006-07-06 16:16+0200\n"
 "PO-Revision-Date: 2006-04-25 15:51+1\n"

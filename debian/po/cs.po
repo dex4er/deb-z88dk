@@ -1,0 +1,24 @@
+# z88dk
+# Copyright (C) 2006
+# This file is distributed under the same license as the 2006 package.
+#
+# Jakub Kasparec <mr.k@centrum.cz>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: z88dk\n"
+"Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
+"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"PO-Revision-Date: 2006-12-07 00:31+0100\n"
+"Last-Translator: Jakub Kasparec <mr.k@centrum.cz>\n"
+"Language-Team: czech <debian-l10n-czech@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Default z88dk target:"
+msgstr "Standardní cíl balíku z88dk:"
+

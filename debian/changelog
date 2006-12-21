@@ -1,3 +1,17 @@
+z88dk (1.6.ds1-3) unstable; urgency=low
+
+  * Recompile with new yada without templates problems.
+  * Added missing arm architecture
+  * Added exit in build script when buildd try compile for
+    64bit architectures: s390,alpha,amd64,ia64,ppc64 (Closes: #395263)
+  * Added Czech debconf translation (Closes: #402985)
+    Thanks to Jakub Kasparec.
+  * conflict with z80asm package. z88dk-bin overwrite manpage in z80asm
+    symlink from z88dk-z80asm.1 to z80asm.1 removed.
+    Thanks to Michael Ablassmeier, (Closes: #404012)
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Thu, 21 Dec 2006 09:24:10 +0100
+
 z88dk (1.6.ds1-2) unstable; urgency=low
 
   * Fixed typo and bullet lists in long description. (Closes: #395997)

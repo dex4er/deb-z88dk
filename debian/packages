@@ -1,4 +1,4 @@
-# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2264 2006-11-13T14:59:50.223988Z dexter  $
+# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2303 2006-12-29T13:22:16.925174Z dexter  $
 
 %define z88dk_application zcc appmake copt sccz80 z80asm zcpp
 %define z88dk_prefix z88dk-
@@ -11,7 +11,7 @@ Patches: patches/*.diff
 Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
 Standards-Version: 3.7.2
-Build-Depends: po-debconf, patch
+Build-Depends: po-debconf, patch, yada
 Upstream-Source: <URL:http://sourceforge.net/project/showfiles.php?group_id=2917>
 Home-Page: <URL:http://www.z88dk.org/>
 Description: a Z80 processor assembler and SmallC+ cross compiler
@@ -26,6 +26,12 @@ Major-Changes:
   * Added alternative links.
 Copyright: Artistic
 Build-Arch: bash
+# case "$DEB_BUILD_ARCH" in
+#    s390|alpha|amd64|ia64|ppc64)
+# 	echo "build-arch: 64bit architecture not supported by upstream."
+# 	exit 1
+# 	;;
+# esac
  rm -rf bin usr
  mkdir -p bin usr
  make -e prefix=/usr CC="gcc" CFLAGS="-g -O2 -Wall"
@@ -35,6 +41,12 @@ Build-Indep: bash
  PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc
  #PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc install
 Clean: sh
+ case "$DEB_BUILD_ARCH" in
+    s390|alpha|amd64|ia64|ppc64)
+ 	echo "64bit architecture not supported by upstream."
+ 	exit 1
+ 	;;
+ esac
  rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def
  make clean || true
 
@@ -65,7 +77,8 @@ Install: sh
  yada install -man debian/manpages/copt.1 -as %{z88dk_prefix}copt.1
  yada symlink -man %{z88dk_prefix}copt.1 -as copt.1
  yada install -man debian/manpages/z80asm.1 -as %{z88dk_prefix}z80asm.1
- yada symlink -man %{z88dk_prefix}z80asm.1 -as z80asm.1
+ #conflicts with z80asm package 
+ #yada symlink -man %{z88dk_prefix}z80asm.1 -as z80asm.1
  # sccz80 is link to zcc
  yada symlink -man  %{z88dk_prefix}zcc.1 -as %{z88dk_prefix}sccz80.1
  yada symlink -man  %{z88dk_prefix}zcc.1 -as sccz80.1

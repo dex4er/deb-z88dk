@@ -1,4 +1,4 @@
-# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2303 2006-12-29T13:22:16.925174Z dexter  $
+# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2316 2007-01-08T13:08:05.770679Z dexter  $
 
 %define z88dk_application zcc appmake copt sccz80 z80asm zcpp
 %define z88dk_prefix z88dk-
@@ -27,7 +27,7 @@ Major-Changes:
 Copyright: Artistic
 Build-Arch: bash
 # case "$DEB_BUILD_ARCH" in
-#    s390|alpha|amd64|ia64|ppc64)
+#    alpha|amd64|ia64|ppc64)
 # 	echo "build-arch: 64bit architecture not supported by upstream."
 # 	exit 1
 # 	;;
@@ -42,7 +42,7 @@ Build-Indep: bash
  #PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc install
 Clean: sh
  case "$DEB_BUILD_ARCH" in
-    s390|alpha|amd64|ia64|ppc64)
+    alpha|amd64|ia64|ppc64)
  	echo "64bit architecture not supported by upstream."
  	exit 1
  	;;
@@ -51,7 +51,7 @@ Clean: sh
  make clean || true
 
 Package: z88dk-bin
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc s390 sparc
+Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc
 Depends: []
 Description: configuration files for z88dk utilities
  z88dk is a Z80 processor cross compiler producing binaries for over
@@ -61,6 +61,7 @@ Alternatives:
  /usr/bin/appmake -> appmake -> /usr/bin/z88dk-appmake (%{z88dk_alternative_level})
  /usr/bin/copt -> copt -> /usr/bin/z88dk-copt (%{z88dk_alternative_level})
  /usr/bin/sccz80 -> sccz80 -> /usr/bin/z88dk-sccz80 (%{z88dk_alternative_level})
+# ? conflict with z80asm package
  /usr/bin/z80asm -> z80asm -> /usr/bin/z88dk-z80asm (%{z88dk_alternative_level})
  /usr/bin/zcpp -> zcpp -> /usr/bin/z88dk-zcpp (%{z88dk_alternative_level})
 Install: sh
@@ -77,7 +78,7 @@ Install: sh
  yada install -man debian/manpages/copt.1 -as %{z88dk_prefix}copt.1
  yada symlink -man %{z88dk_prefix}copt.1 -as copt.1
  yada install -man debian/manpages/z80asm.1 -as %{z88dk_prefix}z80asm.1
- #conflicts with z80asm package 
+ #conflict with z80asm package
  #yada symlink -man %{z88dk_prefix}z80asm.1 -as z80asm.1
  # sccz80 is link to zcc
  yada symlink -man  %{z88dk_prefix}zcc.1 -as %{z88dk_prefix}sccz80.1

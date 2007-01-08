@@ -1,18 +1,20 @@
 #!/usr/bin/make -f
 # Generated automatically from debian/packages
-# by yada v0.51, of Thu, 16 Nov 2006
+# by yada v0.52, of Fri,  8 Dec 2006
 
 hostarch := $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
+ifneq "$(hostarch)" "arm"
 ifneq "$(hostarch)" "mips"
-ifneq "$(hostarch)" "hppa"
-ifneq "$(hostarch)" "powerpc"
-ifneq "$(hostarch)" "mipsel"
-ifneq "$(hostarch)" "kfreebsd-i386"
-ifneq "$(hostarch)" "sparc"
 ifneq "$(hostarch)" "s390"
+ifneq "$(hostarch)" "hppa"
+ifneq "$(hostarch)" "kfreebsd-i386"
+ifneq "$(hostarch)" "mipsel"
+ifneq "$(hostarch)" "powerpc"
+ifneq "$(hostarch)" "sparc"
 ifneq "$(hostarch)" "i386"
 hostarch := any
+endif
 endif
 endif
 endif
@@ -168,6 +170,11 @@ debian/build-indep-stamp: debian/build-arch-stamp
 
 .PHONY: install-tree
 install-tree: install-tree-$(hostarch)
+install-tree-arm: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-examples/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
 install-tree-hppa: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-examples/DEBIAN/control \
@@ -249,7 +256,7 @@ debian/tmp-z88dk-bin/DEBIAN/control: debian/build-arch-stamp debian/control
 	echo -E 'yada install -man debian/manpages/copt.1 -as z88dk-copt.1';\
 	echo -E 'yada symlink -man z88dk-copt.1 -as copt.1';\
 	echo -E 'yada install -man debian/manpages/z80asm.1 -as z88dk-z80asm.1';\
-	echo -E '#conflicts with z80asm package';\
+	echo -E '#conflict with z80asm package';\
 	echo -E '#yada symlink -man z88dk-z80asm.1 -as z80asm.1';\
 	echo -E '# sccz80 is link to zcc';\
 	echo -E 'yada symlink -man  z88dk-zcc.1 -as z88dk-sccz80.1';\
@@ -451,6 +458,9 @@ debian/tmp-z88dk/DEBIAN/control: debian/build-indep-stamp debian/control
 binary: binary-arch binary-indep
 binary-arch: binary-arch-$(hostarch)
 
+.PHONY: binary-arch-arm
+binary-arch-arm: \
+	binary-package-z88dk-bin
 .PHONY: binary-arch-hppa
 binary-arch-hppa: \
 	binary-package-z88dk-bin
@@ -552,7 +562,7 @@ clean-build:
 	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
 	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
 	echo -E 'case "$$DEB_BUILD_ARCH" in';\
-	echo -E '   s390|alpha|amd64|ia64|ppc64)';\
+	echo -E '   alpha|amd64|ia64|ppc64)';\
 	echo -E '	echo "64bit architecture not supported by upstream."';\
 	echo -E '	exit 1';\
 	echo -E '	;;';\

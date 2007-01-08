@@ -1,3 +1,12 @@
+z88dk (1.6.ds1-4) unstable; urgency=low
+
+  * s390 is 32bit archtecture. Closes: #405013, #405264
+    Thanks to Bastian Blank, Steve Langasek.
+  * arm already added to z88dk-bin/Architecture:
+    Thanks to Steve Langasek.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Mon,  8 Jan 2007 09:42:21 +0100
+
 z88dk (1.6.ds1-3) unstable; urgency=low
 
   * Recompile with new yada without templates problems.

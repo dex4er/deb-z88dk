@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 Build-Depends: po-debconf, patch, yada
 
 Package: z88dk-bin
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc s390 sparc
+Architecture: arm hppa i386 kfreebsd-i386 mips mipsel powerpc s390 sparc
 Depends: ${z88dk-bin:Depends}
 Description: configuration files for z88dk utilities
  z88dk is a Z80 processor cross compiler producing binaries for over

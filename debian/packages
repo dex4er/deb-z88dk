@@ -1,4 +1,4 @@
-# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2316 2007-01-08T13:08:05.770679Z dexter  $
+# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2327 2007-05-11T14:00:58.340260Z dexter  $
 
 %define z88dk_application zcc appmake copt sccz80 z80asm zcpp
 %define z88dk_prefix z88dk-
@@ -50,10 +50,15 @@ Clean: sh
  rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def
  make clean || true
 
+
+
+
+
+
 Package: z88dk-bin
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc
+Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k
 Depends: []
-Description: configuration files for z88dk utilities
+Description: executable files for z88dk
  z88dk is a Z80 processor cross compiler producing binaries for over
  25 different z80 based machines. This package contains binary files.
 Alternatives:
@@ -78,32 +83,48 @@ Install: sh
  yada install -man debian/manpages/copt.1 -as %{z88dk_prefix}copt.1
  yada symlink -man %{z88dk_prefix}copt.1 -as copt.1
  yada install -man debian/manpages/z80asm.1 -as %{z88dk_prefix}z80asm.1
- #conflict with z80asm package
- #yada symlink -man %{z88dk_prefix}z80asm.1 -as z80asm.1
- # sccz80 is link to zcc
+#conflict with z80asm package
+#yada symlink -man %{z88dk_prefix}z80asm.1 -as z80asm.1
+# sccz80 is link to zcc
  yada symlink -man  %{z88dk_prefix}zcc.1 -as %{z88dk_prefix}sccz80.1
  yada symlink -man  %{z88dk_prefix}zcc.1 -as sccz80.1
  yada symlink -into /usr/lib /usr/share/z88dk
 Overrides:
- binary-without-manpage z88dk-zcpp
+ binary-without-manpage usr/bin/z88dk-zcpp
 
-Package: z88dk-examples
-Architecture: all
-Description: example programs with source for z88dk compilers
- z88dk is a Z80 cross compiler producing binaries for over
- 25 different z80 based machines. This package contains compiler
- and libraries needed for developing.
-Install: sh
- yada copy -doc -subdir examples examples/*
- #fix perms
- find $ROOT/usr/share/doc/$PACKAGE/examples -type d -exec chmod 755 {} \;
- find $ROOT/usr/share/doc/$PACKAGE/examples -type f -exec chmod 644 {} \;
+
+
+
+
+# files moved to z88dk-doc package.
+#Package: z88dk-examples
+#Architecture: all
+#Description: example programs with source for z88dk compilers
+# z88dk is a Z80 cross compiler producing binaries for over
+# 25 different z80 based machines. This package contains compiler
+# and libraries needed for developing.
+#Install: sh
+# yada copy -doc -subdir examples examples/*
+# #fix perms
+# find $ROOT/usr/share/doc/$PACKAGE/examples -type d -exec chmod 755 {} \;
+# find $ROOT/usr/share/doc/$PACKAGE/examples -type f -exec chmod 644 {} \;
+
+
+
+
+
+
+
+
 
 Package: z88dk-doc
 Architecture: all
-Description: documentation for z88dk
- This is documentation for z88dk compilers. See the z88dk package
- for more details.
+Replaces: z88dk-examples
+Conflicts: z88dk-examples
+Provides: z88dk-examples
+Description: documentation and examples for z88dk
+ This is documentation for z88dk compilers. Also example programs with sources
+ are available. See the z88dk package for more details.
 Install: sh
  yada copy -doc -subdir doc doc/*
  #no strange manpages yet
@@ -111,10 +132,56 @@ Install: sh
  #fix perms
  find $ROOT/usr/share/doc/$PACKAGE/doc -type d -exec chmod 755 {} \;
  find $ROOT/usr/share/doc/$PACKAGE/doc -type f -exec chmod 644 {} \;
+ # merged with -examples
+ yada copy -doc -subdir examples examples/*
+ #fix perms
+ find $ROOT/usr/share/doc/$PACKAGE/examples -type d -exec chmod 755 {} \;
+ find $ROOT/usr/share/doc/$PACKAGE/examples -type f -exec chmod 644 {} \;
+
+
+
+
+
+
+
+
+Package: z88dk-data
+Architecture: all
+Depends: []
+Description: data files for z88dk
+ This package contains any data files needed by z88dk tools.
+Install: bash
+ export Z80_OZFILES=$(pwd)/lib/
+ export ZCCCFG=$(pwd)/lib/config/
+ #PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc
+ PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc install
+ make prefix=/usr DESTDIR=$ROOT install
+ # no executable files
+ rm -rf $ROOT/usr/bin
+ # no default config
+ rm -f $ROOT/usr/share/z88dk/lib/config/zcc.cfg
+ rm -f $ROOT/usr/share/z88dk/lib/config/*.lnx
+ for i in $ROOT/usr/share/z88dk/lib/config/*.cfg; do echo "file: $i";
+    mv $i $i.tmp; cat $i.tmp | \
+    sed 's/^Z80EXE.*$/Z80EXE\t\t%{z88dk_prefix}z80asm/g' | sed 's/^CPP.*$/CPP\t\t%{z88dk_prefix}zcpp/g' | \
+    sed 's/^LINKER.*$/LINKER\t\t%{z88dk_prefix}z80asm/g' | sed 's/^COMPILER.*$/COMPILER\t%{z88dk_prefix}sccz80/g' | \
+    sed 's/^COPTEXE.*$/COPTEXE\t\t%{z88dk_prefix}copt/g' | sed 's/^APPMAKER.*$/APPMAKER\t%{z88dk_prefix}appmake/g' > $i;
+     rm $i.tmp;
+ done
+ yada install -doc EXTENSIONS README.1st
+ yada install -man debian/manpages/z88dk.1
+# moved to z88dk-bin
+# yada symlink -into /usr/lib /usr/share/z88dk
+
+
+
+
+
 
 Package: z88dk
-Architecture: all
-Depends: z88dk-bin (>= ${binary:Version}), debconf
+#Architecture: all
+Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k
+Depends: z88dk-bin (>= ${binary:Version}), z88dk-data (>= ${binary:Version}), debconf
 Suggests: z88dk-doc, z88dk-examples
 Description: a Z80 processor assembler and SmallC+ cross compiler
  z88dk is a SmallC+ and Z80 assemler cross compiler supplied with an
@@ -138,27 +205,6 @@ Description: a Z80 processor assembler and SmallC+ cross compiler
   * Easily retargetted C library including stdio routines
   * Retargettable VT100 terminal
   * Support for over a 25 z80 based machines (see below for details)
-Install: bash
- export Z80_OZFILES=$(pwd)/lib/
- export ZCCCFG=$(pwd)/lib/config/
- #PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc
- PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc install
- make prefix=/usr DESTDIR=$ROOT install
- # no executable files
- rm -rf $ROOT/usr/bin
- # no default config
- rm -f $ROOT/usr/share/z88dk/lib/config/zcc.cfg
- rm -f $ROOT/usr/share/z88dk/lib/config/*.lnx
- for i in $ROOT/usr/share/z88dk/lib/config/*.cfg; do echo "file: $i";
-    mv $i $i.tmp; cat $i.tmp | \
-    sed 's/^Z80EXE.*$/Z80EXE\t\t%{z88dk_prefix}z80asm/g' | sed 's/^CPP.*$/CPP\t\t%{z88dk_prefix}zcpp/g' | \
-    sed 's/^LINKER.*$/LINKER\t\t%{z88dk_prefix}z80asm/g' | sed 's/^COMPILER.*$/COMPILER\t%{z88dk_prefix}sccz80/g' | \
-    sed 's/^COPTEXE.*$/COPTEXE\t\t%{z88dk_prefix}copt/g' | sed 's/^APPMAKER.*$/APPMAKER\t%{z88dk_prefix}appmake/g' > $i;
-     rm $i.tmp;
- done
- yada install -doc EXTENSIONS README.1st
- yada install -man debian/manpages/z88dk.1
-# yada symlink -into /usr/lib /usr/share/z88dk
 Templates:
  Template: z88dk/configure-defaultpackage
  Type: select

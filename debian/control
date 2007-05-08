@@ -7,28 +7,30 @@ Standards-Version: 3.7.2
 Build-Depends: po-debconf, patch, yada
 
 Package: z88dk-bin
-Architecture: arm hppa i386 kfreebsd-i386 mips mipsel powerpc s390 sparc
+Architecture: arm hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel powerpc s390 sparc
 Depends: ${z88dk-bin:Depends}
-Description: configuration files for z88dk utilities
+Description: executable files for z88dk
  z88dk is a Z80 processor cross compiler producing binaries for over
  25 different z80 based machines. This package contains binary files.
 
-Package: z88dk-examples
-Architecture: all
-Description: example programs with source for z88dk compilers
- z88dk is a Z80 cross compiler producing binaries for over
- 25 different z80 based machines. This package contains compiler
- and libraries needed for developing.
-
 Package: z88dk-doc
 Architecture: all
-Description: documentation for z88dk
- This is documentation for z88dk compilers. See the z88dk package
- for more details.
+Provides: z88dk-examples
+Conflicts: z88dk-examples
+Replaces: z88dk-examples
+Description: documentation and examples for z88dk
+ This is documentation for z88dk compilers. Also example programs with sources
+ are available. See the z88dk package for more details.
+
+Package: z88dk-data
+Architecture: all
+Depends: ${z88dk-data:Depends}
+Description: data files for z88dk
+ This package contains any data files needed by z88dk tools.
 
 Package: z88dk
-Architecture: all
-Depends: z88dk-bin (>= ${binary:Version}), debconf
+Architecture: arm hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel powerpc s390 sparc
+Depends: z88dk-bin (>= ${binary:Version}), z88dk-data (>= ${binary:Version}), debconf
 Suggests: z88dk-doc, z88dk-examples
 Description: a Z80 processor assembler and SmallC+ cross compiler
  z88dk is a SmallC+ and Z80 assemler cross compiler supplied with an

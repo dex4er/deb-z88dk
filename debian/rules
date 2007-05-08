@@ -1,19 +1,23 @@
 #!/usr/bin/make -f
 # Generated automatically from debian/packages
-# by yada v0.52, of Fri,  8 Dec 2006
+# by yada v0.53, of Fri,  4 May 2007
 
 hostarch := $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 ifneq "$(hostarch)" "arm"
 ifneq "$(hostarch)" "mips"
+ifneq "$(hostarch)" "m68k"
 ifneq "$(hostarch)" "s390"
+ifneq "$(hostarch)" "hurd-i386"
 ifneq "$(hostarch)" "hppa"
+ifneq "$(hostarch)" "powerpc"
 ifneq "$(hostarch)" "kfreebsd-i386"
 ifneq "$(hostarch)" "mipsel"
-ifneq "$(hostarch)" "powerpc"
 ifneq "$(hostarch)" "sparc"
 ifneq "$(hostarch)" "i386"
 hostarch := any
+endif
+endif
 endif
 endif
 endif
@@ -172,53 +176,62 @@ debian/build-indep-stamp: debian/build-arch-stamp
 install-tree: install-tree-$(hostarch)
 install-tree-arm: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-hppa: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
+install-tree-hurd-i386: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-i386: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-kfreebsd-i386: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
+install-tree-m68k: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-mips: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-mipsel: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-powerpc: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-s390: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-sparc: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
 install-tree-any: \
-	debian/tmp-z88dk-examples/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
+	debian/tmp-z88dk-data/DEBIAN/control
 
 debian/tmp-z88dk-bin/DEBIAN/control: debian/build-arch-stamp debian/control
 	rm -rf debian/tmp-z88dk-bin
@@ -256,9 +269,6 @@ debian/tmp-z88dk-bin/DEBIAN/control: debian/build-arch-stamp debian/control
 	echo -E 'yada install -man debian/manpages/copt.1 -as z88dk-copt.1';\
 	echo -E 'yada symlink -man z88dk-copt.1 -as copt.1';\
 	echo -E 'yada install -man debian/manpages/z80asm.1 -as z88dk-z80asm.1';\
-	echo -E '#conflict with z80asm package';\
-	echo -E '#yada symlink -man z88dk-z80asm.1 -as z80asm.1';\
-	echo -E '# sccz80 is link to zcc';\
 	echo -E 'yada symlink -man  z88dk-zcc.1 -as z88dk-sccz80.1';\
 	echo -E 'yada symlink -man  z88dk-zcc.1 -as sccz80.1';\
 	echo -E 'yada symlink -into /usr/lib /usr/share/z88dk') | /bin/sh
@@ -284,56 +294,6 @@ debian/tmp-z88dk-bin/DEBIAN/control: debian/build-arch-stamp debian/control
 	yada rebuild control
 	yada generate substvars z88dk-bin
 	umask 022 && dpkg-gencontrol -isp -pz88dk-bin -Pdebian/tmp-z88dk-bin
-
-debian/tmp-z88dk-examples/DEBIAN/control: debian/build-indep-stamp debian/control
-	rm -rf debian/tmp-z88dk-examples
-	umask 022 && install -d debian/tmp-z88dk-examples/DEBIAN
-	install -d debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples
-	umask 022; yada generate copyright \
-	  > debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples/copyright
-	install -m 644 -p debian/changelog \
-	  debian/tmp-z88dk-examples/usr/share/doc/z88dk-examples/changelog.Debian
-	@umask 022 \
-	  && export pwd="$$(pwd)" \
-	  && export ROOT="$$(pwd)/debian/tmp-z88dk-examples" \
-	  && export TMPROOT="$$(pwd)/debian/tmp" \
-	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-examples/DEBIAN" \
-	  && export PACKAGE="z88dk-examples" \
-	  && export SOURCE="z88dk" \
-	  && export VERSION="$(VERSION)" \
-	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
-	  && export DEB_HOST_GNU_TYPE="$(DEB_HOST_GNU_TYPE)" \
-	  && export DEB_HOST_GNU_SYSTEM="$(DEB_HOST_GNU_SYSTEM)" \
-	  && export DEB_BUILD_GNU_CPU="$(DEB_BUILD_GNU_CPU)" \
-	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
-	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
-	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
-	echo -E 'yada copy -doc -subdir examples examples/*';\
-	echo -E '#fix perms';\
-	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type d -exec chmod 755 {} \;';\
-	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type f -exec chmod 644 {} \;') | /bin/sh
-	@umask 022 \
-	  && export pwd="$$(pwd)" \
-	  && export ROOT="$$(pwd)/debian/tmp-z88dk-examples" \
-	  && export TMPROOT="$$(pwd)/debian/tmp" \
-	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-examples/DEBIAN" \
-	  && export PACKAGE="z88dk-examples" \
-	  && export SOURCE="z88dk" \
-	  && export VERSION="$(VERSION)" && (\
-	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
-	echo -E 'yada perl';\
-	echo -E 'yada python';\
-	echo -E 'yada strip';\
-	echo -E 'yada shlibdeps') | /bin/sh
-	yada compress z88dk-examples
-	yada generate maintscripts z88dk-examples
-	find debian/tmp-z88dk-examples -type f -print \
-	  | sed -n 's/^debian\/tmp-z88dk-examples\(\/etc\/.*\)$$/\1/p' \
-	  > debian/tmp-z88dk-examples/DEBIAN/conffiles
-	test -s debian/tmp-z88dk-examples/DEBIAN/conffiles || rm -f debian/tmp-z88dk-examples/DEBIAN/conffiles
-	yada rebuild control
-	yada generate substvars z88dk-examples
-	umask 022 && dpkg-gencontrol -isp -pz88dk-examples -Pdebian/tmp-z88dk-examples
 
 debian/tmp-z88dk-doc/DEBIAN/control: debian/build-indep-stamp debian/control
 	rm -rf debian/tmp-z88dk-doc
@@ -363,7 +323,12 @@ debian/tmp-z88dk-doc/DEBIAN/control: debian/build-indep-stamp debian/control
 	echo -E 'rm -rf $$ROOT/usr/share/doc/$$PACKAGE/doc/netman';\
 	echo -E '#fix perms';\
 	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/doc -type d -exec chmod 755 {} \;';\
-	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/doc -type f -exec chmod 644 {} \;') | /bin/sh
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/doc -type f -exec chmod 644 {} \;';\
+	echo -E '# merged with -examples';\
+	echo -E 'yada copy -doc -subdir examples examples/*';\
+	echo -E '#fix perms';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type d -exec chmod 755 {} \;';\
+	echo -E 'find $$ROOT/usr/share/doc/$$PACKAGE/examples -type f -exec chmod 644 {} \;') | /bin/sh
 	@umask 022 \
 	  && export pwd="$$(pwd)" \
 	  && export ROOT="$$(pwd)/debian/tmp-z88dk-doc" \
@@ -387,20 +352,20 @@ debian/tmp-z88dk-doc/DEBIAN/control: debian/build-indep-stamp debian/control
 	yada generate substvars z88dk-doc
 	umask 022 && dpkg-gencontrol -isp -pz88dk-doc -Pdebian/tmp-z88dk-doc
 
-debian/tmp-z88dk/DEBIAN/control: debian/build-indep-stamp debian/control
-	rm -rf debian/tmp-z88dk
-	umask 022 && install -d debian/tmp-z88dk/DEBIAN
-	install -d debian/tmp-z88dk/usr/share/doc/z88dk
+debian/tmp-z88dk-data/DEBIAN/control: debian/build-indep-stamp debian/control
+	rm -rf debian/tmp-z88dk-data
+	umask 022 && install -d debian/tmp-z88dk-data/DEBIAN
+	install -d debian/tmp-z88dk-data/usr/share/doc/z88dk-data
 	umask 022; yada generate copyright \
-	  > debian/tmp-z88dk/usr/share/doc/z88dk/copyright
+	  > debian/tmp-z88dk-data/usr/share/doc/z88dk-data/copyright
 	install -m 644 -p debian/changelog \
-	  debian/tmp-z88dk/usr/share/doc/z88dk/changelog.Debian
+	  debian/tmp-z88dk-data/usr/share/doc/z88dk-data/changelog.Debian
 	@umask 022 \
 	  && export pwd="$$(pwd)" \
-	  && export ROOT="$$(pwd)/debian/tmp-z88dk" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-data" \
 	  && export TMPROOT="$$(pwd)/debian/tmp" \
-	  && export CONTROL="$$(pwd)/debian/tmp-z88dk/DEBIAN" \
-	  && export PACKAGE="z88dk" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-data/DEBIAN" \
+	  && export PACKAGE="z88dk-data" \
 	  && export SOURCE="z88dk" \
 	  && export VERSION="$(VERSION)" \
 	  && export DEB_HOST_GNU_CPU="$(DEB_HOST_GNU_CPU)" \
@@ -429,6 +394,37 @@ debian/tmp-z88dk/DEBIAN/control: debian/build-indep-stamp debian/control
 	echo -E 'done';\
 	echo -E 'yada install -doc EXTENSIONS README.1st';\
 	echo -E 'yada install -man debian/manpages/z88dk.1') | /bin/bash
+	@umask 022 \
+	  && export pwd="$$(pwd)" \
+	  && export ROOT="$$(pwd)/debian/tmp-z88dk-data" \
+	  && export TMPROOT="$$(pwd)/debian/tmp" \
+	  && export CONTROL="$$(pwd)/debian/tmp-z88dk-data/DEBIAN" \
+	  && export PACKAGE="z88dk-data" \
+	  && export SOURCE="z88dk" \
+	  && export VERSION="$(VERSION)" && (\
+	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
+	echo -E 'yada perl';\
+	echo -E 'yada python';\
+	echo -E 'yada strip';\
+	echo -E 'yada shlibdeps') | /bin/sh
+	yada compress z88dk-data
+	yada generate maintscripts z88dk-data
+	find debian/tmp-z88dk-data -type f -print \
+	  | sed -n 's/^debian\/tmp-z88dk-data\(\/etc\/.*\)$$/\1/p' \
+	  > debian/tmp-z88dk-data/DEBIAN/conffiles
+	test -s debian/tmp-z88dk-data/DEBIAN/conffiles || rm -f debian/tmp-z88dk-data/DEBIAN/conffiles
+	yada rebuild control
+	yada generate substvars z88dk-data
+	umask 022 && dpkg-gencontrol -isp -pz88dk-data -Pdebian/tmp-z88dk-data
+
+debian/tmp-z88dk/DEBIAN/control: debian/build-arch-stamp debian/control
+	rm -rf debian/tmp-z88dk
+	umask 022 && install -d debian/tmp-z88dk/DEBIAN
+	install -d debian/tmp-z88dk/usr/share/doc/z88dk
+	umask 022; yada generate copyright \
+	  > debian/tmp-z88dk/usr/share/doc/z88dk/copyright
+	install -m 644 -p debian/changelog \
+	  debian/tmp-z88dk/usr/share/doc/z88dk/changelog.Debian
 	@umask 022 \
 	  && export pwd="$$(pwd)" \
 	  && export ROOT="$$(pwd)/debian/tmp-z88dk" \
@@ -460,37 +456,53 @@ binary-arch: binary-arch-$(hostarch)
 
 .PHONY: binary-arch-arm
 binary-arch-arm: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-hppa
 binary-arch-hppa: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
+.PHONY: binary-arch-hurd-i386
+binary-arch-hurd-i386: \
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-i386
 binary-arch-i386: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-kfreebsd-i386
 binary-arch-kfreebsd-i386: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
+.PHONY: binary-arch-m68k
+binary-arch-m68k: \
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-mips
 binary-arch-mips: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-mipsel
 binary-arch-mipsel: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-powerpc
 binary-arch-powerpc: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-s390
 binary-arch-s390: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-sparc
 binary-arch-sparc: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-any
 binary-arch-any:
 binary-indep: \
-	binary-package-z88dk-examples \
 	binary-package-z88dk-doc \
-	binary-package-z88dk
+	binary-package-z88dk-data
 
 .PHONY: binary-package-z88dk-bin
 binary-package-z88dk-bin: check-root debian/tmp-z88dk-bin/DEBIAN/control
@@ -502,16 +514,6 @@ binary-package-z88dk-bin: check-root debian/tmp-z88dk-bin/DEBIAN/control
 	fi
 	dpkg-deb --build debian/tmp-z88dk-bin ..
 
-.PHONY: binary-package-z88dk-examples
-binary-package-z88dk-examples: check-root debian/tmp-z88dk-examples/DEBIAN/control
-	@[ -f $(shell which yada) -a -f debian/rules ]
-	chown -R 0.0 debian/tmp-z88dk-examples
-	chmod -R u=rwX,go=rX debian/tmp-z88dk-examples
-	@if [ -d debian/tmp-z88dk-examples/usr/doc/z88dk-examples ]; then \
-	  echo "*** Yada warning: /usr/doc/z88dk-examples should be /usr/share/doc/z88dk-examples";\
-	fi
-	dpkg-deb --build debian/tmp-z88dk-examples ..
-
 .PHONY: binary-package-z88dk-doc
 binary-package-z88dk-doc: check-root debian/tmp-z88dk-doc/DEBIAN/control
 	@[ -f $(shell which yada) -a -f debian/rules ]
@@ -521,6 +523,16 @@ binary-package-z88dk-doc: check-root debian/tmp-z88dk-doc/DEBIAN/control
 	  echo "*** Yada warning: /usr/doc/z88dk-doc should be /usr/share/doc/z88dk-doc";\
 	fi
 	dpkg-deb --build debian/tmp-z88dk-doc ..
+
+.PHONY: binary-package-z88dk-data
+binary-package-z88dk-data: check-root debian/tmp-z88dk-data/DEBIAN/control
+	@[ -f $(shell which yada) -a -f debian/rules ]
+	chown -R 0.0 debian/tmp-z88dk-data
+	chmod -R u=rwX,go=rX debian/tmp-z88dk-data
+	@if [ -d debian/tmp-z88dk-data/usr/doc/z88dk-data ]; then \
+	  echo "*** Yada warning: /usr/doc/z88dk-data should be /usr/share/doc/z88dk-data";\
+	fi
+	dpkg-deb --build debian/tmp-z88dk-data ..
 
 .PHONY: binary-package-z88dk
 binary-package-z88dk: check-root debian/tmp-z88dk/DEBIAN/control

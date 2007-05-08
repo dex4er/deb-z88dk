@@ -1,3 +1,14 @@
+z88dk (1.6.ds1-5) unstable; urgency=low
+
+  * New package z88dk-data with non-arch specific files.
+  * Added hurd and m68k to z88dk-bin/Architecture.
+  * Added German debconf translation. (Closes: #408650)
+    Patch by Helge Kreutzmann <debian@helgefjell.de>.
+  * Changed Architecture for z88dk from 'all' to this same as in z88dk-bin.
+  * Moved files of z88dk-examples to z88dk-doc.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Tue,  8 May 2007 15:37:20 +0200
+
 z88dk (1.6.ds1-4) unstable; urgency=low
 
   * s390 is 32bit archtecture. Closes: #405013, #405264
@@ -6,6 +17,7 @@ z88dk (1.6.ds1-4) unstable; urgency=low
     Thanks to Steve Langasek.
 
  -- Krystian Wlosek <tygrys@waw.pdi.net>  Mon,  8 Jan 2007 09:42:21 +0100
+
 
 z88dk (1.6.ds1-3) unstable; urgency=low
 

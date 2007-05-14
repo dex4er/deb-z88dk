@@ -1,4 +1,4 @@
-# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2327 2007-05-11T14:00:58.340260Z dexter  $
+# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2350 2007-05-17T12:27:27.576613Z dexter  $
 
 %define z88dk_application zcc appmake copt sccz80 z80asm zcpp
 %define z88dk_prefix z88dk-
@@ -147,6 +147,7 @@ Install: sh
 
 Package: z88dk-data
 Architecture: all
+Replaces: z88dk
 Depends: []
 Description: data files for z88dk
  This package contains any data files needed by z88dk tools.

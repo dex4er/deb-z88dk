@@ -25,6 +25,7 @@ Description: documentation and examples for z88dk
 Package: z88dk-data
 Architecture: all
 Depends: ${z88dk-data:Depends}
+Replaces: z88dk
 Description: data files for z88dk
  This package contains any data files needed by z88dk tools.
 

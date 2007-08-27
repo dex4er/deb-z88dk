@@ -1,4 +1,4 @@
-# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2350 2007-05-17T12:27:27.576613Z dexter  $
+# $Id: /svn/trunk/debian/dists/z88dk/debian/packages 2365 2007-09-04T15:19:24.349403Z dexter  $
 
 %define z88dk_application zcc appmake copt sccz80 z80asm zcpp
 %define z88dk_prefix z88dk-
@@ -56,7 +56,7 @@ Clean: sh
 
 
 Package: z88dk-bin
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k
+Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb
 Depends: []
 Description: executable files for z88dk
  z88dk is a Z80 processor cross compiler producing binaries for over

@@ -4,6 +4,7 @@
 
 hostarch := $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
+ifneq "$(hostarch)" "armeb"
 ifneq "$(hostarch)" "arm"
 ifneq "$(hostarch)" "mips"
 ifneq "$(hostarch)" "m68k"
@@ -11,11 +12,14 @@ ifneq "$(hostarch)" "s390"
 ifneq "$(hostarch)" "hurd-i386"
 ifneq "$(hostarch)" "hppa"
 ifneq "$(hostarch)" "powerpc"
-ifneq "$(hostarch)" "kfreebsd-i386"
 ifneq "$(hostarch)" "mipsel"
+ifneq "$(hostarch)" "kfreebsd-i386"
 ifneq "$(hostarch)" "sparc"
+ifneq "$(hostarch)" "armel"
 ifneq "$(hostarch)" "i386"
 hostarch := any
+endif
+endif
 endif
 endif
 endif
@@ -179,6 +183,14 @@ install-tree-arm: \
 	debian/tmp-z88dk-doc/DEBIAN/control \
 	debian/tmp-z88dk-data/DEBIAN/control \
 	debian/tmp-z88dk/DEBIAN/control
+install-tree-armeb: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control
+install-tree-armel: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
+	debian/tmp-z88dk-doc/DEBIAN/control \
+	debian/tmp-z88dk-data/DEBIAN/control
 install-tree-hppa: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
@@ -458,6 +470,12 @@ binary-arch: binary-arch-$(hostarch)
 binary-arch-arm: \
 	binary-package-z88dk-bin \
 	binary-package-z88dk
+.PHONY: binary-arch-armeb
+binary-arch-armeb: \
+	binary-package-z88dk-bin
+.PHONY: binary-arch-armel
+binary-arch-armel: \
+	binary-package-z88dk-bin
 .PHONY: binary-arch-hppa
 binary-arch-hppa: \
 	binary-package-z88dk-bin \

@@ -1,3 +1,11 @@
+z88dk (1.6.ds1-7) unstable; urgency=low
+
+  * Added Portuguese debconf translation. (Closes: #434194)
+    Thanks to Américo Monteiro.
+  * Added armel and armeb to z88dk-bin/Architecture: (Closes #435364)
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Mon, 27 Aug 2007 12:35:28 +0200
+
 z88dk (1.6.ds1-6) unstable; urgency=low
 
   * Added forgotten Replaces: in z88dk-data.

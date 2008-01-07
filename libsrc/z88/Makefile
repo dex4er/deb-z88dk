@@ -1,7 +1,9 @@
 #
 # Wahey, a messed up makefile for building libraries!
 #
-# $Id: Makefile,v 1.10 2002/10/22 19:15:25 dom Exp $
+# $Id: Makefile,v 1.14 2007/06/11 14:41:04 stefano Exp $
+
+include ../Make.config
 
 CFILES = \
 	DeRegisterInt.c \
@@ -26,14 +28,14 @@ OBJECTS = $(CFILES:.c=.o)
 all: blah z88
 
 blah:
-	cd fdstdio ; $(MAKE)
+	cd fdstdio ; $(MAKE) ; cd ..
 
 z88: $(OBJECTS)
-	z80asm -d -ns -nm -Mo -x../z88 @z88list
+	$(LIBLINKER) -x../$(OUTPUT_DIRECTORY)/z88 @z88list
 
 .c.o:
-	zcc -vn -make-lib $*.c
+	zcc $(CFLAGS) $*.c
 
 clean:
 	$(RM) *.obj *.sym *.map *.o* *~ zcc_opt.def *.i $(AFILES)
-	cd fdstdio ; $(MAKE) clean
+	cd fdstdio ; $(MAKE) clean ; cd ..

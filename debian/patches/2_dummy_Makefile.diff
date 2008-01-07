@@ -1,0 +1,11 @@
+--- z88dk-1.7.ds1/libsrc/fcntl/dummy/Makefile.orig	2007-09-25 15:20:37.000000000 +0200
++++ z88dk-1.7.ds1/libsrc/fcntl/dummy/Makefile	2007-09-25 15:21:26.000000000 +0200
+@@ -6,7 +6,7 @@
+ 	@echo ''
+ 	@echo '---> Building NDOS library <---'
+ 	@echo ''
+-	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/ndos @ndoslist
++	$(LIBLINKER)  -x../../$(OUTPUT_DIRECTORY)/ndos @ndoslist
+ 
+ clean:
+ 	$(RM) *.sym *.map zcc_opt.def *.o*

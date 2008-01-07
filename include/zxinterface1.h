@@ -1,11 +1,9 @@
 /*
- *      Small C+ Library
- *
  *      ZX Interface 1 and Microdrive low level support
  *
  *      Stefano Bodrato - 6/9/2004
  *
- *	$Id: zxinterface1.h,v 1.2 2005/02/18 08:30:10 stefano Exp $
+ *	$Id: zxinterface1.h,v 1.6 2007/07/10 08:12:50 stefano Exp $
  */
 
 
@@ -67,6 +65,11 @@ struct M_SECT {
 };
 
 
+struct M_MAP {
+	char    map[32];	/* 32 bytes = 256 bits for a microdrive map */
+};
+
+
 struct N_CHAN {
 	// base channel descriptor
 	struct	BASE_CHAN base;
@@ -93,6 +96,9 @@ extern int __LIB__ if1_load_sector (int drive, int sector, struct M_CHAN buffer)
 // Write the sector in "buffer"
 extern int __LIB__ if1_write_sector (int drive, int sector, struct M_CHAN buffer);
 
+// Add a record containing the data in "buffer"
+extern int __LIB__ if1_write_record (int drive, struct M_CHAN buffer);
+
 // Put a 10 characters file name at the specified location; return with the file name length
 extern int __LIB__ if1_setname(char* name, char *location);
 
@@ -101,5 +107,31 @@ extern char __LIB__ *if1_getname(char *location);
 // Delete a file
 extern int __LIB__ if1_remove_file(int drive, char *filename);
 
+// Create a file if it doesn't exist
+extern int __LIB__ if1_touch_file(int drive, char *filename);
+
+// Create a file and return handle
+extern int __LIB__ if1_init_file (int drive, char *filename, struct M_CHAN buffer);
+
+// Load the map values for the specified drive
+extern void __LIB__ if1_update_map (int drive, char *mdvmap);
+
+// Find a free sector
+extern int __LIB__ if1_find_sector (int drive);
+
+// Find a free sector in the specified map
+extern int __LIB__ if1_find_sector_map (char *mdvmap);
+
+// Returns true if the current program has been loaded from microdrive
+extern int __LIB__ if1_from_mdv();
+
+// Returns true if the system variables are already present
+extern int __LIB__ if1_installed();
+
+// Returns true if the Interface 1 is present
+extern int __LIB__ zx_interface1();
+
+// Returns the microdrive status 0=ok, 1=wr protect, 2=not present
+extern int __LIB__ if1_mdv_status(int drive);
 
 #endif /* _ZXINTERFACE1_H */

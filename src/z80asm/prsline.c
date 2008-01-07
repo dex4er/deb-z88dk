@@ -13,7 +13,7 @@
 Copyright (C) Gunther Strube, InterLogic 1993-99
 */
 
-/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/prsline.c,v 1.8 2002/04/22 14:45:51 stefano Exp $ */
+/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/prsline.c,v 1.10 2007/06/17 12:07:43 dom Exp $ */
 /* $History: PRSLINE.C $ */
 /*  */
 /* *****************  Version 8  ***************** */
@@ -71,6 +71,30 @@ extern short currentline;
 extern struct module *CURRENTMODULE;
 extern enum flag EOL, swapIXIY;
 
+enum flag rcmX000;
+
+char  *temporary_start;
+char  *temporary_ptr = NULL;
+
+
+void UnGet(int c, FILE *fp)
+{
+    if ( temporary_ptr ) {
+        temporary_ptr--;
+    } else {
+        ungetc(c,fp);
+    }
+}
+
+
+
+
+void 
+SetTemporaryLine(char *line)
+{
+    temporary_start = temporary_ptr = line;
+}
+
 /* get a character from file with CR/LF/CRLF parsing capability.
  *
  * return '\n' byte if a CR/LF/CRLF variation line feed is found
@@ -80,6 +104,15 @@ int
 GetChar (FILE *fptr)
 {
   int c;
+
+  if ( temporary_ptr != NULL ) {
+      if ( *temporary_ptr != 0 ) {
+          c = *temporary_ptr++;
+          return c;
+      } 
+      temporary_ptr = NULL;
+  }
+      
   
   c = fgetc (fptr);
   if (c == 13)
@@ -214,7 +247,7 @@ GetSym (void)
 	      else
 		{
 		  if ( c != ':' ) 
-		  	ungetc (c, z80asmfile);	/* puch character back into stream for next read */
+		  	UnGet (c, z80asmfile);	/* puch character back into stream for next read */
 		  else 
 			sym = label;
 		  break;
@@ -240,7 +273,7 @@ GetSym (void)
 		}
 	      else
 		{
-		  ungetc (c, z80asmfile);	/* puch character back into stream for next read */
+		  UnGet (c, z80asmfile);	/* puch character back into stream for next read */
 		  break;
 		}
 	    }
@@ -249,6 +282,7 @@ GetSym (void)
     }
 
   ident[chcount] = '\0';
+
   return sym;
 }
 
@@ -435,9 +469,23 @@ CheckRegister8 (void)
 	  case 'E':
 	    return 3;
 	  case 'I':
-	    return 8;
+	  {
+	      if (rcmX000)
+	      {
+		  ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+		  return -1;
+	      }	
+	      return 8;
+	  }
 	  case 'R':
-	    return 9;
+	  {
+	      if (rcmX000)
+	      {
+		  ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+		  return -1;
+	      }	
+	      return 9;
+	  }
 	  case 'F':
 	    return 6;
 	  }
@@ -474,6 +522,21 @@ CheckRegister8 (void)
 	      return (8 + 4);
 	    else
 	      return (16 + 4);
+	  }
+
+	else if (strcmp (ident, "IIR") == 0) /** Was 'I' register */
+	  {
+	      if (rcmX000)
+	      {
+		  return 8;
+	      }
+	  }
+	else if (strcmp (ident, "EIR") == 0) /** Was 'R' register */
+	  {
+	      if (rcmX000)
+	      {
+		  return 9;
+	      }
 	  }
 	  
       }

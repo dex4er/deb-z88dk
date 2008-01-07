@@ -4,7 +4,7 @@
 ;
 ;       If an error occurs eg break we just drop back to BASIC
 ;
-;       $Id: vz_crt0.asm,v 1.6 2003/09/30 10:23:12 stefano Exp $
+;       $Id: vz_crt0.asm,v 1.8 2007/06/27 20:49:28 dom Exp $
 ;
 
 
@@ -32,7 +32,7 @@
 
 ; Integer rnd seed
 
-        XDEF    int_seed
+        XDEF    _std_seed
 
 ; vprintf is internal to this file so we only ever include one of the set
 ; of routines
@@ -151,7 +151,7 @@ ENDIF
 
 ;Seed for integer rand() routines
 
-.int_seed       defw    0
+._std_seed       defw    0
 
 ;Atexit routine
 
@@ -169,7 +169,8 @@ ENDIF
 .base_graphics  defw    28672
 .gfx_bank       defb    0
 
-         defm  "Small C+ VZ"&0
+         defm  "Small C+ VZ"
+	 defb	0
 
 ;All the float stuff is kept in a different file...for ease of altering!
 ;It will eventually be integrated into the library

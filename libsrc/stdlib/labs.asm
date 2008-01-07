@@ -1,25 +1,16 @@
-;
-; Small C z88 stdlib functions
-;
-; Return absolute value of long
-;
-; -----
-; $Id: labs.asm,v 1.2 2001/04/18 12:43:04 stefano Exp $
+; CALLER linkage for function pointers
 
-
-                XLIB    labs
-			
-		LIB	l_long_neg
-
-;labs(long num)  
+XLIB labs
+LIB labs_callee
+XREF ASMDISP_LABS_CALLEE
 
 .labs
-        pop     bc
-        pop     hl
-        pop     de
-        push    de
-        push    hl
-        push    bc
-        bit     7,d
-        call    nz,l_long_neg
-        ret
+
+   pop af
+   pop hl
+   pop de
+   push de
+   push hl
+   push af
+   
+   jp labs_callee + ASMDISP_LABS_CALLEE

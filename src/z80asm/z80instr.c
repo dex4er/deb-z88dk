@@ -13,7 +13,7 @@
 Copyright (C) Gunther Strube, InterLogic 1993-99
 */
 
-/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/z80instr.c,v 1.3 2002/01/18 16:22:11 dom Exp $ */
+/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/z80instr.c,v 1.6 2007/06/24 14:46:24 dom Exp $ */
 /* $History: Z80INSTR.C $ */
 /*  */
 /* *****************  Version 13  ***************** */
@@ -98,6 +98,7 @@ extern struct module *CURRENTMODULE;
 extern enum symbols GetSym (void), sym;
 extern enum flag relocfile, ti83plus;
 
+extern int rcmX000;
 
 void 
 PushPop_instr (int opcode)
@@ -178,8 +179,18 @@ EX (void)
 	      switch (CheckRegister16 ())
 		{
 		case 2:
-		  *codeptr++ = 227;	/* EX  (SP),HL  */
-		  ++PC;
+		    if (rcmX000)
+		    {
+			/* Instruction code changed */
+			*codeptr++ = 0xED;
+			*codeptr++ = 0x54;
+			PC+=2;
+		    }
+		    else
+		    {
+			*codeptr++ = 227;	/* EX  (SP),HL  */
+			++PC;
+		    }
 		  break;
 
 		case 5:
@@ -258,6 +269,12 @@ OUT (void)
 {
   long reg;
 
+  if (rcmX000)
+  {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+  }
+
   if (GetSym () == lparen)
     {
       GetSym ();
@@ -319,6 +336,12 @@ IN (void)
 {
   long inreg;
 
+  if (rcmX000)
+  {
+      ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+      return;
+  }
+  
   if (GetSym () == name)
     {
       switch (inreg = CheckRegister8 ())
@@ -380,6 +403,12 @@ IM (void)
   long constant;
   struct expr *postfixexpr;
 
+  if (rcmX000)
+  {
+      ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+      return;
+  }
+
   GetSym ();
   if ((postfixexpr = ParseNumExpr ()) != NULL)
     {
@@ -426,8 +455,16 @@ RST (void)
 	  constant = EvalPfixExpr (postfixexpr);
 	  if ((constant >= 0 && constant <= 56) && (constant % 8 == 0))
 	    {
-	      *codeptr++ = 199 + constant;	/* RST  00H, ... 38H */
-	      ++PC;
+		if ( (rcmX000) && 
+		     ((constant == 0) || (constant == 8) || (constant == 0x30)))
+		{
+		    ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+		}
+		else
+		{
+		    *codeptr++ = 199 + constant;	/* RST  00H, ... 38H */
+		    ++PC;
+		}
 	    }
 	  else
 	    ReportError (CURRENTFILE->fname, CURRENTFILE->line, 4);
@@ -575,29 +612,108 @@ FPP (void)
 }
 
 
-
 void 
 Subroutine_addr (int opcode0, int opcode)
 {
-  long constant;
+    long constant;
+    extern enum flag EOL;
 
-  GetSym ();
-  if ((constant = CheckCondition ()) != -1)
-    {				/* check for a condition */
-      *codeptr++ = opcode + constant * 8;	/* get instruction opcode */
-      if (GetSym () == comma)
-	GetSym ();
-      else
-	{
-	  ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
-	  return;
-	}
+    GetSym ();
+    if ((constant = CheckCondition ()) != -1) { /* Check for condition */
+           
+        if (GetSym () != comma) {
+            ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
+            return;
+        }
+
+        if (opcode0==205 && rcmX000)
+        {
+            static char buffer[200];
+            extern char *ident;
+
+#if 0
+            if ( constant >= 4 ) 
+            {
+                ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+                return;
+            }
+#endif
+
+            switch ( constant ) {
+            case 0:  /* nz */
+                *codeptr++ =  0x28;  /* jr z */
+                *codeptr++ = 0x03;
+                *codeptr++ = opcode0;           
+                PC += 2;
+                break;
+            case 1:  /* z */
+                *codeptr++ = 0x20;  /* jr nz */
+                *codeptr++ = 0x03;
+                *codeptr++ = opcode0;           
+                PC += 2;
+                break;
+            case 2:  /* nc */
+                *codeptr++ = 0x38;  /* jr c */
+                *codeptr++ = 0x03;
+                *codeptr++ = opcode0;           
+                PC += 2;
+                break;
+            case 3:  /* c */
+                *codeptr++ = 0x30;  /* jr nc */
+                *codeptr++ = 0x03;
+                *codeptr++ = opcode0;           
+                PC += 2;
+                break;
+            case 4:  /* po */
+                *codeptr++ =  0xea; /* jp pe */
+                sprintf(buffer,"ASMPC+6\n");
+                SetTemporaryLine(buffer);
+                GetSym();
+                ExprAddress (1);
+                EOL = OFF;
+                *codeptr++ = 205;
+                PC += 3;
+                break;
+            case 5:  /* pe */
+                *codeptr++ = 0xe2; /* jp po */
+                sprintf(buffer,"ASMPC+6\n");
+                SetTemporaryLine(buffer);
+                GetSym();
+                ExprAddress (1);
+                EOL = OFF;
+                *codeptr++ = 205;
+                PC += 3;
+                break;
+            case 6:  /* p */
+                *codeptr++ =  0xfa; /* jp m */
+                sprintf(buffer,"ASMPC+6\n");
+                SetTemporaryLine(buffer);
+                GetSym();
+                ExprAddress (1);
+                EOL = OFF;
+                *codeptr++ = 205;
+                PC += 3;
+                break;
+            case 7:  /* m */
+                *codeptr++ = 0xf2; /* jp p */
+                sprintf(buffer,"ASMPC+6\n");
+                SetTemporaryLine(buffer);
+                GetSym();
+                ExprAddress (1);
+                EOL = OFF;
+                *codeptr++ = 205;
+                PC += 3;
+                break;
+            }
+        } else {
+            *codeptr++ = opcode + constant * 8;	/* get instruction opcode */
+        }
+        GetSym();
+    } else {
+        *codeptr++ = opcode0;	/* JP nn, CALL nn */
     }
-  else
-    *codeptr++ = opcode0;	/* JP nn, CALL nn */
-
-  ExprAddress (1);
-  PC += 3;
+    ExprAddress (1);
+    PC += 3;
 }
 
 

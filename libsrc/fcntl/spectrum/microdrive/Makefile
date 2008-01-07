@@ -1,15 +1,16 @@
 #
 # Makefile for ZX Microdrive file support
 #
-# $Id: Makefile,v 1.2 2005/03/01 17:50:36 stefano Exp $
+# $Id: Makefile,v 1.6 2007/06/04 05:54:11 stefano Exp $
 
 
+include ../../../Make.config
 
 all:	open.o open_z88.o close.o readbyte.o remove.o rename.o lseek.o tell.o
-	z80asm -d -ns -nm -Mo -x../../../zxmdv @mdvlist
+	$(LIBLINKER) -x../../../$(OUTPUT_DIRECTORY)/zxmdv @mdvlist
 
 .c.o:
-	zcc +zx -vn -make-lib $*.c
+	zcc +zx $(CFLAGS) $*.c
 
 clean:
 	$(RM) *.o* zcc_opt.def

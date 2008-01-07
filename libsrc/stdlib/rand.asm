@@ -8,13 +8,16 @@
 ;       Liberated from ticalc.org, mods to standard z80 by djm 11/4/99
 ;
 ; -----
-; $Id: rand.asm,v 1.3 2001/12/04 19:04:44 dom Exp $
+; $Id: rand.asm,v 1.6 2007/01/03 22:23:48 aralbrec Exp $
 
+; you must declare an integer C variable "std_seed" to hold the
+; 16-bit seed in your main.c file
+;
+; int std_seed;
 
-                XLIB    rand
-                XREF    int_seed
-		LIB	l_neg
-
+XLIB rand
+XREF _std_seed
+XDEF ASMDISP_RAND
 
 ;       My contribution to randon number generators     (by Risto Jrvinen)
 ;       -------------------------------------------
@@ -42,9 +45,9 @@
 ;  Uses only one 16-bit variable, seed.
 ;  Read and cut the result out of variable seed.
 
-
 .rand
-   ld   hl,(int_seed)
+
+   ld   hl,(_std_seed)
    ld   a,h
    add  a,a                     ;Set highest bit of seed to carry
    rl   l                       ;rotate L left (C<=L<=C)
@@ -57,7 +60,14 @@
    rl   h
    ld   bc,$7415
    add  hl,bc                   ;Add $7415 to HL
-   ld   (int_seed),hl
+   ld   (_std_seed),hl
    bit     7,h			;force to be +ve
-   call    nz,l_neg
+   ret z
+   ld de,0
+   ex de,hl
+   sbc hl,de
+   ret p                        ; -(-32768) still equals -32768!
+   ld h,0
    ret
+
+DEFC ASMDISP_RAND = 0

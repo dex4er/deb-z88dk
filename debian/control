@@ -3,7 +3,7 @@ Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
 Section: devel
 Priority: extra
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 Build-Depends: po-debconf, patch, yada
 
 Package: z88dk-bin
@@ -15,6 +15,7 @@ Description: executable files for z88dk
 
 Package: z88dk-doc
 Architecture: all
+Section: doc
 Provides: z88dk-examples
 Conflicts: z88dk-examples
 Replaces: z88dk-examples

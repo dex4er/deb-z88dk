@@ -3,7 +3,7 @@
 ;	Stefano Bodrato - Dec 2000
 ;			Feb 2000 - Speeded up the cpygraph
 ;
-;	$Id: ti83p_crt0.asm,v 1.19 2004/03/20 11:16:24 stefano Exp $
+;	$Id: ti83p_crt0.asm,v 1.21 2007/06/27 20:49:28 dom Exp $
 ;
 ; startup =
 ;   n - Primary shell, compatible shells
@@ -28,7 +28,7 @@
 	XDEF	cleanup		; used by exit()
 	XDEF	l_dcal		; used by calculated calls = "call (hl)"
 
-	XDEF	int_seed	; Integer rnd seed
+	XDEF	_std_seed	; Integer rnd seed
 
 	XDEF	_vfprintf	; vprintf is internal to this file so we
 				;  only ever include one of the set of
@@ -105,7 +105,9 @@ IF (startup = 4)
 	DEFINE NOT_DEFAULT_SHELL
 	org	$9D94
 	ret
-	defm	"TSE"&1&" "
+	defm	"TSE"
+	defb	1
+	defm	" "
 	DEFINE NEED_name
 	INCLUDE	"zcc_opt.def"
 	UNDEFINE NEED_name
@@ -252,7 +254,7 @@ IF (!DEFINED_nostreams) ~ (DEFINED_ANSIstdio) ; ~ = AND
 ENDIF
 
 ;Seed for integer rand() routines
-.int_seed	defw	0
+._std_seed	defw	0
 
 ;Atexit routine
 .exitsp		defw	0

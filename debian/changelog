@@ -1,8 +1,21 @@
+z88dk (1.7.ds1-1) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * New upstream release.
+    Closes: #438984
+  * Added missing colon to close bug 435364
+
+  [ Piotr Roszatycki ]
+  * Changed section for z88dk-doc package.
+  * Standards-Version: 3.7.3
+
+ -- Piotr Roszatycki <dexter@debian.org>  Mon, 07 Jan 2008 13:35:53 +0100
+
 z88dk (1.6.ds1-7) unstable; urgency=low
 
   * Added Portuguese debconf translation. (Closes: #434194)
-    Thanks to Américo Monteiro.
-  * Added armel and armeb to z88dk-bin/Architecture: (Closes #435364)
+    Thanks to Americo Monteiro.
+  * Added armel and armeb to z88dk-bin/Architecture: (Closes: #435364)
 
  -- Krystian Wlosek <tygrys@waw.pdi.net>  Mon, 27 Aug 2007 12:35:28 +0200
 

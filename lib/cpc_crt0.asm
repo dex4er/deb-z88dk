@@ -2,7 +2,7 @@
 ;
 ;       Stefano Bodrato 8/6/2000
 ;
-;       $Id: cpc_crt0.asm,v 1.6 2003/08/30 16:40:13 dom Exp $
+;       $Id: cpc_crt0.asm,v 1.8 2007/06/27 20:49:27 dom Exp $
 ;
 
                 MODULE  cpc_crt0
@@ -28,7 +28,7 @@
 
 ; Integer rnd seed
 
-        XDEF    int_seed
+        XDEF    _std_seed
 
 ; vprintf is internal to this file so we only ever include one of the set
 ; of routines
@@ -145,7 +145,7 @@ ENDIF
 
 ;Seed for integer rand() routines
 
-.int_seed       defw    0
+._std_seed       defw    0
 
 ;Atexit routine
 
@@ -165,7 +165,8 @@ ENDIF
 		defw	$C000
 .coords		defw	0
 
-         defm  "Small C+ CPC"&0
+         defm  "Small C+ CPC"
+	 defb   0
 
 ;All the float stuff is kept in a different file...for ease of altering!
 ;It will eventually be integrated into the library

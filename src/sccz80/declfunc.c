@@ -2,7 +2,7 @@
  *      Routines to declare a function
  *      Split from decl.c 11/3/98 djm
  *
- *      $Id: declfunc.c,v 1.7 2004/03/26 22:06:09 denniz Exp $
+ *      $Id: declfunc.c,v 1.9 2007/04/17 14:40:14 dom Exp $
  */
 
 #include "ccdefs.h"
@@ -11,6 +11,49 @@
 
 extern void CleanGoto(void);
 
+/** \brief Given an argument train, add in signature information to currfn
+ *
+ *  \param ptr - Last argument
+ */
+void StoreFunctionSignature(SYMBOL *ptr)
+{
+    SYMBOL *ptr2;
+    int     j,k;
+
+    /* Count the number of arguments that this function had */
+    j = 1;
+    ptr2 = ptr;
+    while ( (ptr2=ptr2->offset.p) ) {
+        j++; 
+    }
+    if ( j > MAXARGS ) {
+        j = MAXARGS-1;
+    }
+    currfn->prototyped = j;    /* Set number of arguments */
+
+    /* Now define them in currfn - list is in reverse order remember */
+    while (j) {
+        k = j;
+        ptr2 = ptr;
+        while (--k) {
+            ptr2 = ptr2->offset.p; 
+        }
+        /* Okay, so now in ptr2 we have the SYMBOL for the argument */
+        currfn->args[j] = CalcArgValue(ptr2->type, ptr2->ident, ptr2->flags);
+        currfn->tagarg[j] = 0;
+        /* Set the tag if necessary */
+        if (ptr2->type == STRUCT) {
+            currfn->tagarg[j]=ptr2->tag_idx;
+        }
+        j--;
+    }
+
+    /* Clear down remaining arguments */
+    for ( j = (currfn->prototyped+1) ; j <= MAXARGS-1 ; j++) {
+        currfn->args[j]=0;
+        currfn->tagarg[j]=0;
+    }
+}
 
 /*
  *      Function parsing here, we parse for prototyping and for
@@ -27,9 +70,8 @@ TAG_SYMBOL *otag,
 int ident,
 long *addr)
 {
-    SYMBOL *ptr,*ptr2;
+    SYMBOL *ptr;
     int     more;
-    int     j,k;
     char    simple;         /* Simple def () */
     more=0;
 
@@ -69,49 +111,14 @@ long *addr)
      *      First call AddNewFunc(), if this returns 0 then we have defined
      *      a function (including code)
      */
-    ptr=AddFuncCode(sname, type, ident,sign, zfar, storage, more,NO,simple,otag);
+    ptr=AddFuncCode(sname, type, ident,sign, zfar, storage, more,NO,simple,otag,addr);
+       
     if (ptr==0) { /* Defined a function */
         /* trap external int blah() { } things */
         if (currfn->storage==EXTERNAL) currfn->storage=STATIK;
         return(0);
-    }
-    else {
-        /*
-         *      Have spotted a prototype, so do something with it!
-         *      Trace back the argument train..
-         */
-        j=1;
-        ptr2=ptr;
-        while ( (ptr2=ptr2->offset.p) ) j++; 
-        if ( j > MAXARGS ) j=MAXARGS-1;
-        currfn->prototyped=j;    /* Set number of arguments */
-        /*
-         *      Now, attempt to set them!
-         */
-        while (j) {
-            k=j;
-            ptr2=ptr;
-            while (--k) ptr2=ptr2->offset.p; 
-            /*
-             *      Okay, so now in ptr2 we have the SYMBOL for the argument
-             */
-            currfn->args[j]=CalcArgValue(ptr2->type, ptr2->ident, ptr2->flags);
-            currfn->tagarg[j]=0;
-            if (ptr2->type==STRUCT) {
-                currfn->tagarg[j]=ptr2->tag_idx;
-            }
-            /*
-             *      Set up the tag pointer now 
-             */
-            j--;
-        }
-        /*
-         *      Zero the remaining prototyped entries
-         */
-        for ( j = (currfn->prototyped+1) ; j <= MAXARGS-1 ; j++) {
-            currfn->args[j]=0;
-            currfn->tagarg[j]=0;
-        }
+    } else {
+        StoreFunctionSignature(ptr);
     }
     return(0);
 
@@ -127,6 +134,7 @@ long *addr)
 void newfunc()
 {
         char n[NAMESIZE];               /* ptr => currfn */
+        long addr;
 
         if ( symname(n) == 0 ) {
                 error(E_ILLEGAL);
@@ -134,7 +142,7 @@ void newfunc()
                 return;
         }
         warning(W_RETINT);
-        AddFuncCode(n,CINT,FUNCTION,dosigned,0,STATIK,0,1,NO,0);
+        AddFuncCode(n,CINT,FUNCTION,dosigned,0,STATIK,0,1,NO,0, &addr);
 }
 
 /*
@@ -147,7 +155,7 @@ void newfunc()
 SYMBOL *
 #endif
 
-AddFuncCode(char *n, char type, char ident, char sign,char zfar, int storage, int more, char check,char simple,TAG_SYMBOL *otag)
+AddFuncCode(char *n, char type, char ident, char sign,char zfar, int storage, int more, char check,char simple,TAG_SYMBOL *otag, long *addr)
 {
     unsigned char tvalue;           /* Used to hold protot value */
     char    typ;                    /* Temporary type */
@@ -240,7 +248,7 @@ AddFuncCode(char *n, char type, char ident, char sign,char zfar, int storage, in
      * doing this! (Have an array and check by that?)           
      */
     if (CheckANSI()) {
-        return( dofnansi(currfn) ); /* So we can pass back result */
+        return( dofnansi(currfn, addr) ); /* So we can pass back result */
     }
     DoFnKR(currfn,simple);
     return(0);
@@ -318,10 +326,13 @@ char   simple)
 }
 
 
-/* Set the argument offsets for a function, and compile the function
- * taken out of newfunc by djm
- */
 
+/** \brief Set the argument offsets for a function, then kick off compiling
+ *  of the function
+ *
+ *  \param prevarg  - Last argument
+ *  \param currfn   - Current function
+ */
 void setlocvar(SYMBOL *prevarg,SYMBOL *currfn)
 {
     int lgh,where;
@@ -332,6 +343,10 @@ void setlocvar(SYMBOL *prevarg,SYMBOL *currfn)
     unsigned char tester;
 
 	lgh = 0;  /* Initialise it */
+    if ( prevarg != NULL && currfn->prototyped == 0 ) {
+        StoreFunctionSignature(prevarg);
+    }
+
     argnumber=currfn->prototyped;
     /*
      *      If we have filled up our number of arguments, then pretend
@@ -365,7 +380,7 @@ void setlocvar(SYMBOL *prevarg,SYMBOL *currfn)
 	if (useframe) where+=2;
 #endif
     while ( prevarg ) {
-        lgh = 2 ;       /* all arguments except DOUBLE have length 2 bytes (even char) */
+        lgh = 2 ;      /* Default length */
         /* This is strange, previously double check for ->type */
         if ( prevarg->type == LONG && prevarg->ident != POINTER )
             lgh=4;
@@ -453,7 +468,7 @@ void setlocvar(SYMBOL *prevarg,SYMBOL *currfn)
 #ifndef SMALL_C
 SYMBOL *
 #endif
-dofnansi(SYMBOL *currfn)
+dofnansi(SYMBOL *currfn, long *addr)
 {
         SYMBOL *prevarg;       /* ptr to symbol table entry of most recent argument */
         SYMBOL *argptr;        /* Temporary holder.. */
@@ -506,6 +521,10 @@ dofnansi(SYMBOL *currfn)
  *      have to have prototypes on separate lines - good practice
  *      in anycase!!
  */
+        if (cmatch('@') ) {
+            constexpr(addr,1);
+        }
+
         if (cmatch(';') ) return (prevarg);
         setlocvar(prevarg,currfn);
         return (0);

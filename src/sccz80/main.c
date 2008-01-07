@@ -3,7 +3,7 @@
  *
  *      Main() part
  *
- *      $Id: main.c,v 1.14 2005/03/21 07:36:28 stefano Exp $
+ *      $Id: main.c,v 1.17 2007/06/24 14:42:48 dom Exp $
  */
 
 #include "ccdefs.h"
@@ -41,6 +41,7 @@ int	sharedfile;	/* File contains routines which are to be
 			 */
 
 int     noaltreg;       /* No alternate registers */
+int     usempm;         /* We're using mpm */
 
 /*
  * Some external data
@@ -52,6 +53,7 @@ extern  GOTO_TAB *gotoq;         /* Pointer for gotoq */
 
 
 
+void    SetMPM(char *);
 void    SetSmart(char *);
 void    UnSetSmart(char *);
 void    SetExpand(char *);
@@ -162,6 +164,7 @@ int main(int argc, char **argv)
 	debuglevel=NO;
 	farheapsz=-1;			/* Size of far heap */
 	asxx=NO;
+    usempm = NO;
 	printflevel=0;
 #ifdef USEFRAME
 	indexix=YES;
@@ -396,74 +399,80 @@ void
 
 dumpfns()
 {
-        int ident,type,storage;
-        SYMBOL *ptr;
-        FILE    *fp;
+    int ident,type,storage;
+    SYMBOL *ptr;
+    FILE    *fp;
 
 #ifdef HEADERFILE
-        outstr(";\tHeader file for file:\t");
-        outstr(Filename);
-        outstr("\n;\n;\tEven if empty do not delete!!!\n");
-        outstr(";\n;\t***START OF HEADER DEFNS***\n\n");
+    outstr(";\tHeader file for file:\t");
+    outstr(Filename);
+    outstr("\n;\n;\tEven if empty do not delete!!!\n");
+    outstr(";\n;\t***START OF HEADER DEFNS***\n\n");
 #else
-        outstr("\n\n; --- Start of Scope Defns ---\n\n");
+    outstr("\n\n; --- Start of Scope Defns ---\n\n");
 #endif
-        if (!glbcnt)
-                return;
+    if (!glbcnt)
+        return;
 
 /* Start at the start! */
-        glbptr=STARTGLB;
+    glbptr=STARTGLB;
 
-        ptr=STARTGLB;
-        while (ptr < ENDGLB)
-        {
-                if (ptr->name[0] != 0 && ptr->name[0] != '0' )
-                {
-                        ident=ptr->ident;
+    ptr=STARTGLB;
+    while (ptr < ENDGLB) {
+        if (ptr->name[0] != 0 && ptr->name[0] != '0' ) {
+            ident=ptr->ident;
 			if (ident==FUNCTIONP) ident=FUNCTION;
-                        type =ptr->type;
-                        storage=ptr->storage;
-                        if (ident == FUNCTION && storage!=LSTATIC )
-                        {
-                                if (storage==EXTERNAL) {
-                                        if (ptr->flags&LIBRARY) {
-                                                GlobalPrefix(LIB);
-                                                if ( (ptr->flags&SHARED) && useshare ){
-                                                        outstr(ptr->name); outstr("_sl\n");
-                                                        GlobalPrefix(LIB);
-                                                }
-                                        } else    GlobalPrefix(XREF);
-                                } else {
-                                        if (ptr->offset.i == FUNCTION || ptr->storage==DECLEXTN )
-                                                GlobalPrefix(XDEF);
-                                        else
-                                                GlobalPrefix(XREF);
-                                }
-                                outname(ptr->name,dopref(ptr));
-                                nl();
+            type =ptr->type;
+            storage=ptr->storage;
+            if ( ident == FUNCTION && ptr->size != 0 ) {
+                outstr("\tdefc\t");
+                outname(ptr->name,1);
+                ot("=\t");
+                outdec(ptr->size);
+                nl();
+            } else {
+                if (ident == FUNCTION && storage!=LSTATIC ) {
+                    if (storage==EXTERNAL) {
+                        if (ptr->flags&LIBRARY) {
+                            GlobalPrefix(LIB);
+                            if ( (ptr->flags&SHARED) && useshare ){
+                                outstr(ptr->name); outstr("_sl\n");
+                                GlobalPrefix(LIB);
+                            }
+                        } else {
+                            GlobalPrefix(XREF);
                         }
+                    } else {
+                        if (ptr->offset.i == FUNCTION || ptr->storage==DECLEXTN )
+                            GlobalPrefix(XDEF);
                         else
-                                if (storage == EXTERNP) {
-                                        outstr("\tdefc\t");
-                                        outname(ptr->name,1);
-                                        ot("=\t");
-                                        outdec(ptr->size);
-                                        nl();
-                                }
-                                else
-                                        
-                                if (ident != ENUM && type !=ENUM && ident != MACRO && storage != LSTATIC && storage != LSTKEXT && storage!=TYPDEF )
-                                {
-                                          if (storage == EXTERNAL)
-                                                GlobalPrefix(XREF);
-                                          else 
-                                                GlobalPrefix(XDEF);
-                                	  outname(ptr->name,1);
-                                	  nl();
-                                }
+                            GlobalPrefix(XREF);
+                    }
+                    outname(ptr->name,dopref(ptr));
+                    nl();
+                } else {
+                    if (storage == EXTERNP) {
+                        GlobalPrefix(XDEF);
+                        outname(ptr->name,1);
+                        nl();
+                        outstr("\tdefc\t");
+                        outname(ptr->name,1);
+                        ot("=\t");
+                        outdec(ptr->size);
+                        nl();
+                    } else  if (ident != ENUM && type !=ENUM && ident != MACRO && storage != LSTATIC && storage != LSTKEXT && storage!=TYPDEF ) {
+                        if (storage == EXTERNAL)
+                            GlobalPrefix(XREF);
+                        else 
+                            GlobalPrefix(XDEF);
+                        outname(ptr->name,1);
+                        nl();
+                    }
                 }
-        ++ptr;
+            }
         }
+        ++ptr;
+    }
 /*
  *      If a module requires floating point then previously we wrote
  *      it out to the header file. However, if the module didn't
@@ -479,70 +488,70 @@ dumpfns()
  *
  */
 
-        if ( (fp=fopen("zcc_opt.def","a")) == NULL ) {
-                error(E_ZCCOPT);
-        }
+    if ( (fp=fopen("zcc_opt.def","a")) == NULL ) {
+        error(E_ZCCOPT);
+    }
 /* Now output the org */
-        if (zorg) {
-                fprintf(fp,"\tDEFINE DEFINED_myzorg\n");
-                fprintf(fp,"\tdefc myzorg = %u\n",zorg);
+    if (zorg) {
+        fprintf(fp,"\tDEFINE DEFINED_myzorg\n");
+        fprintf(fp,"\tdefc myzorg = %u\n",zorg);
+    }
+    if (appz88) {
+        int k,value=0;
+        fprintf(fp,"\nIF !NEED_appstartup\n");
+        fprintf(fp,"\tDEFINE\tNEED_appstartup\n");
+        if (safedata != -1 )
+            fprintf(fp,"\tdefc safedata = %d\n",safedata);
+        if (intuition)
+            fprintf(fp,"\tdefc intuition = 1\n");
+        if (farheapsz != -1) {
+            fprintf(fp,"\tDEFINE DEFINED_farheapsz\n");
+            fprintf(fp,"\tdefc farheapsz = %d\n",farheapsz);
         }
-        if (appz88) {
-                        int k,value=0;
-                        fprintf(fp,"\nIF !NEED_appstartup\n");
-                        fprintf(fp,"\tDEFINE\tNEED_appstartup\n");
-                        if (safedata != -1 )
-                                fprintf(fp,"\tdefc safedata = %d\n",safedata);
-                        if (intuition)
-                                fprintf(fp,"\tdefc intuition = 1\n");
-			if (farheapsz != -1) {
-				fprintf(fp,"\tDEFINE DEFINED_farheapsz\n");
-                                fprintf(fp,"\tdefc farheapsz = %d\n",farheapsz);
-			}
  
-                        if (reqpag != -1 ) {
-                                fprintf(fp,"\tdefc reqpag = %d\n",reqpag);
-                                value=reqpag;
-                        }
-                        else {
+        if (reqpag != -1 ) {
+            fprintf(fp,"\tdefc reqpag = %d\n",reqpag);
+            value=reqpag;
+        }
+        else {
 /*
  * Consider the malloc pool as well, if defined we need 32 (standard) +
  * size of malloc - this is a little kludgy, hence the tuning command
  * line option
  */
-                                if ( (k=findmac("HEAPSIZE"))) {
-                                        sscanf(&macq[k],"%d",&value);
-                                        if (value != 0 ) value/=256;
-                                }
-                                value+=32;
-                                fprintf(fp,"\tdefc reqpag = %d\n",value);
-                        }
-                        if (value > 32) expanded=YES;
-                        fprintf(fp,"\tdefc NEED_expanded = %d\n",expanded);
-                        fprintf(fp,"ENDIF\n\n");
+            if ( (k=findmac("HEAPSIZE"))) {
+                sscanf(&macq[k],"%d",&value);
+                if (value != 0 ) value/=256;
+            }
+            value+=32;
+            fprintf(fp,"\tdefc reqpag = %d\n",value);
+        }
+        if (value > 32) expanded=YES;
+        fprintf(fp,"\tdefc NEED_expanded = %d\n",expanded);
+        fprintf(fp,"ENDIF\n\n");
 
-        }
-        if (incfloat) {
-                        fprintf(fp,"\nIF !NEED_floatpack\n");
-                        fprintf(fp,"\tDEFINE\tNEED_floatpack\n");
-                        fprintf(fp,"ENDIF\n\n");
-        }
-        if (mathz88) {
-                        fprintf(fp,"\nIF !NEED_mathz88\n");
-                        fprintf(fp,"\tDEFINE\tNEED_mathz88\n");
-                        fprintf(fp,"ENDIF\n\n");
-        }
-        if (lpointer) {
-                        fprintf(fp,"\nIF !NEED_farpointer\n");
-                        fprintf(fp,"\tDEFINE NEED_farpointer\n");
-                        fprintf(fp,"ENDIF\n\n");
-        }
-        if (startup) {
-                        fprintf(fp,"\nIF !DEFINED_startup\n");
-                        fprintf(fp,"\tDEFINE DEFINED_startup\n");
-                        fprintf(fp,"\tdefc startup=%d\n",startup);
-                        fprintf(fp,"ENDIF\n\n");
-        }
+    }
+    if (incfloat) {
+        fprintf(fp,"\nIF !NEED_floatpack\n");
+        fprintf(fp,"\tDEFINE\tNEED_floatpack\n");
+        fprintf(fp,"ENDIF\n\n");
+    }
+    if (mathz88) {
+        fprintf(fp,"\nIF !NEED_mathz88\n");
+        fprintf(fp,"\tDEFINE\tNEED_mathz88\n");
+        fprintf(fp,"ENDIF\n\n");
+    }
+    if (lpointer) {
+        fprintf(fp,"\nIF !NEED_farpointer\n");
+        fprintf(fp,"\tDEFINE NEED_farpointer\n");
+        fprintf(fp,"ENDIF\n\n");
+    }
+    if (startup) {
+        fprintf(fp,"\nIF !DEFINED_startup\n");
+        fprintf(fp,"\tDEFINE DEFINED_startup\n");
+        fprintf(fp,"\tdefc startup=%d\n",startup);
+        fprintf(fp,"ENDIF\n\n");
+    }
 /*
  * Now, we're gonna use #pragma define _FAR_PTR to indicate whether we need
  * far stuff - this has to go with a -D_FAR_PTR from the compile line
@@ -551,36 +560,36 @@ dumpfns()
  * is - this could be used for eg. to allocate space for file structures
  * etc
  */
-        if ( (ptr=findglb("_FAR_PTR")) && ptr->ident==MACRO ) {
-                        fprintf(fp,"\nIF !NEED_farstartup\n");
-                        fprintf(fp,"\tDEFINE NEED_farstartup\n");
-                        fprintf(fp,"ENDIF\n\n");
-        }
+    if ( (ptr=findglb("_FAR_PTR")) && ptr->ident==MACRO ) {
+        fprintf(fp,"\nIF !NEED_farstartup\n");
+        fprintf(fp,"\tDEFINE NEED_farstartup\n");
+        fprintf(fp,"ENDIF\n\n");
+    }
 
-        fclose(fp);
+    fclose(fp);
 
 	if ( defvars != 0 )
 		WriteDefined("defvarsaddr",defvars);
 
 	switch(printflevel) {
-		case 1:  
-			WriteDefined("ministdio",0);
-			break;
-		case 2:
-			WriteDefined("complexstdio",0);
-			break;
-		case 3:
-			WriteDefined("floatstdio",0);
-			break;
+    case 1:  
+        WriteDefined("ministdio",0);
+        break;
+    case 2:
+        WriteDefined("complexstdio",0);
+        break;
+    case 3:
+        WriteDefined("floatstdio",0);
+        break;
 	}
  
 
 /*
  * DO_inline is obsolete, but it may have a use sometime..
  */
-        if (doinline)
-                        outstr("\tDEFINE\tDO_inline\n");
-        outstr("\n\n; --- End of Scope Defns ---\n\n");
+    if (doinline)
+        outstr("\tDEFINE\tDO_inline\n");
+    outstr("\n\n; --- End of Scope Defns ---\n\n");
 }
 
 /*
@@ -751,32 +760,32 @@ dumpvars()
 
 
 void dumplits(
-int size, int pr_label ,
-int queueptr,int queuelab,
-unsigned char *queue)
+    int size, int pr_label ,
+    int queueptr,int queuelab,
+    unsigned char *queue)
 {
-        int j, k,lit ;
+    int j, k,lit ;
 
-        if ( queueptr ) {
-                if ( pr_label ) {
+    if ( queueptr ) {
+        if ( pr_label ) {
 			if (asxx) ol(".area _TEXT");
-                        prefix(); queuelabel(queuelab) ;
-                        col() ; nl();
-                }
-                k = 0 ;
-                while ( k < queueptr ) {
-                        /* pseudo-op to define byte */
-                        if (infunc) j=1;
-                        else j=10;
-                        if (size == 1) defbyte();
-                        else if (size == 4) deflong();
-                        else if (size == 0 ) { defmesg(); j=30; }
-                        else defword();
-                        while ( j-- ) {
-                                if (size==0) {
-                                        lit=getint(queue+k,1);
-                                        if (lit >= 32 && lit <= 126  && lit != '"' ) outbyte(lit);
-                                        else {
+            prefix(); queuelabel(queuelab) ;
+            col() ; nl();
+        }
+        k = 0 ;
+        while ( k < queueptr ) {
+            /* pseudo-op to define byte */
+            if (infunc) j=1;
+            else j=10;
+            if (size == 1) defbyte();
+            else if (size == 4) deflong();
+            else if (size == 0 ) { defmesg(); j=30; }
+            else defword();
+            while ( j-- ) {
+                if (size==0) {
+                    lit=getint(queue+k,1);
+                    if (lit >= 32 && lit <= 126  && lit != '"' ) outbyte(lit);
+                    else {
 						if (asxx) {
 							outstr("\"\n");
 							defbyte();
@@ -784,31 +793,41 @@ unsigned char *queue)
 							nl();
 							lit=0;
 						} else {
-						/* Now z80asm */
-                                                	outstr("\"&");
-                                                	outdec(lit);
-                                                	if (lit) outstr("&\"");
-						}
-                                        }
-                                        k++;
-                                        if ( j == 0 || k >=queueptr || lit == 0 ) {
-                                                if (lit) outbyte('"');
-                                                nl();
-                                                break;
-                                        }
+                            /* Now z80asm */
+                            if ( usempm ) {
+                                outstr("\",");
+                            } else {
+                                outstr("\"&");
+                            }
+                            outdec(lit);
+                            if (lit) {
+                                if ( usempm ) {
+                                    outstr(",\"");
                                 } else {
-                                        outdec(getint(queue+k, size));
-                                        k += size ;
-                                        if ( j == 0 || k >= queueptr ) {
-                                            nl();           /* need <cr> */
-                                            break;
-                                        }
-                                        outbyte(',');   /* separate bytes */
+                                    outstr("&\"");
                                 }
-                        }
+                            }
+						}
+                    }
+                    k++;
+                    if ( j == 0 || k >=queueptr || lit == 0 ) {
+                        if (lit) outbyte('"');
+                        nl();
+                        break;
+                    }
+                } else {
+                    outdec(getint(queue+k, size));
+                    k += size ;
+                    if ( j == 0 || k >= queueptr ) {
+                        nl();           /* need <cr> */
+                        break;
+                    }
+                    outbyte(',');   /* separate bytes */
                 }
+            }
         }
-        nl();
+    }
+    nl();
 }
 
 
@@ -1051,6 +1070,7 @@ struct args myargs[]= {
 /* Compatibility Modes.. */
         {"f",NO,SetUnsigned},
         {"l",NO,SetFarPtrs},
+        {"mpm",NO,SetMPM},
         {"",0}
         };
 
@@ -1073,6 +1093,11 @@ void SetFrameIY(char *arg)
 	indexix=NO;
 }
 #endif
+
+void SetMPM(char *arg)
+{
+    usempm = YES;
+}
 
 void SetDoubleStrings(char *arg)
 {

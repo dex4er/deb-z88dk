@@ -13,7 +13,7 @@
 Copyright (C) Gunther Strube, InterLogic 1993-99
 */
 
-/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/prsident.c,v 1.6 2003/10/11 15:41:04 dom Exp $ */
+/* $Header: /cvsroot/z88dk/z88dk/src/z80asm/prsident.c,v 1.8 2007/06/17 12:07:43 dom Exp $ */
 /* $History: PRSIDENT.C $ */
 /*  */
 /* *****************  Version 14  ***************** */
@@ -116,7 +116,7 @@ void DeclLibIdent (void), DeclGlobalLibIdent (void);
 void IFstat (void), ELSEstat (void), ENDIFstat (void);
 void DeclModule (void);
 void LINE (void);
-
+void SetTemporaryLine(char *line);
 
 /* global variables */
 extern FILE *z80asmfile;
@@ -127,6 +127,8 @@ extern long PC;
 extern unsigned char *codeptr;
 extern struct module *CURRENTMODULE;
 extern long clineno;
+
+extern enum flag rcmX000;
 
 typedef void (*ptrfunc) (void);	/* ptr to function returning void */
 typedef int (*fptr) (const void *, const void *);
@@ -239,7 +241,7 @@ struct Z80sym Z80ident[] = {
  {"XREF", DeclExternIdent}
 };
 
-size_t totalz80id = 98;
+size_t totalz80id = sizeof(Z80ident) / sizeof(Z80ident[0]);
 
 
 int 
@@ -335,7 +337,6 @@ void LINE(void)
 
 
 
-
 /* dummy function - not used */
 void 
 IFstat (void)
@@ -426,20 +427,22 @@ DeclExternIdent (void)
 void 
 DeclLibIdent (void)
 {
-  do
-    {
-      if (GetSym () == name)
-	DeclSymExtern (ident, SYMDEF);	/* Define symbol as extern LIB reference */
-      else
-	{
-	  ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
-	  return;
-	}
-    }
-  while (GetSym () == comma);
 
-  if (sym != newline)
-    ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
+    do
+    {
+        if (GetSym () == name) {
+            DeclSymExtern (ident, SYMDEF);	/* Define symbol as extern LIB reference */
+        }
+        else
+        {
+            ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
+            return;
+        }
+    }
+    while (GetSym () == comma);
+
+    if (sym != newline)
+        ReportError (CURRENTFILE->fname, CURRENTFILE->line, 1);
 }
 
 
@@ -464,6 +467,12 @@ NOP (void)
 void 
 HALT (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 118;
   ++PC;
 }
@@ -513,6 +522,12 @@ LDDR (void)
 void 
 CPI (void)
 {
+    if (rcmX000)
+    {
+      SetTemporaryLine("\ncall rcmx_cpi\n");
+      return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 161;
   PC += 2;
@@ -523,6 +538,12 @@ CPI (void)
 void 
 CPIR (void)
 {
+    if (rcmX000)
+    {
+      SetTemporaryLine("\ncall rcmx_cpir\n");
+      return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 177;
   PC += 2;
@@ -533,6 +554,13 @@ CPIR (void)
 void 
 CPD (void)
 {
+    if (rcmX000)
+    {
+      SetTemporaryLine("\ncall rcmx_cpd\n");
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 169;
   PC += 2;
@@ -543,6 +571,12 @@ CPD (void)
 void 
 CPDR (void)
 {
+  if (rcmX000)
+  {
+      SetTemporaryLine("\ncall rcmx_cpdr\n");
+      return;
+  }
+
   *codeptr++ = 237;
   *codeptr++ = 185;
   PC += 2;
@@ -553,6 +587,12 @@ CPDR (void)
 void 
 IND (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 170;
   PC += 2;
@@ -563,6 +603,12 @@ IND (void)
 void 
 INDR (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 186;
   PC += 2;
@@ -583,6 +629,12 @@ INI (void)
 void 
 INIR (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 178;
   PC += 2;
@@ -593,6 +645,12 @@ INIR (void)
 void 
 OUTI (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 163;
   PC += 2;
@@ -603,6 +661,12 @@ OUTI (void)
 void 
 OUTD (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 171;
   PC += 2;
@@ -613,6 +677,12 @@ OUTD (void)
 void 
 OTIR (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 179;
   PC += 2;
@@ -623,6 +693,12 @@ OTIR (void)
 void 
 OTDR (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 187;
   PC += 2;
@@ -889,6 +965,12 @@ RETN (void)
 void 
 RLD (void)
 {
+    if (rcmX000)
+    {
+      SetTemporaryLine("\ncall rcmx_rld\n");
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 111;
   PC += 2;
@@ -899,6 +981,12 @@ RLD (void)
 void 
 RRD (void)
 {
+    if (rcmX000)
+    {
+      SetTemporaryLine("\ncall rcmx_rrd\n");
+	return;
+    }
+
   *codeptr++ = 237;
   *codeptr++ = 103;
   PC += 2;
@@ -919,7 +1007,7 @@ NEG (void)
 void 
 CALL (void)
 {
-  Subroutine_addr (205, 196);
+    Subroutine_addr (205, 196);
 }
 
 
@@ -953,6 +1041,12 @@ SCF (void)
 void 
 DI (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 243;
   ++PC;
 }
@@ -962,6 +1056,12 @@ DI (void)
 void 
 EI (void)
 {
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
   *codeptr++ = 251;
   ++PC;
 }
@@ -971,6 +1071,12 @@ EI (void)
 void 
 DAA (void)
 {
-  *codeptr++ = 39;
-  ++PC;
+    if (rcmX000)
+    {
+	ReportError (CURRENTFILE->fname, CURRENTFILE->line, 11);
+	return;
+    }
+
+    *codeptr++ = 39;
+    ++PC;
 }

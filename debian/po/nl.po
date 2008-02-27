@@ -1,0 +1,23 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE 'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the  package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: z88dk\n"
+"Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
+"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"PO-Revision-Date: 2007-10-25 18:50+0100\n"
+"Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
+"Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Default z88dk target:"
+msgstr "Standaard z88dk-doel:"

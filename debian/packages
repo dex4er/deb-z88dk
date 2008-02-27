@@ -23,13 +23,8 @@ Major-Changes:
   * Added prefix z88dk- to executable file.
   * Added alternative links.
 Copyright: Artistic
+ Copyright (c) 2000-2007 by Dom Morris and others. All rights reserved. This program is free software; you can redistribute it and/or modify it under The Clarified Artistic License.
 Build-Arch: bash
-# case "$DEB_BUILD_ARCH" in
-#    alpha|amd64|ia64|ppc64)
-# 	echo "build-arch: 64bit architecture not supported by upstream."
-# 	exit 1
-# 	;;
-# esac
  rm -rf bin usr
  mkdir -p bin usr
  make -e prefix=/usr CC="gcc" CFLAGS="-g -O2 -Wall"
@@ -89,28 +84,6 @@ Install: sh
  yada symlink -into /usr/lib /usr/share/z88dk
 Overrides:
  binary-without-manpage usr/bin/z88dk-zcpp
-
-
-
-
-
-# files moved to z88dk-doc package.
-#Package: z88dk-examples
-#Architecture: all
-#Description: example programs with source for z88dk compilers
-# z88dk is a Z80 cross compiler producing binaries for over
-# 25 different z80 based machines. This package contains compiler
-# and libraries needed for developing.
-#Install: sh
-# yada copy -doc -subdir examples examples/*
-# #fix perms
-# find $ROOT/usr/share/doc/$PACKAGE/examples -type d -exec chmod 755 {} \;
-# find $ROOT/usr/share/doc/$PACKAGE/examples -type f -exec chmod 644 {} \;
-
-
-
-
-
 
 
 
@@ -208,7 +181,6 @@ Description: a Z80 processor assembler and SmallC+ cross compiler
 Templates:
  Template: z88dk/configure-defaultpackage
  Type: select
-#version 1.6 Choices: abc80, aceansi, aquansi, aquarius, c128ansi, cpc, cpm, embedded, m5, msx, mzansi, mz, nc, ppsansi, pps, rex, rexlib, samansi, sam, svi, ti82ansi, ti82, ti83ansi, ti83, ti85ansi, ti85, ti86ansi, ti86, ti8xansi, ti8x, vzansi, vz, z88ansi, z88, z88net, zx81ansi, zx81, zxansi, zx
  Choices: abc80, aceansi, aquansi, aquarius, c128ansi, cpcansi, cpc, cpm, embedded, m5, msx, mzansi, mz, nasansi, nascom, nc, newbrain, ozansi, ppsansi, pps, rcmx000, rex, rexlib, samansi, sam, sms, svi, ti82ansi, ti82, ti83ansi, ti83, ti85ansi, ti85, ti86ansi, ti86, ti8xansi, ti8x, ts2068ansi, ts2068, vzansi, vz, z88ansi, z88, z88net, zcc, zx81ansi, zx81, zxansi, zx
  Default: z88
  _Description: Default z88dk target:

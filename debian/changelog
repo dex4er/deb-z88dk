@@ -1,3 +1,14 @@
+z88dk (1.7.ds1-2) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * Added Dutch debconf translation. (Closes: #449401)
+    Patch by Bart 'cobaco' Cornelis.
+  * Added missing libraries: malloc.lib, mzx.lib, mzx_tiny.lib
+    z88_math.lib and make propper diff files.
+    Thanks to Josetxu Malanda.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Wed, 27 Feb 2008 11:56:25 +0100
+
 z88dk (1.7.ds1-1) unstable; urgency=low
 
   [ Krystian Wlosek ]

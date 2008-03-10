@@ -31,7 +31,7 @@ Description: data files for z88dk
  This package contains any data files needed by z88dk tools.
 
 Package: z88dk
-Architecture: arm hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel powerpc s390 sparc
+Architecture: arm armeb armel hppa hurd-i386 i386 kfreebsd-i386 m68k mips mipsel powerpc s390 sparc
 Depends: z88dk-bin (>= ${binary:Version}), z88dk-data (>= ${binary:Version}), debconf
 Suggests: z88dk-doc, z88dk-examples
 Description: a Z80 processor assembler and SmallC+ cross compiler

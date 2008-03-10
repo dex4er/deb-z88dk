@@ -37,7 +37,7 @@ stdio/puts
 stdio/ungetc
 stdio/fabandon
 stdio/ticalc/fputc_cons
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdio/ticalc/fgetc_cons
 stdio/fgets_cons
 stdio/ticalc/getk
@@ -71,6 +71,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -186,6 +187,7 @@ graphics/plot
 graphics/plotpixl
 graphics/point
 graphics/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/respixl
 graphics/rscroll

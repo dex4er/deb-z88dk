@@ -1,11 +1,12 @@
 
 ; Substitute for z80 cpdr instruction
-; aralbrec 06.2007
+; aralbrec 02.2008
+; flag-perfect emulation of cpdr
 
 XLIB rcmx_cpdr
 
 .rcmx_cpdr
-
+ 
    jr nc, enterloop
  
    call enterloop
@@ -18,16 +19,19 @@ XLIB rcmx_cpdr
 
 .enterloop
 
-   cp (hl)
    dec bc
+   cp (hl)
    jr z, match
    
-   ld a,b
-   or c
+   inc c
+   dec c
    jp nz, loop
- 
+
+   inc b
+   djnz loop
+   
 .nomatch
- 
+
    cp (hl)
    dec hl
    push af
@@ -40,16 +44,16 @@ XLIB rcmx_cpdr
    ex (sp),hl
    pop af
    ret
- 
+
 .match
 
    dec hl
    push af
-   
+
    ld a,b
    or c
    jr z, joinbc0
- 
+  
    ex (sp),hl
    res 0,l 
    set 2,l

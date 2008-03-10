@@ -30,7 +30,7 @@ stdio/freopen_z88
 stdio/ftell
 stdio/fwrite
 stdio/gets
-stdio/8080/vfprintf_mini
+stdio/vfprintf_mini
 stdio/printk
 stdio/printn
 stdio/puts
@@ -40,7 +40,7 @@ stdio/cpc/fgetc_cons
 stdio/fgets_cons
 stdio/cpc/fputc_cons
 stdio/cpc/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdlib/abs
 stdlib/atexit
 stdlib/atoi
@@ -70,6 +70,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -183,6 +184,7 @@ graphics/cpc/plot
 graphics/plotpixl
 graphics/point
 graphics/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/respixl
 graphics/rscroll

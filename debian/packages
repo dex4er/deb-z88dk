@@ -152,8 +152,7 @@ Install: bash
 
 
 Package: z88dk
-#Architecture: all
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k
+Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb
 Depends: z88dk-bin (>= ${binary:Version}), z88dk-data (>= ${binary:Version}), debconf
 Suggests: z88dk-doc, z88dk-examples
 Description: a Z80 processor assembler and SmallC+ cross compiler
@@ -181,7 +180,7 @@ Description: a Z80 processor assembler and SmallC+ cross compiler
 Templates:
  Template: z88dk/configure-defaultpackage
  Type: select
- Choices: abc80, aceansi, aquansi, aquarius, c128ansi, cpcansi, cpc, cpm, embedded, m5, msx, mzansi, mz, nasansi, nascom, nc, newbrain, ozansi, ppsansi, pps, rcmx000, rex, rexlib, samansi, sam, sms, svi, ti82ansi, ti82, ti83ansi, ti83, ti85ansi, ti85, ti86ansi, ti86, ti8xansi, ti8x, ts2068ansi, ts2068, vzansi, vz, z88ansi, z88, z88net, zcc, zx81ansi, zx81, zxansi, zx
+ Choices: abc800, abc80, aceansi, aquansi, aquarius, c128ansi, cpcansi, cpc, cpm, embedded, m5, msx, mzansi, mz, nasansi, nascom, nc, newbrain, ozansi, ppsansi, pps, rcmx000, rex, rexlib, samansi, sam, sms, svi, test, ti82ansi, ti82, ti83ansi, ti83, ti85ansi, ti85, ti86ansi, ti86, ti8xansi, ti8x, ts2068ansi, ts2068, vzansi, vz, z88ansi, z88, z88net, zcc, zx81ansi, zx81, zxansi, zx
  Default: z88
  _Description: Default z88dk target:
 Config: bash

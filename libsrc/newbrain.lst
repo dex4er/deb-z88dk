@@ -39,7 +39,7 @@ stdio/fabandon
 stdio/newbrain/fgetc_cons
 stdio/fgets_cons
 stdio/newbrain/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdio/newbrain/fputc_cons
 stdlib/abs
 stdlib/atexit
@@ -70,6 +70,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -185,3 +186,4 @@ newbrain/nb_puts
 newbrain/nb_putblock
 newbrain/nb_putval
 time/newbrain/clock
+games/joystick

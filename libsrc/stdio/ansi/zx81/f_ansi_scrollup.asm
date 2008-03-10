@@ -1,27 +1,31 @@
 ;
 ; 	ANSI Video handling for the ZX81
-;	By Stefano Bodrato - Apr. 2000
+;	By Stefano Bodrato - Sept. 2007
 ;
 ;	Scrollup
 ;
 ;
-;	$Id: f_ansi_scrollup.asm,v 1.2 2001/04/13 14:13:59 stefano Exp $
+;	$Id: f_ansi_scrollup.asm,v 1.4 2007/10/06 16:51:39 stefano Exp $
 ;
 
 	XLIB	ansi_SCROLLUP
 	LIB	ansi_del_line
+	XREF	base_graphics
+	XREF	text_rows
 
 
 .ansi_SCROLLUP
-	ld	hl,(16396)
-	inc	hl
-	inc	hl
+	ld	hl,(base_graphics)
 	ld	d,h
 	ld	e,l
-	ld	bc,33
-	add	hl,bc
-	ld	bc,33*23
+	inc	h
+	ld	a,(text_rows)
+	ld	b,a
+	ld	c,0
+	dec	b
+	;ld	bc,6144-256
 	ldir
-	ld	a,23
+	ld	a,(text_rows)
+	dec	a
 	call	ansi_del_line
 	ret

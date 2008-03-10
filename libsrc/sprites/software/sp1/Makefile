@@ -6,42 +6,54 @@ include ../../../Make.config
 
 default:
 	@echo
-	@echo SP1 Software Sprite Engine
-	@echo
-	@echo You must specify a target machine
-	@echo Valid targets listed below
-	@echo 
-	@echo make spectrum
-	@echo make cpc-mode1
+	@echo Make the library from the {z88dk}/libsrc directory.
+	@echo 'make sp1' will list instructions.
 	@echo
 
-spectrum: customize.asm
+sp1-spectrum:
 	@echo
 	@echo SP1 Software Sprite Engine 
 	@echo making sinclair spectrum version
 	@echo
-	$(LIBLINKER) -x../../../../lib/clibs/sp1 @spectrum.lst
-	cp spectrum-sp1.h ../../../../include/sprites/sp1.h
+	$(LIBLINKER) -x../../../$(OUTPUT_DIRECTORY)/sp1 @spectrum.lst
+	cp spectrum/spectrum-sp1.h ../../../../include/sprites/sp1.h
 	@echo
 	@echo all done
 	@echo
 
-cpc-mode1: customize.asm
+sp1-ts2068hr:
 	@echo
 	@echo SP1 Software Sprite Engine 
-	@echo making amstrad cpc mode 1 version
+	@echo making ts2068 hi-res version
 	@echo
-	$(LIBLINKER) -x../../../../lib/clibs/sp1 @cpc-mode1.lst
-	cp cpc-mode1-sp1.h ../../../../include/sprites/sp1.h
+	$(LIBLINKER) -x../../../$(OUTPUT_DIRECTORY)/sp1 @ts2068hr.lst
+	cp ts2068hr/ts2068hr-sp1.h ../../../../include/sprites/sp1.h
+	@echo
+	@echo all done
+	@echo
+	
+sp1-zx81hr:
+	@echo
+	@echo SP1 Software Sprite Engine 
+	@echo making zx81 hrg version
+	@echo
+	$(LIBLINKER) -x../../../$(OUTPUT_DIRECTORY)/sp1 -IXIY @zx81hr.lst
+	cp zx81hr/zx81hr-sp1.h ../../../../include/sprites/sp1.h
 	@echo
 	@echo all done
 	@echo
 
 clean:
-	$(RM) spectrum/collision/*.o
-	$(RM) spectrum/cwrapper/*.o
+	$(RM) *.o
 	$(RM) spectrum/sprites/*.o
 	$(RM) spectrum/sprites/draw/*.o
 	$(RM) spectrum/tiles/*.o
 	$(RM) spectrum/updater/*.o
-	$(RM) *.o
+	$(RM) ts2068hr/sprites/*.o
+	$(RM) ts2068hr/sprites/draw/*.o
+	$(RM) ts2068hr/tiles/*.o
+	$(RM) ts2068hr/updater/*.o
+	$(RM) zx81hr/sprites/*.o
+	$(RM) zx81hr/sprites/draw/*.o
+	$(RM) zx81hr/tiles/*.o
+	$(RM) zx81hr/updater/*.o

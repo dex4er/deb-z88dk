@@ -1,6 +1,7 @@
 
 ; Substitute for z80 cpir instruction
-; aralbrec 06.2007
+; aralbrec 02.2008
+; flag-perfect emulation of cpir
 
 XLIB rcmx_cpir
 
@@ -13,21 +14,24 @@ XLIB rcmx_cpir
    ret
 
 .loop
-   
+
    inc hl
-   
+
 .enterloop
 
-   cp (hl)
    dec bc
+   cp (hl)
    jr z, match
    
-   ld a,b
-   or c
+   inc c
+   dec c
    jp nz, loop
- 
+   
+   inc b
+   djnz loop
+   
 .nomatch
- 
+
    cp (hl)
    inc hl
    push af
@@ -40,7 +44,7 @@ XLIB rcmx_cpir
    ex (sp),hl
    pop af
    ret
- 
+
 .match
 
    inc hl

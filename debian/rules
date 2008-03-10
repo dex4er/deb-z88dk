@@ -186,11 +186,13 @@ install-tree-arm: \
 install-tree-armeb: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control
+	debian/tmp-z88dk-data/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
 install-tree-armel: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control
+	debian/tmp-z88dk-data/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
 install-tree-hppa: \
 	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
@@ -472,10 +474,12 @@ binary-arch-arm: \
 	binary-package-z88dk
 .PHONY: binary-arch-armeb
 binary-arch-armeb: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-armel
 binary-arch-armel: \
-	binary-package-z88dk-bin
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 .PHONY: binary-arch-hppa
 binary-arch-hppa: \
 	binary-package-z88dk-bin \

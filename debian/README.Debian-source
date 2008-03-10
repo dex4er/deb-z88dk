@@ -1,4 +1,8 @@
 * Repackage upstream source:
+Version 1.8:
+  - remove binary files
+  - remove CVS directories
+
 Version 1.7:
   - remove binary files
   - remove bin/ directory

@@ -8,7 +8,7 @@ DESCRIPTION
   by others), because the original program does not have a manual page.
 
 
-  Please refer to the z88dk documentation in /usr/share/doc/z88dk-doc/ for the complete description of the system.
+  Please refer to the z88dk documentation in /usr/share/doc/z88dk-doc for the complete description of the system.
   If /usr/share/doc/z88dk-doc not exists, please install the package z88dk-doc.
 
   The frontend of z88dk is called zcc, it is this that you should call
@@ -58,7 +58,7 @@ OPTIONS
      zx81         ZX 81
      zx81ansi     ZX 81, using VT-ANSI
      zxansi       ZX Spectrum, using VT-ANSI
- 
+
   -a            Produce .asm (or .opt) file only
   -c            Do not link object files
   -E            Preprocess files only, leave output in .i file

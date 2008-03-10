@@ -15,9 +15,9 @@ DESCRIPIONS
 
 OPTIONS
   Options used in all targets:
-  \-h   --help            Display help
-  \-b   --binfile [file]  Linked binary file
-  \-o   --output [name]   Name of output file
+  -h   --help            Display help
+  -b   --binfile [file]  Linked binary file
+  -o   --output [name]   Name of output file
 
 
   +[target]      generate file for target machine.
@@ -30,7 +30,7 @@ OPTIONS
    cpc          Gegerates file for Amstrad CPC
 
    Additional options:
-     \-c   --crt0file [file]  crt0 file used in linking
+     -c   --crt0file [file]  crt0 file used in linking
           --exec [nnnn]      Location address to start execution
           --org [nnnn]       Origin of the binary
 
@@ -86,23 +86,23 @@ OPTIONS
    z88          Generates .63 and .62 files suitable for burning to EPROM
 
    Additional options:
-     \-c   --crt0file [file]   crt0 file used in linking
+     -c   --crt0file [file]   crt0 file used in linking
           --nt                Do not truncate bank 63
 
    z88shell     Patches the header to ensure that the program is recognised by the shell
 
    Additional options:
-     \-c   --crt0file [file]   crt0 file used in linking
+     -c   --crt0file [file]   crt0 file used in linking
 
    zxvgs        Creates a zxvgs application file
 
    Additional options:
-     \-c   --crt0file [file]   crt0 file used in linking
+     -c   --crt0file [file]   crt0 file used in linking
 
    zx           Generates a .TAP file complete with BASIC header
 
    Additional options:
-     \-c   --crt0file [file]    crt0 file used in linking
+     -c   --crt0file [file]    crt0 file used in linking
           --org [nnnn]         Origin of the binary
           --blockname [name]   Name of the code block in tap file
 

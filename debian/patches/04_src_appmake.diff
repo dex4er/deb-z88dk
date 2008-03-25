@@ -1,0 +1,345 @@
+diff -Naur z88dk/src/appmake.orig/abc80.c z88dk/src/appmake/abc80.c
+--- z88dk/src/appmake.orig/abc80.c	2007-11-05 08:54:53.000000000 +0100
++++ z88dk/src/appmake/abc80.c	2008-03-20 13:34:46.000000000 +0100
+@@ -172,5 +172,6 @@
+ 
+     fclose(fpin);
+     fclose(fpout);
++    return 0; /* make gcc happy */
+ }
+ 
+diff -Naur z88dk/src/appmake.orig/ace-byt.c z88dk/src/appmake/ace-byt.c
+--- z88dk/src/appmake.orig/ace-byt.c	2003-03-13 15:50:29.000000000 +0100
++++ z88dk/src/appmake/ace-byt.c	2008-03-20 13:36:16.000000000 +0100
+@@ -47,7 +47,7 @@
+ 
+ 
+ 	if ( (fpin=fopen(binname,"rb") ) == NULL ) {
+-		printf("Can't open input file %s\n");
++		printf("Can't open input file %s\n", binname);
+ 		myexit(NULL,1);
+ 	}
+ 
+@@ -104,5 +104,6 @@
+ 
+ 	fclose(fpin);
+ 	fclose(fpout);
++	return 0; /* make gcc happy */
+ }
+ 		
+diff -Naur z88dk/src/appmake.orig/ace-tap.c z88dk/src/appmake/ace-tap.c
+--- z88dk/src/appmake.orig/ace-tap.c	2003-03-13 15:50:29.000000000 +0100
++++ z88dk/src/appmake/ace-tap.c	2008-03-20 13:35:04.000000000 +0100
+@@ -127,5 +127,6 @@
+ 	writebyte_p(parity,fpout,&parity);
+ 	fclose(fpin);
+ 	fclose(fpout);
++	return 0; /* make gcc happy */
+ }
+ 		
+diff -Naur z88dk/src/appmake.orig/appmake.c z88dk/src/appmake/appmake.c
+--- z88dk/src/appmake.orig/appmake.c	2007-05-10 22:03:25.000000000 +0200
++++ z88dk/src/appmake/appmake.c	2008-03-25 12:44:16.000000000 +0100
+@@ -74,6 +74,7 @@
+ 
+     fprintf(stderr,"Unknown machine target \"%s\"\n\n",target);
+     main_usage();
++    return 0; /* make gcc happy */
+ }
+ 
+ 
+@@ -180,13 +181,14 @@
+             } while ( opt->type != OPT_NONE );
+         }
+     }    
++    return 0; /* make gcc happy */
+ }
+ 
+ 
+ static int option_set(int pos, int max, char *argv[], option_t *option)
+ {
+     int     val;
+-    int     ret;
++    int     ret = 0; /* make gcc happy */
+ 
+     switch ( option->type ) {
+     case OPT_BOOL:
+@@ -206,6 +208,8 @@
+             ret = pos + 1;
+         }
+         break;
++    case OPT_NONE: /* make gcc happy */
++        break;
+     }
+     return ret;
+ }
+@@ -238,6 +242,8 @@
+         case OPT_STR:
+             fprintf(stderr,"%s   --%-15s (string)  %s\n",optstr,opt->lopt,opt->desc);
+             break;
++        case OPT_NONE: /* make gcc happy */
++           break;
+         }
+         opt++;
+     }
+diff -Naur z88dk/src/appmake.orig/aquarius.c z88dk/src/appmake/aquarius.c
+--- z88dk/src/appmake.orig/aquarius.c	2003-03-13 15:50:29.000000000 +0100
++++ z88dk/src/appmake/aquarius.c	2008-03-20 13:29:44.000000000 +0100
+@@ -252,5 +252,6 @@
+ 	fclose(fpin);
+ 	fclose(fpout);
+ 
++	return 0; /* make gcc happy */
+ }
+ 		
+diff -Naur z88dk/src/appmake.orig/cpc.c z88dk/src/appmake/cpc.c
+--- z88dk/src/appmake.orig/cpc.c	2007-06-24 17:32:04.000000000 +0200
++++ z88dk/src/appmake/cpc.c	2008-03-20 13:36:54.000000000 +0100
+@@ -18,7 +18,7 @@
+ static int               origin       = -1;
+ static int               exec         = -1;
+ static char              help         = 0;
+-static unsigned char     parity;
++/* unused  static unsigned char     parity; // make gcc happy */
+ 
+ 
+ /* Options that are available for this module */
+diff -Naur z88dk/src/appmake.orig/hex.c z88dk/src/appmake/hex.c
+--- z88dk/src/appmake.orig/hex.c	2003-03-13 15:50:29.000000000 +0100
++++ z88dk/src/appmake/hex.c	2008-03-20 13:24:55.000000000 +0100
+@@ -21,11 +21,11 @@
+ #define RECSIZE 16
+ 
+ static char             *binname      = NULL;
+-static char             *crtfile      = NULL;
++/* unused static char             *crtfile      = NULL; // make gcc happy */
+ static char             *outfile      = NULL;
+ static int               origin       = -1;
+ static char              help         = 0;
+-static unsigned char     parity;
++/* unused static unsigned char     parity; // make gcc happy */
+ 
+ 
+ /* Options that are available for this module */
+diff -Naur z88dk/src/appmake.orig/msx.c z88dk/src/appmake/msx.c
+--- z88dk/src/appmake.orig/msx.c	2003-03-13 15:50:30.000000000 +0100
++++ z88dk/src/appmake/msx.c	2008-03-20 13:37:55.000000000 +0100
+@@ -29,7 +29,7 @@
+ int msx_exec(char *target)
+ {
+     char    filename[FILENAME_MAX+1];
+-    char        name[11];
++    /* unused char        name[11]; // make gcc happy */
+     FILE        *fpin, *fpout;
+     int        c;
+     int        i;
+@@ -87,6 +87,7 @@
+ 
+     fclose(fpin);
+     fclose(fpout);
++    return 0; /* make gcc happy */
+ }
+                 
+ 
+diff -Naur z88dk/src/appmake.orig/mz.c z88dk/src/appmake/mz.c
+--- z88dk/src/appmake.orig/mz.c	2003-03-13 15:50:30.000000000 +0100
++++ z88dk/src/appmake/mz.c	2008-03-20 12:26:26.000000000 +0100
+@@ -25,7 +25,7 @@
+ int mz_exec(char *target)
+ {
+     char    filename[FILENAME_MAX+1];
+-    char        name[11];
++    /* unused char        name[11]; // make gcc  happy */
+     FILE        *fpin, *fpout;
+     int        c;
+     int        i;
+@@ -93,6 +93,7 @@
+ 
+     fclose(fpin);
+     fclose(fpout);
++    return 0; /* make gcc happy */
+ }
+                 
+ 
+diff -Naur z88dk/src/appmake.orig/newbrain.c z88dk/src/appmake/newbrain.c
+--- z88dk/src/appmake.orig/newbrain.c	2007-06-04 19:13:14.000000000 +0200
++++ z88dk/src/appmake/newbrain.c	2008-03-20 13:31:56.000000000 +0100
+@@ -39,8 +39,8 @@
+     int        i,p,l,b;
+     int        len;
+     int        lnum;
+-    int        blocks;
+-    int        blcount;
++/* unused    int        blocks; // make gcc happy */
++/* unused    int        blcount; // make gcc happy */
+ 
+     unsigned long       checksum;
+ 
+@@ -101,7 +101,7 @@
+             fprintf(fpout,"10 IF TOP>%i THEN RESERVE TOP-%i\n",pos-1,pos-1);
+             fprintf(fpout,"20 FOR i=0TO%i:READa:POKE%i+i,a:NEXT i\n",len-1,pos);
+             fprintf(fpout,"30 CALL%i\n",pos);
+-            fprintf(fpout,"40 END",pos);
++            fprintf(fpout,"40 END\n");
+             lnum=100;
+             /* ... M/C ...*/
+             for (i=0; i<len;i++) {
+@@ -357,4 +357,5 @@
+ 
+     }    
+ 
++    return 0; /* make gcc happy */
+ }
+diff -Naur z88dk/src/appmake.orig/rex6000.c z88dk/src/appmake/rex6000.c
+--- z88dk/src/appmake.orig/rex6000.c	2005-07-10 13:39:31.000000000 +0200
++++ z88dk/src/appmake/rex6000.c	2008-03-20 13:19:44.000000000 +0100
+@@ -122,7 +122,7 @@
+ 
+ 
+     if ( (binfile = fopen(binname,"rb")) == NULL ) {
+-        fprintf(stderr,"Couldn't open binary file: %s\n",binfile[1]);
++        fprintf(stderr,"Couldn't open binary file: %s\n",binname);
+         myexit(NULL,1);
+     }
+ 
+@@ -249,10 +249,10 @@
+ 
+     copy = strdup(orig);
+ 
+-    if ( ptr = strchr(copy,'\n') )
++    if ( (ptr = strchr(copy,'\n')) )
+ 	*ptr = 0;
+ 
+-    if ( ptr = strchr(copy,'\r') )
++    if ( (ptr = strchr(copy,'\r')) )
+ 	*ptr = 0;
+ 
+     return(copy);
+diff -Naur z88dk/src/appmake.orig/sms.c z88dk/src/appmake/sms.c
+--- z88dk/src/appmake.orig/sms.c	2007-06-24 17:32:04.000000000 +0200
++++ z88dk/src/appmake/sms.c	2008-03-20 13:12:23.000000000 +0100
+@@ -15,7 +15,7 @@
+ #define OFFSET 0x7ff0
+ 
+ static char             *binname      = NULL;
+-static char             *crtfile      = NULL;
++/* not used  static char             *crtfile      = NULL; // make gcc happy */
+ static char             *outfile      = NULL;
+ static char              help         = 0;
+ static char              noop         = 0;
+@@ -104,6 +104,7 @@
+ 
+     fclose(fpin);
+     fclose(fpout);
++    return 0; /* make gcc happy */
+ }
+ 
+ 
+diff -Naur z88dk/src/appmake.orig/svi.c z88dk/src/appmake/svi.c
+--- z88dk/src/appmake.orig/svi.c	2003-03-13 15:50:30.000000000 +0100
++++ z88dk/src/appmake/svi.c	2008-03-20 13:29:24.000000000 +0100
+@@ -115,6 +115,7 @@
+ 
+ 	fclose(fpin);
+ 	fclose(fpout);
++	return 0; /* make gcc happy */
+ }
+ 
+ 
+diff -Naur z88dk/src/appmake.orig/tixx.c z88dk/src/appmake/tixx.c
+--- z88dk/src/appmake.orig/tixx.c	2007-06-24 17:32:04.000000000 +0200
++++ z88dk/src/appmake/tixx.c	2008-03-25 12:43:05.000000000 +0100
+@@ -151,9 +151,9 @@
+     char  filename[FILENAME_MAX+1];
+     char  comment[45];
+     FILE *fp;
+-    char *buf, str[256], *c;
+-    char *suffix;
+-    int i, n, ext, n2;
++    char *buf, str[256] /* unused   , *c // make gcc happy */;
++    char *suffix = NULL; /* make gcc happy */
++    int i, n, ext = 0, n2;
+     unsigned short chk;
+ 
+     if ( help || binname == NULL ) {
+diff -Naur z88dk/src/appmake.orig/z88.c z88dk/src/appmake/z88.c
+--- z88dk/src/appmake.orig/z88.c	2005-07-10 13:39:33.000000000 +0200
++++ z88dk/src/appmake/z88.c	2008-03-20 12:16:14.000000000 +0100
+@@ -249,6 +249,7 @@
+     SaveBlock(49152,outfile,".63");
+ 
+     myexit(0,0);
++    return 0; /* make gcc happy */
+ }
+ 
+ static void SaveBlock(unsigned offset, char *base, char *ext)
+diff -Naur z88dk/src/appmake.orig/z88shell.c z88dk/src/appmake/z88shell.c
+--- z88dk/src/appmake.orig/z88shell.c	2007-06-24 17:32:04.000000000 +0200
++++ z88dk/src/appmake/z88shell.c	2008-03-20 13:33:12.000000000 +0100
+@@ -18,7 +18,7 @@
+ static char              help         = 0;
+ 
+ static unsigned char    *memory;      /* Pointer to Z80 memory */
+-static long              zorg;        /* Origin of compiler program */
++/* unused static long              zorg; // make gcc happy */        /* Origin of compiler program */
+ 
+ /* Options that are available for this module */
+ option_t z88shell_options[] = {
+@@ -126,7 +126,7 @@
+ {
+     char    name[FILENAME_MAX+1];
+     char    buffer[LINEMAX+1];
+-    int     length;
++    /* int     length; // unused -- make gcc happy */
+     FILE    *fp;
+ 
+     strcpy(name,base);
+diff -Naur z88dk/src/appmake.orig/zx.c z88dk/src/appmake/zx.c
+--- z88dk/src/appmake.orig/zx.c	2007-06-19 11:20:50.000000000 +0200
++++ z88dk/src/appmake/zx.c	2008-03-25 12:43:21.000000000 +0100
+@@ -47,7 +47,7 @@
+     char    filename[FILENAME_MAX+1];
+     char    name[11];
+     char    mybuf[20];
+-    FILE    *fpin, *fpout, *fpmerge;
++    FILE    *fpin, *fpout, *fpmerge = NULL; /* make gcc happy */
+     long    pos;
+     int     c;
+     int     i;
+@@ -153,7 +153,7 @@
+     writeword_p(26,fpout,&parity);         /* BASIC line length */
+     writebyte_p(0xfd,fpout,&parity);       /* CLEAR */
+     writebyte_p(0xb0,fpout,&parity);       /* VAL */
+-    sprintf(mybuf,"\"%i\":",pos-1);        /* location for CLEAR */
++    sprintf(mybuf,"\"%i\":",(int)(pos-1));        /* location for CLEAR */
+     writestring_p(mybuf,fpout,&parity);
+     writebyte_p(0xef,fpout,&parity);       /* LOAD */
+     writebyte_p('"',fpout,&parity);
+@@ -163,7 +163,7 @@
+     writebyte_p(0xf9,fpout,&parity);       /* RANDOMIZE */
+     writebyte_p(0xc0,fpout,&parity);       /* USR */
+     writebyte_p(0xb0,fpout,&parity);       /* VAL */
+-    sprintf(mybuf,"\"%i\"",pos);           /* Location for USR */
++    sprintf(mybuf,"\"%i\"",(int)pos);           /* Location for USR */
+     writestring_p(mybuf,fpout,&parity);
+     writebyte_p(0x0d,fpout,&parity);       /* ENTER (end of BASIC line) */
+ 
+@@ -214,6 +214,7 @@
+     writebyte_p(parity,fpout,&parity);
+     fclose(fpin);
+     fclose(fpout);
++    return 0; /* make gcc happy */
+ }
+ 
+ 
+diff -Naur z88dk/src/appmake.orig/zxvgs.c z88dk/src/appmake/zxvgs.c
+--- z88dk/src/appmake.orig/zxvgs.c	2003-03-13 15:50:30.000000000 +0100
++++ z88dk/src/appmake/zxvgs.c	2008-03-20 12:16:33.000000000 +0100
+@@ -122,6 +122,7 @@
+         myexit(buffer,1);
+     fclose(fp);
+     myexit(0,0);
++    return 0; /* make gcc happy */
+ }
+ 
+ 

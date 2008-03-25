@@ -1,0 +1,11 @@
+--- z88dk-1.8.ds1/libsrc/oz/ozinput/Makefile.orig	2008-03-14 17:17:16.000000000 +0100
++++ z88dk-1.8.ds1/libsrc/oz/ozinput/Makefile	2008-03-14 17:17:23.000000000 +0100
+@@ -6,7 +6,7 @@
+ include ../../Make.config
+ 
+ all:	
+-	zcc +ozxansi $(CFLAGS) *.c
++	zcc +ozansi $(CFLAGS) *.c
+ 
+ clean:
+ 	$(RM) *.o* zcc_opt.def

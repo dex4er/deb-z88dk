@@ -2,36 +2,6 @@
 # Generated automatically from debian/packages
 # by yada v0.54, of Sun, 28 Oct 2007
 
-hostarch := $(shell dpkg-architecture -qDEB_HOST_ARCH)
-
-ifneq "$(hostarch)" "armeb"
-ifneq "$(hostarch)" "arm"
-ifneq "$(hostarch)" "mips"
-ifneq "$(hostarch)" "m68k"
-ifneq "$(hostarch)" "s390"
-ifneq "$(hostarch)" "hurd-i386"
-ifneq "$(hostarch)" "hppa"
-ifneq "$(hostarch)" "powerpc"
-ifneq "$(hostarch)" "mipsel"
-ifneq "$(hostarch)" "kfreebsd-i386"
-ifneq "$(hostarch)" "sparc"
-ifneq "$(hostarch)" "armel"
-ifneq "$(hostarch)" "i386"
-hostarch := any
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-
 DEB_HOST_ARCH        := $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
 DEB_HOST_ARCH_OS     := $(shell dpkg-architecture -qDEB_HOST_ARCH_OS 2>/dev/null)
 DEB_HOST_ARCH_CPU    := $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU 2>/dev/null)
@@ -152,7 +122,16 @@ debian/build-arch-stamp:
 	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
 	echo -E 'rm -rf bin usr';\
 	echo -E 'mkdir -p bin usr';\
-	echo -E 'make -e prefix=/usr CC="gcc" CFLAGS="-g -O2 -Wall"') | /bin/bash
+	echo -E 'export CC="gcc"';\
+	echo -E 'export CFLAGS="-g -O2 -Wall"';\
+	echo -E 'case "$$DEB_BUILD_ARCH" in';\
+	echo -E '   alpha|amd64|ia64|ppc64|kfreebsd-amd64)';\
+	echo -E '	echo "Detected 64bit architecture"';\
+	echo -E '	export CFLAGS="$$CFLAGS -m32"';\
+	echo -E '	export LDFLAGS="$$LDGLAGS -m32"';\
+	echo -E '	;;';\
+	echo -E 'esac';\
+	echo -E 'make -e prefix=/usr') | /bin/bash
 	touch debian/build-arch-stamp
 
 debian/build-indep-stamp: debian/build-arch-stamp
@@ -172,80 +151,19 @@ debian/build-indep-stamp: debian/build-arch-stamp
 	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
 	echo -E 'export Z80_OZFILES=$$(pwd)/lib/';\
 	echo -E 'export ZCCCFG=$$(pwd)/lib/config/';\
+	echo -E '# create symlink';\
+	echo -E 'pushd $$(pwd)/include; ln -vs x11 X11; popd';\
 	echo -E 'PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc';\
 	echo -E '#PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc install') | /bin/bash
 	touch debian/build-indep-stamp
 
 .PHONY: install-tree
-install-tree: install-tree-$(hostarch)
-install-tree-arm: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-armeb: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-armel: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-hppa: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-hurd-i386: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-i386: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-kfreebsd-i386: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-m68k: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-mips: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-mipsel: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-powerpc: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-s390: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
-install-tree-sparc: \
-	debian/tmp-z88dk-bin/DEBIAN/control \
-	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control \
-	debian/tmp-z88dk/DEBIAN/control
+install-tree: install-tree-any
 install-tree-any: \
+	debian/tmp-z88dk-bin/DEBIAN/control \
 	debian/tmp-z88dk-doc/DEBIAN/control \
-	debian/tmp-z88dk-data/DEBIAN/control
+	debian/tmp-z88dk-data/DEBIAN/control \
+	debian/tmp-z88dk/DEBIAN/control
 
 debian/tmp-z88dk-bin/DEBIAN/control: debian/build-arch-stamp debian/control
 	rm -rf debian/tmp-z88dk-bin
@@ -466,62 +384,12 @@ debian/tmp-z88dk/DEBIAN/control: debian/build-arch-stamp debian/control
 
 .PHONY: binary binary-arch binary-indep
 binary: binary-arch binary-indep
-binary-arch: binary-arch-$(hostarch)
+binary-arch: binary-arch-any
 
-.PHONY: binary-arch-arm
-binary-arch-arm: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-armeb
-binary-arch-armeb: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-armel
-binary-arch-armel: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-hppa
-binary-arch-hppa: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-hurd-i386
-binary-arch-hurd-i386: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-i386
-binary-arch-i386: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-kfreebsd-i386
-binary-arch-kfreebsd-i386: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-m68k
-binary-arch-m68k: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-mips
-binary-arch-mips: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-mipsel
-binary-arch-mipsel: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-powerpc
-binary-arch-powerpc: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-s390
-binary-arch-s390: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
-.PHONY: binary-arch-sparc
-binary-arch-sparc: \
-	binary-package-z88dk-bin \
-	binary-package-z88dk
 .PHONY: binary-arch-any
-binary-arch-any:
+binary-arch-any: \
+	binary-package-z88dk-bin \
+	binary-package-z88dk
 binary-indep: \
 	binary-package-z88dk-doc \
 	binary-package-z88dk-data
@@ -595,13 +463,7 @@ clean-build:
 	  && export DEB_BUILD_GNU_TYPE="$(DEB_BUILD_GNU_TYPE)" \
 	  && export DEB_BUILD_GNU_SYSTEM="$(DEB_BUILD_GNU_SYSTEM)" && (\
 	echo -E 'eval "yada () { perl $$(which yada) \"\$$@\"; }"; set -e; set -v';\
-	echo -E 'case "$$DEB_BUILD_ARCH" in';\
-	echo -E '   alpha|amd64|ia64|ppc64)';\
-	echo -E '	echo "64bit architecture not supported by upstream."';\
-	echo -E '	exit 1';\
-	echo -E '	;;';\
-	echo -E 'esac';\
-	echo -E 'rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def';\
+	echo -E 'rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def libsrc/graphics/x11/zcc_opt.def include/X11';\
 	echo -E 'make clean || true') | /bin/sh
 	yada unpatch
 	rm -rf debian/tmp

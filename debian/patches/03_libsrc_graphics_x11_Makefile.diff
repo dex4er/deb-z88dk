@@ -1,0 +1,60 @@
+--- z88dk-1.8.ds1/libsrc/graphics/x11/Makefile.orig	2008-03-05 22:25:11.000000000 +0100
++++ z88dk-1.8.ds1/libsrc/graphics/x11/Makefile	2008-03-14 17:52:18.000000000 +0100
+@@ -5,9 +5,55 @@
+ 
+ include ../../Make.config
+ 
+-all:	
+-	zcc +test $(CFLAGS) *.c
++CFILES = \
++	blackpixel.c \
++	defaultdepth.c \
++	defaultscreen.c \
++	displayheight.c \
++	displaywidth.c \
++	rootwindow.c \
++	whitepixel.c \
++	xchecktypedevent.c \
++	xcheckwindowevent.c \
++	xclearwindow.c \
++	xclosedisplay.c \
++	xcreatebitmapfromdata.c \
++	xcreategc.c \
++	xcreatesimplewindow.c \
++	xdestroywindow.c \
++	xdisplayname.c \
++	xdrawline.c \
++	xdrawpoint.c \
++	xdrawrectangle.c \
++	xdrawstring.c \
++	_xfindchar.c \
++	xflush.c \
++	_xfputc.c \
++	xfreegc.c \
++	xloadqueryfont.c \
++	xmapwindow.c \
++	xnextevent.c \
++	xopendisplay.c  \
++	xselectinput.c \
++	xsetdashes.c \
++	xsetfont.c \
++	xsetforeground.c \
++	xsetlineattributes.c \
++	xsetstandardproperties.c \
++	xtextwidth.c \
++	xunloadfont.c 
++
++
++AFILES  = $(CFILES:.c=.asm)
++OBJECTS = $(CFILES:.c=.o)
++
++all: x11lib
++
++x11lib: $(OBJECTS)
+ 	$(LIBLINKER) -x../../x11.lib @x11.lst
+ 
++.c.o:
++	zcc +test $(CFLAGS) $*.c
++
+ clean:
+ 	$(RM) *.o* zcc_opt.def

@@ -1,0 +1,62 @@
+--- z88dk-1.8.ds1/src/zcc/zcc.c.orig	2008-03-19 17:51:31.000000000 +0100
++++ z88dk-1.8.ds1/src/zcc/zcc.c	2008-03-25 13:51:09.000000000 +0100
+@@ -366,7 +366,7 @@
+ {
+         int     status, errs;
+         int     tstore;
+-        char    *buffer, *outname;
++        char    *buffer = NULL, *outname; /* make gcc happy */
+ 
+         errs = 0;
+          if (!hassuffix(filelist[number], suffix)) return(0);
+@@ -427,7 +427,7 @@
+     char    *p;
+     char    *asmline;    /* patch for z80asm */
+ 	char    *ext;
+-    char    *linkprog = myconf[LINKER].def;
++    /* unused char    *linkprog = myconf[LINKER].def; // make gcc happy */
+ 
+     /* patch for z80asm */
+     if (peepholeopt)  {
+@@ -493,7 +493,7 @@
+     char    **argv;
+ {
+     int     i, gc;
+-    char    *temp,*temp2;
++    /* unused char    *temp,*temp2; // make gcc happy */
+     char    asmarg[4096];      /* Hell, that should be long enough! */
+     char    buffer[LINEMAX+1]; /* For reading in option file */
+     FILE    *fp;
+@@ -1202,9 +1202,9 @@
+ 	while (*ptr && isspace(*ptr))
+ 		++ptr;
+ 
+-	if ( ptr2 = strchr(ptr,'\n') )
++	if ( (ptr2 = strchr(ptr,'\n')) )
+ 		*ptr2 = 0;
+-	if ( ptr2 = strchr(ptr,'\r') )
++	if ( (ptr2 = strchr(ptr,'\r')) )
+ 		*ptr2 = 0;
+ 
+ 
+@@ -1223,9 +1223,9 @@
+ 	while (*ptr && isspace(*ptr))
+ 		++ptr;
+ 
+-	if ( ptr2 = strchr(ptr,'\n') )
++	if ( (ptr2 = strchr(ptr,'\n')) )
+ 		*ptr2 = 0;
+-	if ( ptr2 = strchr(ptr,'\r') )
++	if ( (ptr2 = strchr(ptr,'\r')) )
+ 		*ptr2 = 0;
+ 
+ 
+@@ -1420,7 +1420,7 @@
+ 
+ void tempname(char *filen)
+ {
+-	char	*ptr;
++	/* unused  char	*ptr; // make gcc happy */
+ 
+ #ifdef _WIN32
+ /* Predefined in 32-bit MS Visual C/C++ and Borland Builder C/C++ */

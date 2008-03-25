@@ -1,3 +1,23 @@
+z88dk (1.8.ds1-2) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * Enable 64bit architecture.
+  * Added '-m32' switch to CFLAGS and LDFLAGS for 64bit machines.
+  * Changed Architecture: to `any' in z88dk and z88dk-bin package.
+  * Added gcc-multilib to Build-Depends: for 64bit
+  * Fixed problem with x11.lib
+    - created symlink from include/x11 to include/X11
+    - improved Makefile for x11.lib
+      patch debian/patches/03_libsrc_graphics_x11_Makefile.diff
+  * Fixed library ozansi.lib
+    - patch debian/patches/03_libsrc_oz_ozinput_Makefile.diff
+  * Changed Copyright notice.
+  * Fixed gcc warnings:
+    - in src/appmake dir - debian/patches/04_src_appmake.diff
+    - in src/zcc/zcc.c - debian/patches/04_src_zcc_zcc.c.diff
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Tue, 25 Mar 2008 11:46:11 +0100
+
 z88dk (1.8.ds1-1) unstable; urgency=low
 
   [ Krystian Wlosek ]

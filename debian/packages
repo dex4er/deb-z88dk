@@ -9,7 +9,7 @@ Patches: patches/*.diff
 Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
 Standards-Version: 3.7.3
-Build-Depends: po-debconf, patch, yada
+Build-Depends: po-debconf, patch, yada, gcc-multilib [alpha amd64 ia64 ppc64 freebsd-amd64]
 Upstream-Source: <URL:http://sourceforge.net/project/showfiles.php?group_id=2917>
 Home-Page: <URL:http://www.z88dk.org/>
 Description: a Z80 processor assembler and SmallC+ cross compiler
@@ -23,24 +23,35 @@ Major-Changes:
   * Added prefix z88dk- to executable file.
   * Added alternative links.
 Copyright: Artistic
- Copyright (c) 2000-2007 by Dom Morris and others. All rights reserved. This program is free software; you can redistribute it and/or modify it under The Clarified Artistic License.
+ Copyright (c) 2000-2008 by Dom Morris and others. All rights reserved. This program is free software; you can redistribute it and/or modify it under The Clarified Artistic License.
 Build-Arch: bash
  rm -rf bin usr
  mkdir -p bin usr
- make -e prefix=/usr CC="gcc" CFLAGS="-g -O2 -Wall"
+ export CC="gcc"
+ export CFLAGS="-g -O2 -Wall"
+ case "$DEB_BUILD_ARCH" in
+    alpha|amd64|ia64|ppc64|kfreebsd-amd64)
+ 	echo "Detected 64bit architecture"
+ 	export CFLAGS="$CFLAGS -m32"
+ 	export LDFLAGS="$LDGLAGS -m32"
+ 	;;
+ esac
+ make -e prefix=/usr
 Build-Indep: bash
  export Z80_OZFILES=$(pwd)/lib/
  export ZCCCFG=$(pwd)/lib/config/
+ # create symlink 
+ pushd $(pwd)/include; ln -vs x11 X11; popd
  PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc
  #PATH=$(pwd)/bin:$PATH make -C $(pwd)/libsrc install
 Clean: sh
- case "$DEB_BUILD_ARCH" in
-    alpha|amd64|ia64|ppc64)
- 	echo "64bit architecture not supported by upstream."
- 	exit 1
- 	;;
- esac
- rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def
+# case "$DEB_BUILD_ARCH" in
+#    alpha|amd64|ia64|ppc64|kfreebsd-amd64)
+# 	echo "64bit architecture not supported by upstream."
+# 	exit 1
+# 	;;
+# esac
+ rm -rf bin usr src/config.h libsrc/debug/zcc_opt.def libsrc/graphics/x11/zcc_opt.def include/X11
  make clean || true
 
 
@@ -49,7 +60,8 @@ Clean: sh
 
 
 Package: z88dk-bin
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb
+#Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb alpha amd64 ia64 ppc64 kfreebsd-amd64
+Architecture: any
 Depends: []
 Description: executable files for z88dk
  z88dk is a Z80 processor cross compiler producing binaries for over
@@ -152,7 +164,8 @@ Install: bash
 
 
 Package: z88dk
-Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb
+#Architecture: hppa i386 kfreebsd-i386 mips mipsel powerpc arm s390 sparc hurd m68k armel armeb alpha amd64 ia64 ppc64 kfreebsd-amd64
+Architecture: any
 Depends: z88dk-bin (>= ${binary:Version}), z88dk-data (>= ${binary:Version}), debconf
 Suggests: z88dk-doc, z88dk-examples
 Description: a Z80 processor assembler and SmallC+ cross compiler

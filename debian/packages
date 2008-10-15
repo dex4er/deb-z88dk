@@ -8,7 +8,7 @@ Priority: extra
 Patches: patches/*.diff
 Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 Build-Depends: po-debconf, patch, yada, gcc-multilib [alpha amd64 ia64 ppc64 freebsd-amd64]
 Upstream-Source: <URL:http://sourceforge.net/project/showfiles.php?group_id=2917>
 Home-Page: <URL:http://www.z88dk.org/>
@@ -197,6 +197,7 @@ Templates:
  Default: z88
  _Description: Default z88dk target:
 Config: bash
+ set -e
  db_input medium z88dk/configure-defaultpackage || true
  db_go
 Postinst: bash

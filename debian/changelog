@@ -1,3 +1,11 @@
+z88dk (1.8.ds1-3) unstable; urgency=low
+
+  * Added Swedish debconf translation. (Closes: #500127)
+    Patch by Martin Bagge.
+  * Bump standards version to 3.8.0. Added 'set -e' in config scripts.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Wed, 15 Oct 2008 14:28:51 +0200
+
 z88dk (1.8.ds1-2) unstable; urgency=low
 
   [ Krystian Wlosek ]

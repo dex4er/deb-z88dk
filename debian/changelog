@@ -1,3 +1,10 @@
+z88dk (1.8.ds1-4) unstable; urgency=low
+
+  * Fixed problem with CPC binaries (Closes: #475605)
+    Added patch debian/patches/02_lib_cpc_crt0.asm.diff
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Thu, 17 Oct 2008 11:45:12 +0200
+
 z88dk (1.8.ds1-3) unstable; urgency=low
 
   * Added Swedish debconf translation. (Closes: #500127)

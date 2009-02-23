@@ -4,7 +4,7 @@ Uploaders: Piotr Roszatycki <dexter@debian.org>
 Section: devel
 Priority: extra
 Standards-Version: 3.8.0
-Build-Depends: po-debconf, patch, yada, gcc-multilib [alpha amd64 ia64 ppc64 freebsd-amd64]
+Build-Depends: po-debconf, patch, yada, gcc-multilib [amd64 ppc64 freebsd-amd64]
 
 Package: z88dk-bin
 Architecture: any

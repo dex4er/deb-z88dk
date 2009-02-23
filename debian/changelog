@@ -1,3 +1,13 @@
+z88dk (1.8.ds1-5) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * Added Japanese debconf translation. (Closes: #512868)
+    Patch by Hideki Yamane.
+  * Added Russian debconf translation. (Closes: #514508)
+    Patch by Yuri Kozlov.
+
+ -- Krystian Wlosek <tygrys@waw.pdi.net>  Tue, 23 Feb 2009 11:10:17 +0100
+
 z88dk (1.8.ds1-4) unstable; urgency=low
 
   * Fixed problem with CPC binaries (Closes: #475605)

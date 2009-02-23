@@ -9,7 +9,7 @@ Patches: patches/*.diff
 Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
 Standards-Version: 3.8.0
-Build-Depends: po-debconf, patch, yada, gcc-multilib [alpha amd64 ia64 ppc64 freebsd-amd64]
+Build-Depends: po-debconf, patch, yada, gcc-multilib [amd64 ppc64 freebsd-amd64]
 Upstream-Source: <URL:http://sourceforge.net/project/showfiles.php?group_id=2917>
 Home-Page: <URL:http://www.z88dk.org/>
 Description: a Z80 processor assembler and SmallC+ cross compiler

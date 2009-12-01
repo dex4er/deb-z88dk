@@ -1,3 +1,16 @@
+z88dk (1.8.ds1-6) unstable; urgency=high
+
+  [ Krystian Wlosek ]
+  * Change maintainer email from tygrys@waw.pdi.net to kwlosek@gmail.com
+  * Build-Depends: change freebsd-amd64 to kfreebsd-amd64 (Closes: #537084)
+    Thanks to Petr Salinger
+  * Fixed FTBFS problem with src/z80asm/z80pass.c (Closes: #552886)
+    Added patch debian/patches/05_src_z80asm_z80pass.c.diff
+    Thanks to Lucas Nussbaum
+  * Bump standards version to 3.8.3. No changes needed.
+
+ -- Krystian Wlosek <kwlosek@gmail.com>  Tue, 01 Dec 2009 22:41:10 +0100
+
 z88dk (1.8.ds1-5) unstable; urgency=low
 
   [ Krystian Wlosek ]

@@ -1,0 +1,29 @@
+--- z88dk-1.8.ds1/src/z80asm/z80pass.c.orig	2009-12-01 20:44:29.000000000 +0000
++++ z88dk-1.8.ds1/src/z80asm/z80pass.c	2009-12-01 20:45:06.000000000 +0000
+@@ -94,7 +94,7 @@
+ /* local functions */
+ void ifstatement (enum flag interpret);
+ void parseline (enum flag interpret);
+-void getline (void);
++void getline_z88dk (void);
+ void Pass2info (struct expr *expression, char constrange, long lfileptr);
+ void Z80pass1 (void);
+ void Z80pass2 (void);
+@@ -165,7 +165,7 @@
+ 
+ 
+ void 
+-getline (void)
++getline_z88dk (void)
+ {
+   long fptr;
+   int l,c;
+@@ -198,7 +198,7 @@
+       ++CURRENTFILE->line;
+       ++TOTALLINES;
+       if (listing)
+-	getline ();		/* get a copy of current source line */
++	getline_z88dk ();		/* get a copy of current source line */
+ 
+       EOL = OFF;		/* reset END OF LINE flag */
+       GetSym ();

@@ -1,10 +1,10 @@
 Source: z88dk
-Maintainer: Krystian Wlosek <tygrys@waw.pdi.net>
+Maintainer: Krystian Wlosek <kwlosek@gmail.com>
 Uploaders: Piotr Roszatycki <dexter@debian.org>
 Section: devel
 Priority: extra
-Standards-Version: 3.8.0
-Build-Depends: po-debconf, patch, yada, gcc-multilib [amd64 ppc64 freebsd-amd64]
+Standards-Version: 3.8.3
+Build-Depends: po-debconf, patch, yada, gcc-multilib [amd64 ppc64 kfreebsd-amd64]
 
 Package: z88dk-bin
 Architecture: any

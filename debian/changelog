@@ -1,3 +1,13 @@
+z88dk (1.8.ds1-7) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * Apply patch for 64bit architectures. Remove -m32 flag from LDFLAGS.
+    (Closes: #570681)
+  * Added Spanish defconf translation. (Closes: #578350)
+    Patch by Ricardo Fraile.
+
+ -- Krystian Wlosek <kwlosek@gmail.com>  Thu, 22 Apr 2010 15:13:27 +0100
+
 z88dk (1.8.ds1-6) unstable; urgency=high
 
   [ Krystian Wlosek ]

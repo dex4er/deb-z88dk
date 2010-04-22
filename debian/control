@@ -4,11 +4,11 @@ Uploaders: Piotr Roszatycki <dexter@debian.org>
 Section: devel
 Priority: extra
 Standards-Version: 3.8.3
-Build-Depends: po-debconf, patch, yada, gcc-multilib [amd64 ppc64 kfreebsd-amd64]
+Build-Depends: po-debconf, patch, yada
 
 Package: z88dk-bin
 Architecture: any
-Depends: ${z88dk-bin:Depends}
+Depends: z88dk-data (>= ${binary:Version}), ${z88dk-bin:Depends}
 Description: executable files for z88dk
  z88dk is a Z80 processor cross compiler producing binaries for over
  25 different z80 based machines. This package contains binary files.

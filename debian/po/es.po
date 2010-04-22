@@ -1,0 +1,44 @@
+# z88dk po-debconf translation to Spanish
+# Copyright (C) 2010 Software in the Public Interest
+# This file is distributed under the same license as the z88dk package.
+#
+# Changes:
+#   - Initial translation
+#       Ricardo Fraile <rikr@esdebian.org>, 2010
+#
+# Traductores, si no conocen el formato PO, merece la pena leer la
+# documentación de gettext, especialmente las secciones dedicadas a este
+# formato, por ejemplo ejecutando:
+#       info -n '(gettext)PO Files'
+#       info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+#   - El proyecto de traducción de Debian al español
+#     http://www.debian.org/intl/spanish/
+#     especialmente las notas y normas de traducción en
+#     http://www.debian.org/intl/spanish/notas
+#
+#   - La guía de traducción de po's de debconf:
+#     /usr/share/doc/po-debconf/README-trans
+#     o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: z88dk 1.8.ds1-6\n"
+"Report-Msgid-Bugs-To: z88dk@packages.debian.org\n"
+"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"PO-Revision-Date: 2010-04-12 17:12+0200\n"
+"Last-Translator: Ricardo Fraile <rikr@esdebian.org>\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Default z88dk target:"
+msgstr "Destino predeterminado de z88dk:"
+

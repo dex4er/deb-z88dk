@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # Generated automatically from debian/packages
-# by yada v0.54, of Sun, 28 Oct 2007
+# by yada v0.55, of Tue, 15 Dec 2009
 
 DEB_HOST_ARCH        := $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
 DEB_HOST_ARCH_OS     := $(shell dpkg-architecture -qDEB_HOST_ARCH_OS 2>/dev/null)
@@ -124,13 +124,6 @@ debian/build-arch-stamp:
 	echo -E 'mkdir -p bin usr';\
 	echo -E 'export CC="gcc"';\
 	echo -E 'export CFLAGS="-g -O2 -Wall"';\
-	echo -E 'case "$$DEB_BUILD_ARCH" in';\
-	echo -E '   alpha|amd64|ia64|ppc64|kfreebsd-amd64)';\
-	echo -E '	echo "Detected 64bit architecture"';\
-	echo -E '	export CFLAGS="$$CFLAGS -m32"';\
-	echo -E '	export LDFLAGS="$$LDGLAGS -m32"';\
-	echo -E '	;;';\
-	echo -E 'esac';\
 	echo -E 'make -e prefix=/usr') | /bin/bash
 	touch debian/build-arch-stamp
 
@@ -153,8 +146,7 @@ debian/build-indep-stamp: debian/build-arch-stamp
 	echo -E 'export ZCCCFG=$$(pwd)/lib/config/';\
 	echo -E '# create symlink';\
 	echo -E 'pushd $$(pwd)/include; ln -vs x11 X11; popd';\
-	echo -E 'PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc';\
-	echo -E '#PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc install') | /bin/bash
+	echo -E 'PATH=$$(pwd)/bin:$$PATH make -C $$(pwd)/libsrc') | /bin/bash
 	touch debian/build-indep-stamp
 
 .PHONY: install-tree

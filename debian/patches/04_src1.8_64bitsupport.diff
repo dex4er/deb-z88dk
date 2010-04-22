@@ -1,0 +1,720 @@
+diff -Naur z88dk-1.8.ds1/src/copt/copt.c z88dk-1.8.ds1-64bit/src/copt/copt.c
+--- z88dk-1.8.ds1/src/copt/copt.c	2002-09-15 19:10:07.000000000 +0200
++++ z88dk-1.8.ds1-64bit/src/copt/copt.c	2010-04-22 13:17:56.000000000 +0200
+@@ -507,12 +507,12 @@
+ 		/* check for activation rules */
+ 		if (o->o_new && strcmp(o->o_new->l_text, "%activate\n") == 0) {
+ 			/* we have to prevent repeated activation of rules */
+-			char signature[160];
++			char signature[240];
+ 			struct lnode *lnp;
+ 			struct onode *nn, *last;
+ 			int skip = 0;
+ 			/* since we 'install()' strings, we can compare pointers */
+-			sprintf(signature, "%s%08x%08x%08x%08x%08x%08x%08x%08x%08x%08x\n",
++			sprintf(signature, (sizeof(char*)>4)?"%s%016lx%016lx%016lx%016lx%016lx%016lx%016lx%016lx%016lx%016lx\n":"%s%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx\n",
+ 				activated,
+ 				vars[0], vars[1], vars[2], vars[3], vars[4],
+ 				vars[5], vars[6], vars[7], vars[8], vars[9]);
+diff -Naur z88dk-1.8.ds1/src/z80asm/config.h z88dk-1.8.ds1-64bit/src/z80asm/config.h
+--- z88dk-1.8.ds1/src/z80asm/config.h	2007-06-24 18:41:41.000000000 +0200
++++ z88dk-1.8.ds1-64bit/src/z80asm/config.h	2010-04-22 13:17:56.000000000 +0200
+@@ -64,6 +64,12 @@
+ #define MAXCODESIZE 65536
+ #endif
+ 
++#ifdef __linux__
++#include <endian.h>
++#if __BYTE_ORDER == __BIG_ENDIAN
++#define ENDIAN 1
++#endif
++#else
+ /* Some clever config-ing if we're using GNUC */
+ #ifdef __BIG_ENDIAN__
+ /* Sadly the compiler on OS-X falls over with the #if below... */
+@@ -75,3 +81,4 @@
+ #endif
+ #endif	/* __GNUC__ */
+ #endif
++#endif
+diff -Naur z88dk-1.8.ds1/src/z80asm/modlink.c z88dk-1.8.ds1-64bit/src/z80asm/modlink.c
+--- z88dk-1.8.ds1/src/z80asm/modlink.c	2002-11-05 12:45:56.000000000 +0100
++++ z88dk-1.8.ds1-64bit/src/z80asm/modlink.c	2010-04-22 13:17:56.000000000 +0200
+@@ -106,11 +106,11 @@
+ int LinkLibModule (struct libfile *library, long curmodule, char *modname);
+ int SearchLibfile (struct libfile *curlib, char *modname);
+ char *ReadName (void);
+-long ReadLong (FILE * fileid);
++int ReadLong (FILE * fileid);
+ void redefinedmsg (void);
+ void CreateLib (void);
+ void SearchLibraries (char *modname);
+-void WriteLong (long fptr, FILE * fileid);
++void WriteLong (int fptr, FILE * fileid);
+ void LinkModules (void);
+ void ModuleExpr (void);
+ void CreateBinFile (void);
+@@ -160,7 +160,7 @@
+ ReadNames (long nextname, long endnames)
+ {
+   char scope, symtype;
+-  long value;
++  int value;
+   symbol *foundsymbol;
+ 
+   do
+@@ -509,7 +509,7 @@
+   while (CURRENTMODULE != lastobjmodule->nextmodule);	/* parse only object modules, not added library modules */
+ 
+   if (verbose == ON)
+-    printf ("Code size of linked modules is %d bytes\n", CODESIZE);
++    printf ("Code size of linked modules is %lu bytes\n", (unsigned long) CODESIZE);
+ 
+   if (ASMERROR == OFF)
+     ModuleExpr ();		/*  Evaluate expressions in  all modules */
+@@ -531,7 +531,7 @@
+ int 
+ LinkModule (char *filename, long fptr_base)
+ {
+-  long fptr_namedecl, fptr_modname, fptr_modcode, fptr_libnmdecl;
++  int fptr_namedecl, fptr_modname, fptr_modcode, fptr_libnmdecl;
+   size_t lowbyte, highbyte, size;
+   int flag = 0;
+ 
+@@ -661,7 +661,7 @@
+ SearchLibfile (struct libfile *curlib, char *modname)
+ {
+ 
+-  long currentlibmodule, modulesize, fptr_mname;
++  int currentlibmodule, modulesize, fptr_mname;
+   int flag;
+   char *mname;
+ 
+@@ -755,8 +755,8 @@
+ void 
+ ModuleExpr (void)
+ {
+-  long fptr_namedecl, fptr_modname, fptr_exprdecl, fptr_libnmdecl;
+-  long fptr_base;
++  int fptr_namedecl, fptr_modname, fptr_exprdecl, fptr_libnmdecl;
++  int fptr_base;
+   struct linkedmod *curlink;
+ 
+   if (verbose)
+@@ -837,7 +837,7 @@
+ 	  *(reloctable + 3) = (unsigned short) sizeof_reloctable / 256U;/* total size of relocation table elements */
+ 
+ 	  fwrite (reloctable, 1U, sizeof_reloctable + 4, binaryfile);	/* write relocation table, inclusive 4 byte header */
+-	  printf ("Relocation header is %d bytes.\n", sizeof_relocroutine + sizeof_reloctable + 4);
++	  printf ("Relocation header is %lu bytes.\n", (unsigned long) (sizeof_relocroutine + sizeof_reloctable + 4));
+ 	  fwrite (codearea, sizeof (char), CODESIZE, binaryfile);	/* write code as one big chunk */
+ 	  fclose (binaryfile);
+ 	}
+@@ -880,9 +880,9 @@
+ void 
+ CreateLib (void)
+ {
+-  long Codesize;
++  int Codesize;
+   FILE *objectfile = NULL;
+-  long fptr;
++  int fptr;
+   char *filebuffer, *fname;
+ 
+   if (verbose)
+@@ -1035,13 +1035,13 @@
+ 
+ 
+ 
+-long 
++int 
+ ReadLong (FILE * fileid)
+ {
+ 
+ #ifdef ENDIAN			/* high byte, low byte order... */
+   int i;
+-  unsigned long c, fptr = 0;
++  unsigned int c, fptr = 0;
+ 
+   for (i = 1; i <= 3; i++)
+     {
+@@ -1052,7 +1052,7 @@
+ 
+   return fptr;
+ #else /* low byte, high byte order...    */
+-  long fptr = 0;
++  int fptr = 0;
+ 
+   /* long is *at least* 4 bytes long, and we have to write exactly 4 bytes */
+   fread (&fptr, 4, 1, fileid);
+@@ -1063,7 +1063,7 @@
+ 
+ 
+ void 
+-WriteLong (long fptr, FILE * fileid)
++WriteLong (int fptr, FILE * fileid)
+ {
+ #ifdef ENDIAN			/* high byte, low byte order... */
+   int i;
+diff -Naur z88dk-1.8.ds1/src/z80asm/symbol.h z88dk-1.8.ds1-64bit/src/z80asm/symbol.h
+--- z88dk-1.8.ds1/src/z80asm/symbol.h	2003-10-11 17:41:04.000000000 +0200
++++ z88dk-1.8.ds1-64bit/src/z80asm/symbol.h	2010-04-22 13:17:56.000000000 +0200
+@@ -113,7 +113,7 @@
+ 
+ struct libfile      { struct libfile    *nextlib;           /* pointer to next library file in list */
+                       char              *libfilename;       /* filename of library (incl. extension) */
+-                      long              nextobjfile;        /* file pointer to next object file in library */
++                      int               nextobjfile;        /* file pointer to next object file in library */
+                     };
+ 
+ struct linklist     { struct linkedmod  *firstlink;         /* pointer to first linked object module */
+diff -Naur z88dk-1.8.ds1/src/z80asm/z80asm.c z88dk-1.8.ds1-64bit/src/z80asm/z80asm.c
+--- z88dk-1.8.ds1/src/z80asm/z80asm.c	2007-07-22 00:43:35.000000000 +0200
++++ z88dk-1.8.ds1-64bit/src/z80asm/z80asm.c	2010-04-22 13:17:56.000000000 +0200
+@@ -827,7 +827,7 @@
+     }
+   if (*flagid == 'r')
+     {
+-      sscanf (flagid + 1, "%x", &EXPLICIT_ORIGIN);
++      sscanf (flagid + 1, "%lx", &EXPLICIT_ORIGIN);
+       deforigin = ON;		/* explicit origin has been defined */
+       return;
+     }
+diff -Naur z88dk-1.8.ds1/src/z80asm/z80pass.c z88dk-1.8.ds1-64bit/src/z80asm/z80pass.c
+--- z88dk-1.8.ds1/src/z80asm/z80pass.c	2002-05-11 22:09:38.000000000 +0200
++++ z88dk-1.8.ds1-64bit/src/z80asm/z80pass.c	2010-04-22 13:17:56.000000000 +0200
+@@ -853,9 +853,9 @@
+   fprintf (listfile, "%*.*s", 122 - strlen (_prog_name) - strlen (_version) - strlen (_copyright) - 3, strlen (date), date);
+ #else
+   fprintf (listfile, "%s", copyrightmsg);
+-  fprintf (listfile, "%*.*s", (int) 122 - strlen (copyrightmsg), (int) strlen (date), date);
++  fprintf (listfile, "%*.*s", (int) (122 - strlen (copyrightmsg)), (int) strlen (date), date);
+ #endif
+-  fprintf (listfile, "Page %03d%*s'%s'\n\n\n", ++PAGENR, (int) 122 - 9 - 2 - strlen (lstfilename), "", lstfilename);
++  fprintf (listfile, "Page %03d%*s'%s'\n\n\n", ++PAGENR, (int) (122 - 9 - 2 - strlen (lstfilename)), "", lstfilename);
+ }
+ 
+ 
+diff -Naur z88dk/src/sccz80/io.c z88dk-64bit/src/sccz80/io.c
+--- z88dk-1.8.ds1/src/sccz80.orig/io.c	2009-06-21 23:16:52.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/io.c	2009-07-21 05:11:59.000000000 +0200
+@@ -334,7 +334,7 @@
+ }
+ 
+ 
+-void outdec(long number)
++void outdec(int number)
+ {
+         if ( number < 0 ) {
+ 		number=-number;
+@@ -344,7 +344,7 @@
+         outd2(number);
+ }
+ 
+-void outd2(long n)
++void outd2(int n)
+ {
+         if ( n > 9 ) {
+                 outd2(n/10) ;
+diff -Naur  z88dk-1.8.ds1/src/sccz80.orig/io.h z88dk-1.8.ds1/src/sccz80/io.h
+--- z88dk-1.8.ds1/src/sccz80.orig/io.h	2009-06-21 23:16:52.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/io.h	2009-07-21 05:11:59.000000000 +0200
+@@ -26,8 +26,8 @@
+ extern void ol(char *ptr);
+ extern void ot(char *ptr);
+ extern void blanks(void);
+-extern void outdec(long number);
+-extern void outd2(long n);
++extern void outdec(int number);
++extern void outd2(int n);
+ extern void queuelabel(int);
+ 
+ typedef struct {
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/ccdefs.h z88dk-1.8.ds1/src/sccz80/ccdefs.h
+--- z88dk-1.8.ds1/src/sccz80.orig/ccdefs.h	2000-07-04 17:33:30.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/ccdefs.h	2010-04-22 11:49:20.000000000 +0200
+@@ -12,6 +12,9 @@
+  */
+ 
+ 
++#include <sys/types.h>
++#include <stdint.h>
++
+ #include "define.h"
+ #include "lvalue.h"
+ 
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/codegen.c z88dk-1.8.ds1/src/sccz80/codegen.c
+--- z88dk-1.8.ds1/src/sccz80.orig/codegen.c	2007-06-24 16:43:45.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/codegen.c	2010-04-22 12:25:41.000000000 +0200
+@@ -34,8 +34,6 @@
+ 
+ int donelibheader;
+ 
+-void constbc(long val);
+-
+ /* Begin a comment line for the assembler */
+ 
+ void comment(void)
+@@ -1853,13 +1851,13 @@
+  * to have -1 entered correctly
+  */
+ 
+-void vlongconst(unsigned long val)
++void vlongconst(uint32_t val)
+ {
+         vconst(val%65536);
+         const2(val/65536);
+ }
+ 
+-void vlongconst_noalt(unsigned long val)
++void vlongconst_noalt(uint32_t val)
+ {
+     constbc(val%65536);
+     ol("push\tbc");
+@@ -1871,7 +1869,7 @@
+ /*
+  * load constant into primary register
+  */
+-void vconst(long val)
++void vconst(int32_t val)
+ {
+ 	if ( val < 0 )
+ 		val += 65536;
+@@ -1883,7 +1881,7 @@
+ /*
+  * load constant into secondary register
+  */
+-void const2(long val)
++void const2(int32_t val)
+ {
+ 	if ( val < 0 )
+ 		val += 65536;
+@@ -1892,7 +1890,7 @@
+         nl();
+ }
+ 
+-void constbc(long val)
++void constbc(int32_t val)
+ {
+ 	if ( val < 0 )
+ 		val += 65536;
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/codegen.h z88dk-1.8.ds1/src/sccz80/codegen.h
+--- z88dk-1.8.ds1/src/sccz80.orig/codegen.h	2004-03-26 23:06:09.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/codegen.h	2010-04-22 11:49:20.000000000 +0200
+@@ -92,11 +92,11 @@
+ extern void convUlong2doub(void);
+ extern void convdoub2int(void);
+ extern void DoubSwap(void);
+-extern void vlongconst(unsigned long val);
+-extern void vlongconst_noalt(unsigned long val);
+-extern void vconst(long val);
+-extern void const2(long val);
+-extern void constbc(long val);
++extern void vlongconst(uint32_t val);
++extern void vlongconst_noalt(uint32_t val);
++extern void vconst(int32_t val);
++extern void const2(int32_t val);
++extern void constbc(int32_t val);
+ extern void addbchl(int val);
+ extern void GlobalPrefix(char);
+ extern void jumpc(int);
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/const.c z88dk-1.8.ds1/src/sccz80/const.c
+--- z88dk-1.8.ds1/src/sccz80.orig/const.c	2006-06-18 15:03:13.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/const.c	2010-04-22 11:49:20.000000000 +0200
+@@ -54,8 +54,8 @@
+                 return(1);
+         }
+         else if ( number(&lval->const_val) || pstr(&lval->const_val) ) {
+-/* Insert long stuff/long pointer here? */
+-		if ( (unsigned long )lval->const_val >= 65536LU )
++/* Insert int32_t stuff/int32_t pointer here? */
++		if ( (uint32_t )lval->const_val >= 65536LU )
+ 			constype = LONG;
+ 
+                 lval->val_type = constype ;
+@@ -81,7 +81,7 @@
+ }
+ 
+ 
+-int fnumber(long *val)
++int fnumber(int32_t *val)
+ {
+     unsigned char sum[6];
+     unsigned char sum2[6];
+@@ -169,7 +169,7 @@
+ 
+     if( cmatch('e') ) {                       /* interpret exponent */
+ 	int neg;                        /* nonzero if exp is negative */
+-	long expon;                     /* the exponent */
++	int32_t expon;                     /* the exponent */
+ 
+ 	if( number(&expon) == 0 ) {
+ 	    error(E_EXPON);
+@@ -234,7 +234,7 @@
+ int stash_double_str(char *start, char *end)
+ {
+     int  len;
+-    long val;
++    int32_t val;
+     unsigned char  *buf;
+ 
+     len = end-start;
+@@ -259,7 +259,7 @@
+  * number - saves space etc etc
+  */
+ 
+-long searchdub(unsigned char *num)
++int32_t searchdub(unsigned char *num)
+ {
+         unsigned char *tempdub;
+         int dubleft, k,match;
+@@ -290,11 +290,11 @@
+ 
+ 
+ 
+-int number(long *val)
++int number(int32_t *val)
+ {
+         char c ;
+         int minus;
+-        long  k ;
++        int32_t  k ;
+ /*
+  * djm, set the type specifiers to normal
+  */
+@@ -362,14 +362,14 @@
+         immed() ;
+         outname(ptr->name,dopref(ptr)) ;
+         nl();
+-/* djm if we're using long pointers, use of e=0 means absolute address,
++/* djm if we're using int32_t pointers, use of e=0 means absolute address,
+  * this covers up a bit of a problem in deref() which can't distinguish
+  * between ptrtoptr and ptr
+  */
+         if (ptr->flags&FARPTR) { const2(0); }
+ }
+ 
+-int pstr(long *val)
++int pstr(int32_t *val)
+ {
+         int k ;
+ 
+@@ -390,7 +390,7 @@
+  * check to see if present elsewhere, if so do the merge as for doubles
+  */
+ 
+-int tstr(long *val)
++int tstr(int32_t *val)
+ {
+         int k,j;
+ 
+@@ -414,7 +414,7 @@
+  * internally, but to the asm file show it to start from 0
+  */
+ 
+-int storeq(int length, unsigned char *queue,long *val)
++int storeq(int length, unsigned char *queue,int32_t *val)
+ {
+         int     j,k,len;
+ /* Have stashed it in our temporary queue, we know the length, so lets
+@@ -432,7 +432,7 @@
+                 j++;
+         }
+ /* If we get here, then dump it in the queue as per normal... */
+-        *val=(long) litptr-1;
++        *val=(int32_t) litptr-1;
+         for (j=0; j<k; j++) {
+ /* Have to dump it in our special queue here for function literals */
+                 if ( (litptr+1) >= FNMAX ) {
+@@ -445,7 +445,7 @@
+ }
+ 
+ 
+-int qstr(long *val)
++int qstr(int32_t *val)
+ {
+     int c;
+     int cnt=0;
+@@ -453,7 +453,7 @@
+     if ( cmatch('"') == 0 ) 
+ 	return(-1) ;
+ 
+-    *val=(long)gltptr;
++    *val=(int32_t)gltptr;
+     do {
+ 	while ( ch() !='"' ) {
+ 	    if ( ch() == 0 ) break ;
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/const.h z88dk-1.8.ds1/src/sccz80/const.h
+--- z88dk-1.8.ds1/src/sccz80.orig/const.h	2002-05-30 00:54:09.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/const.h	2010-04-22 11:49:20.000000000 +0200
+@@ -1,15 +1,15 @@
+ /* constant.c */
+ extern int constant(LVALUE *lval);
+-extern int fnumber(long *val);
++extern int fnumber(int32_t *val);
+ extern int stash_double_str(char *start,char *end);
+-extern long searchdub(unsigned char *num);
+-extern int number(long *val);
++extern int32_t searchdub(unsigned char *num);
++extern int number(int32_t *val);
+ extern int hex(char c);
+ extern void address(SYMBOL *ptr);
+-extern int pstr(long *val);
+-extern int tstr(long *val);
+-extern int storeq(int length, unsigned char *queue,long *val);
+-extern int qstr(long *val);
++extern int pstr(int32_t *val);
++extern int tstr(int32_t *val);
++extern int storeq(int length, unsigned char *queue,int32_t *val);
++extern int qstr(int32_t *val);
+ extern void stowlit(int value, int size);
+ extern unsigned char litchar(void);
+ extern void size_of(LVALUE *lval);
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/declfunc.c z88dk-1.8.ds1/src/sccz80/declfunc.c
+--- z88dk-1.8.ds1/src/sccz80.orig/declfunc.c	2007-04-17 16:40:14.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/declfunc.c	2010-04-22 11:49:20.000000000 +0200
+@@ -68,7 +68,7 @@
+ char sign,
+ TAG_SYMBOL *otag,
+ int ident,
+-long *addr)
++int32_t *addr)
+ {
+     SYMBOL *ptr;
+     int     more;
+@@ -134,7 +134,7 @@
+ void newfunc()
+ {
+         char n[NAMESIZE];               /* ptr => currfn */
+-        long addr;
++        int32_t addr;
+ 
+         if ( symname(n) == 0 ) {
+                 error(E_ILLEGAL);
+@@ -155,7 +155,7 @@
+ SYMBOL *
+ #endif
+ 
+-AddFuncCode(char *n, char type, char ident, char sign,char zfar, int storage, int more, char check,char simple,TAG_SYMBOL *otag, long *addr)
++AddFuncCode(char *n, char type, char ident, char sign,char zfar, int storage, int more, char check,char simple,TAG_SYMBOL *otag, int32_t *addr)
+ {
+     unsigned char tvalue;           /* Used to hold protot value */
+     char    typ;                    /* Temporary type */
+@@ -468,7 +468,7 @@
+ #ifndef SMALL_C
+ SYMBOL *
+ #endif
+-dofnansi(SYMBOL *currfn, long *addr)
++dofnansi(SYMBOL *currfn, int32_t *addr)
+ {
+         SYMBOL *prevarg;       /* ptr to symbol table entry of most recent argument */
+         SYMBOL *argptr;        /* Temporary holder.. */
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/declfunc.h z88dk-1.8.ds1/src/sccz80/declfunc.h
+--- z88dk-1.8.ds1/src/sccz80.orig/declfunc.h	2007-04-17 16:40:15.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/declfunc.h	2010-04-22 11:49:20.000000000 +0200
+@@ -1,10 +1,10 @@
+ /* declfunc.c */
+ 
+-extern int AddNewFunc(char *sname, int type, int storage, char zfar, char sign, TAG_SYMBOL *otag, int ident, long *addr);
++extern int AddNewFunc(char *sname, int type, int storage, char zfar, char sign, TAG_SYMBOL *otag, int ident, int32_t *addr);
+ extern void newfunc(void);
+-extern SYMBOL *AddFuncCode(char *n, char type, char ident, char sign, char zfar, int storage, int more, char check, char simple, TAG_SYMBOL *otag, long *addr);
++extern SYMBOL *AddFuncCode(char *n, char type, char ident, char sign, char zfar, int storage, int more, char check, char simple, TAG_SYMBOL *otag, int32_t *addr);
+ extern void DoFnKR(SYMBOL *currfn, char simple);
+ extern void setlocvar(SYMBOL *prevarg, SYMBOL *currfn);
+-extern SYMBOL *dofnansi(SYMBOL *currfn, long *addr);
++extern SYMBOL *dofnansi(SYMBOL *currfn, int32_t *addr);
+ extern int CheckANSI(void);
+ extern SYMBOL *getarg(int typ, TAG_SYMBOL *otag, int deftype, SYMBOL *prevarg, char issigned, char zfar, char proto);
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/declinit.c z88dk-1.8.ds1/src/sccz80/declinit.c
+--- z88dk-1.8.ds1/src/sccz80.orig/declinit.c	2004-03-26 23:06:09.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/declinit.c	2010-04-22 11:49:20.000000000 +0200
+@@ -222,8 +222,8 @@
+  */
+ void init(int size, int ident, int *dim, int more, int dump, int is_struct)
+ {
+-    long value;
+-    int sz;			/* number of chars in queue */
++    int32_t value;
++    int     sz;			/* number of chars in queue */
+ /*
+  * djm 14/3/99 We have to rewrite this bit (ugh!) so that we store
+  * our literal in a temporary queue, then if needed, we then dump
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/declvar.c z88dk-1.8.ds1/src/sccz80/declvar.c
+--- z88dk-1.8.ds1/src/sccz80.orig/declvar.c	2007-07-05 20:39:00.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/declvar.c	2010-04-22 11:49:20.000000000 +0200
+@@ -130,7 +130,7 @@
+ {
+     SYMBOL  *ptr;
+     char    name[NAMEMAX];
+-    long    value;
++    int32_t value;
+     /* Add it into the symbol table, we do not need to keep track of the
+      * tag because we treat enums as constants
+      */
+@@ -198,7 +198,7 @@
+ {
+     char sname[NAMESIZE];
+     int size, ident, more, itag, type, size_st;
+-    long addr = -1;
++    int32_t addr = -1;
+     char    flagdef,match,ptrtofn;
+     char    libdef,fastcall,callee;
+     SYMBOL *myptr ;
+@@ -745,7 +745,7 @@
+ int 
+ needsub (void)
+ {
+-        long num;
++        int32_t num;
+ 
+         if ( cmatch(']') ) return (0);   /* null size */
+         if ( constexpr(&num,1) == 0 ) {
+@@ -850,7 +850,7 @@
+ void 
+ BitFieldSwallow (void)
+ {
+-        long    val;
++        int32_t val;
+         if      (cmatch(':')) {
+                 constexpr(&val,1);
+                 warning(W_BITFIELD);
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/define.h z88dk-1.8.ds1/src/sccz80/define.h
+--- z88dk-1.8.ds1/src/sccz80.orig/define.h	2007-01-10 10:43:24.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/define.h	2010-04-22 11:49:20.000000000 +0200
+@@ -205,7 +205,7 @@
+ 
+ struct sw_tab {
+         int label ;             /* label for start of case */
+-        long value ;             /* value associated with case */
++        int32_t value ;             /* value associated with case */
+ } ;
+ 
+ #define SW_TAB struct sw_tab
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/float.c z88dk-1.8.ds1/src/sccz80/float.c
+--- z88dk-1.8.ds1/src/sccz80.orig/float.c	2002-02-20 12:11:54.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/float.c	2010-04-22 11:49:20.000000000 +0200
+@@ -40,7 +40,7 @@
+  * Entry: val=value fa=pointer to 6 byte area for number */
+ void qfloat(int va, unsigned char *fa)
+ {
+-    unsigned long val;
++    uint32_t val;
+     int      i,minus,exp;
+ 
+     val = va;
+@@ -58,9 +58,9 @@
+ }
+ 
+ 
+-void norm(unsigned long a, 
+-	  unsigned long b, 
+-	  unsigned long c, 
++void norm(uint32_t a, 
++	  uint32_t b, 
++	  uint32_t c, 
+ 	  int minus,
+ 	  unsigned char *fa, 
+ 	  int exp)
+@@ -183,7 +183,7 @@
+ 
+     unsigned char fa1[EXPONENT+2], fa2[EXPONENT+2], fa3[EXPONENT+2];
+     int i, j, k, temp, mask, carry;
+-    unsigned long a, b, c;
++    uint32_t a, b, c;
+     int     exp;
+ 
+     unpack(i1, fa1);
+@@ -256,7 +256,7 @@
+ void fltadd(unsigned char *i1,unsigned char *i2)
+ {
+     unsigned char fa1[EXPONENT+2], fa2[EXPONENT+2];
+-    unsigned long temp, carry;
++    uint32_t temp, carry;
+     int i;
+ 
+ 
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/float.h z88dk-1.8.ds1/src/sccz80/float.h
+--- z88dk-1.8.ds1/src/sccz80.orig/float.h	2002-01-27 16:47:59.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/float.h	2010-04-22 11:49:20.000000000 +0200
+@@ -4,4 +4,4 @@
+ extern void fltmult(unsigned char *, unsigned char *);
+ extern void pack(unsigned char *, unsigned char *);
+ extern void unpack(unsigned char *, unsigned char *);
+-extern void norm(unsigned long, unsigned long, unsigned long, int, unsigned char *, int);
++extern void norm(uint32_t, uint32_t, uint32_t, int, unsigned char *, int);
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/lvalue.h z88dk-1.8.ds1/src/sccz80/lvalue.h
+--- z88dk-1.8.ds1/src/sccz80.orig/lvalue.h	2007-06-24 16:43:45.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/lvalue.h	2010-04-22 11:49:20.000000000 +0200
+@@ -9,7 +9,7 @@
+     int indirect ;                  /* type of indirect object, 0 for static object */
+     int ptr_type ;                  /* type of pointer or array, 0 for other idents */
+     int is_const ;                  /* true if constant expression */
+-    signed long const_val ;                        /* value of constant expression (& other uses) */
++    int32_t const_val ;                        /* value of constant expression (& other uses) */
+     TAG_SYMBOL *tagsym ;    /* tag symbol address, 0 if not struct */
+     void (*binop)() ;                /* function address of highest/last binary operator */
+     char *stage_add ;               /* stage addess of "oper 0" code, else 0 */
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/main.c z88dk-1.8.ds1/src/sccz80/main.c
+--- z88dk-1.8.ds1/src/sccz80.orig/main.c	2007-10-07 18:16:03.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/main.c	2010-04-22 11:49:20.000000000 +0200
+@@ -623,7 +623,7 @@
+ {
+     FILE   *fp;
+     char   sname[NAMESIZE];
+-    long    value;
++    int32_t value;
+     int     count;
+ 
+     if ( symname(sname) ) {
+@@ -642,7 +642,7 @@
+ 	    else
+ 		fprintf(fp,",");
+ 	    if ( number(&value) ) {
+-		fprintf(fp,"%ld",value);
++		fprintf(fp,"%d",value);
+ 	    } else {
+ 		warning(W_EXPARG);
+ 	    }
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/primary.c z88dk-1.8.ds1/src/sccz80/primary.c
+--- z88dk-1.8.ds1/src/sccz80.orig/primary.c	2007-07-05 20:39:00.000000000 +0200
++++ z88dk-1.8.ds1/src/sccz80/primary.c	2010-04-22 11:49:20.000000000 +0200
+@@ -649,7 +649,7 @@
+  * evaluate constant expression
+  * return TRUE if it is a constant expression
+  */
+-int constexpr(long *val,int flag)
++int constexpr(int32_t *val,int flag)
+ {
+         char *before, *start ;
+         int con, valtemp ;
+@@ -739,7 +739,7 @@
+ 	SYMBOL  *ptr;
+     char    temp_type;
+     int     itag;
+-    char    nam[20];
++    char    nam[64];
+ 
+ 
+ 
+@@ -794,7 +794,7 @@
+  * returning pointers - to do this, we will define dummy symbols in
+  * the local symbol table so that they do what we want them to do!
+  */
+-    sprintf(nam,"0dptr%d",(int)locptr);
++    sprintf(nam,"0dptr%p",locptr);
+     temp_type = ( (lval->c_flags&FARPTR) ? CPTR : CINT );
+     itag=0;
+     if ( lval->c_tag) 
+diff -Naur z88dk-1.8.ds1/src/sccz80.orig/primary.h z88dk-1.8.ds1/src/sccz80/primary.h
+--- z88dk-1.8.ds1/src/sccz80.orig/primary.h	2001-02-02 13:24:06.000000000 +0100
++++ z88dk-1.8.ds1/src/sccz80/primary.h	2010-04-22 11:49:20.000000000 +0200
+@@ -20,7 +20,7 @@
+ extern void rvalload(LVALUE  *lval);
+ extern void rvalue(LVALUE *lval);
+ extern void test(int label, int parens);
+-extern int constexpr(long *val,int flag);
++extern int constexpr(int32_t *val,int flag);
+ extern void cscale(int type, struct tag_symbol *tag, int *val);
+ extern void addconst(int val, int opr, char zfar);
+ extern int docast(LVALUE *lval,char df);

@@ -1,0 +1,22 @@
+# Danish translation z88dk.
+# Copyright (C) 2011 z88dk & nedenstående oversættere.
+# This file is distributed under the same license as the z88dk package.
+# Joe Hansen <joedalton2@yahoo.dk>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: z88dk\n"
+"Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
+"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"PO-Revision-Date: 2011-05-03 17:30+01:00\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <debian-l10n-danish@lists.debian.org> \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Description
+#: ../templates:1001
+msgid "Default z88dk target:"
+msgstr "Standard z88dk-mål:"

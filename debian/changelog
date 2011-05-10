@@ -1,3 +1,12 @@
+z88dk (1.8.ds1-8) unstable; urgency=low
+
+  [ Krystian Wlosek ]
+  * Added Danish defconf translation. (Closes: #625470)
+    Patch by Joe Dalton.
+  * update po/tempates.pot (change email address)
+
+ -- Krystian Wlosek <kwlosek@gmail.com>  Tue, 10 May 2011 08:57:14 +0100
+
 z88dk (1.8.ds1-7) unstable; urgency=low
 
   [ Krystian Wlosek ]
@@ -5,6 +14,7 @@ z88dk (1.8.ds1-7) unstable; urgency=low
     (Closes: #570681)
   * Added Spanish defconf translation. (Closes: #578350)
     Patch by Ricardo Fraile.
+  * Add z88dk-data as depend in z88dk-bin package.
 
  -- Krystian Wlosek <kwlosek@gmail.com>  Thu, 22 Apr 2010 15:13:27 +0100
 

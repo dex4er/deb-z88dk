@@ -1,0 +1,10 @@
+#!/bin/sh
+#DEBHELPER#
+set -e
+
+update-alternatives --remove zcc /usr/bin/z88dk-zcc
+update-alternatives --remove appmake /usr/bin/z88dk-appmake
+update-alternatives --remove copt /usr/bin/z88dk-copt
+update-alternatives --remove sccz80 /usr/bin/z88dk-sccz80
+update-alternatives --remove z80asm /usr/bin/z88dk-z80asm
+update-alternatives --remove zcpp /usr/bin/z88dk-zcpp

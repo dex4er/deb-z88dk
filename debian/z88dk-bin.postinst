@@ -1,0 +1,10 @@
+#!/bin/sh -e
+#DEBHELPER#
+set -e
+
+update-alternatives --install /usr/bin/zcc zcc /usr/bin/z88dk-zcc 20
+update-alternatives --install /usr/bin/appmake appmake /usr/bin/z88dk-appmake 20
+update-alternatives --install /usr/bin/copt copt /usr/bin/z88dk-copt 20
+update-alternatives --install /usr/bin/sccz80 sccz80 /usr/bin/z88dk-sccz80 20
+update-alternatives --install /usr/bin/z80asm z80asm /usr/bin/z88dk-z80asm 20
+update-alternatives --install /usr/bin/zcpp zcpp /usr/bin/z88dk-zcpp 20

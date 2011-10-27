@@ -1,0 +1,6 @@
+usr/share/z88dk usr/lib/z88dk
+usr/share/man/man1/z88dk-appmake.1 usr/share/man/man1/appmake.1
+usr/share/man/man1/z88dk-copt.1 usr/share/man/man1/copt.1
+usr/share/man/man1/z88dk-zcc.1 usr/share/man/man1/zcc.1
+usr/share/man/man1/z88dk-zcc.1 usr/share/man/man1/sccz80.1
+usr/share/man/man1/z88dk-zcc.1 usr/share/man/man1/z88dk-sccz80.1

@@ -1,0 +1,4 @@
+#!/bin/sh -e
+#DEBHELPER#
+
+rm -f /usr/share/z88dk/lib/config/zcc.cfg

@@ -1,0 +1,9 @@
+# series file
+02_lib_cpc_crt0.asm.diff
+03_libsrc_graphics_x11_Makefile.diff
+03_libsrc_oz_ozinput_Makefile.diff
+04_src1.8_64bitsupport.diff
+04_src_appmake.diff
+04_src_zcc_zcc.c.diff
+05_src_z80asm_z80pass.c.diff
+06_src_zcc_zcc.c_printf_fmt.diff

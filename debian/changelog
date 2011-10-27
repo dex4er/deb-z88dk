@@ -1,3 +1,11 @@
+z88dk (1.8.ds1-9) unstable; urgency=low
+
+  [ Piotr Roszatycki ]
+  * Source package converted to debhelper command sequencer with quilt format.
+  * Added patch for "-Werror=format-security" with new GCC.
+
+ -- Piotr Roszatycki <dexter@debian.org>  Thu, 27 Oct 2011 16:08:16 +0200
+
 z88dk (1.8.ds1-8) unstable; urgency=low
 
   [ Krystian Wlosek ]

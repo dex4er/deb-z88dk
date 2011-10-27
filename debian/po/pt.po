@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: z88dk 1.6.ds1-6\n"
-"Report-Msgid-Bugs-To: tygrys@waw.pdi.net\n"
-"POT-Creation-Date: 2006-07-06 16:16+0200\n"
+"Report-Msgid-Bugs-To: z88dk@packages.debian.org\n"
+"POT-Creation-Date: 2011-10-20 13:45+0200\n"
 "PO-Revision-Date: 2007-07-21 22:25+0100\n"
 "Last-Translator: Américo Monteiro <a_monteiro@netcabo.pt>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +19,6 @@ msgstr ""
 
 #. Type: select
 #. Description
-#: ../templates:1001
+#: ../z88dk.templates:1001
 msgid "Default z88dk target:"
 msgstr "Alvo z88dk por omissão:"
-

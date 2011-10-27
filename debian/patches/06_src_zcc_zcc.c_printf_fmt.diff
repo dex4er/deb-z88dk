@@ -1,0 +1,15 @@
+Description: error: format not a string literal and no format arguments [-Werror=format-security]
+Author: Piotr Roszatycki <dexter@debian.org>
+Origin: debian
+
+--- z88dk-1.8.ds1.orig/src/zcc/zcc.c
++++ z88dk-1.8.ds1/src/zcc/zcc.c
+@@ -1110,7 +1110,7 @@ void SetShortObj(char *arg)
+ void DispInfo(void)
+ {
+         printf("zcc - Frontend for the z88dk Cross-C Compiler\n");
+-        printf(version);
++        printf("%s",version);
+ }
+ 
+ 

@@ -1,0 +1,15 @@
+#!/bin/sh -e
+#DEBHELPER#
+set -e
+
+. /usr/share/debconf/confmodule
+
+db_version 2.0 || true
+
+db_get z88dk/configure-defaultpackage || true
+
+pack=$RET
+if [ -e /usr/share/z88dk/lib/config/$pack.cfg ]; then
+    rm -f /usr/share/z88dk/lib/config/zcc.cfg;
+    ln -s /usr/share/z88dk/lib/config/$pack.cfg /usr/share/z88dk/lib/config/zcc.cfg
+fi

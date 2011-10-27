@@ -1,0 +1,26 @@
+This is a prepackaged version of a Z80 processor assembler and SmallC+
+cross compiler.  It was Debianised by Krystian Wlosek <kwlosek@gmail.com>,
+and uploaded by Piotr Roszatycki <dexter@debian.org>, using files obtained
+from http://sourceforge.net/project/showfiles.php?group_id=2917
+
+More information about a Z80 processor assembler and SmallC+ cross
+compiler is available from <URL:http://www.z88dk.org/>
+
+Changes were made as follows:
+   * Repackage upstream source:
+     - remove CVS directories
+     - remove binary files
+   * Patched sccz80/stmt.c.diff
+     http://sourceforge.net/tracker/index.php?func=detail&aid=1377968&group_id=2917&atid=302917
+   * Patched Makefile - clean install procedure
+   * Added prefix z88dk- to executable file.
+   * Added alternative links.
+
+Copyright and licence notice:
+
+  Copyright (c) 2000-2008 by Dom Morris and others. All rights reserved.
+  This program is free software; you can redistribute it and/or modify
+  it under The Clarified Artistic License.
+
+On any Debian system, you can find the complete text of the Artistic
+License in the file  /usr/share/common-licenses/Artistic

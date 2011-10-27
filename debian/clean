@@ -1,0 +1,4 @@
+src/config.h
+libsrc/debug/zcc_opt.def
+libsrc/graphics/x11/zcc_opt.def
+include/X11

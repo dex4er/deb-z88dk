@@ -7,7 +7,7 @@ pwd = $(shell pwd)
 
 override_dh_auto_clean:
 	make clean || true
-	rm -rf bin usr
+	rm -rf bin usr debian/tmp debian/usr
 
 override_dh_auto_configure:
 	rm -rf bin usr
@@ -35,14 +35,17 @@ override_dh_auto_install-arch:
 
 override_dh_auto_install-indep: override_dh_auto_install-arch
 	make -C $(pwd)/libsrc install
+	make prefix=/usr DESTDIR=$(pwd)/debian install
 	make -e prefix=$(pwd)/debian/tmp/usr install-libs
 	mv -f debian/tmp/usr/lib/z88dk/lib/clibs/* debian/tmp/usr/share/z88dk/lib/clibs
+	./config.sh /usr/share/z88dk/ z88
+	cp -a lib/config/*.cfg debian/tmp/usr/share/z88dk/lib/config/
 	rm -f debian/tmp/usr/share/z88dk/lib/config/zcc.cfg
 	rm -f debian/tmp/usr/share/z88dk/lib/config/*.lnx
 	for i in debian/tmp/usr/share/z88dk/lib/config/*.cfg; do \
-	    mv $$i $$i.tmp; cat $$i.tmp | \
-	        sed 's/^Z80EXE.*$$/Z80EXE\t\tz88dk-z80asm/g' | sed 's/^CPP.*$$/CPP\t\tz88dk-zcpp/g' | \
-	        sed 's/^LINKER.*$$/LINKER\t\tz88dk-z80asm/g' | sed 's/^COMPILER.*$$/COMPILER\tz88dk-sccz80/g' | \
-	        sed 's/^COPTEXE.*$$/COPTEXE\t\tz88dk-copt/g' | sed 's/^APPMAKER.*$$/APPMAKER\tz88dk-appmake/g' > $$i; \
-	    rm $$i.tmp; \
+	   mv $$i $$i.tmp; cat $$i.tmp | \
+	       sed 's/^Z80EXE.*$$/Z80EXE\t\tz88dk-z80asm/g' | sed 's/^CPP.*$$/CPP\t\tz88dk-zcpp/g' | \
+	       sed 's/^LINKER.*$$/LINKER\t\tz88dk-z80asm/g' | sed 's/^COMPILER.*$$/COMPILER\tz88dk-sccz80/g' | \
+	       sed 's/^COPTEXE.*$$/COPTEXE\t\tz88dk-copt/g' | sed 's/^APPMAKER.*$$/APPMAKER\tz88dk-appmake/g' > $$i; \
+	   rm $$i.tmp; \
 	done

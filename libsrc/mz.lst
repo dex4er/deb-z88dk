@@ -40,7 +40,7 @@ stdio/mz/fgetc_cons
 stdio/fgets_cons
 stdio/mz/fputc_cons
 stdio/mz/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdlib/abs
 stdlib/atexit
 stdlib/atoi
@@ -70,6 +70,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -188,7 +189,8 @@ graphics/mz/xorpixl
 graphics/mz/clsgraph
 graphics/putsprite2
 graphics/point
-graphics/pointxy
+graphics/mz/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/rscroll
 graphics/uncircle

@@ -39,7 +39,7 @@ stdio/abc80/fgetc_cons
 stdio/abc80/fputc_cons
 stdio/fgets_cons
 stdio/abc80/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdlib/abs
 stdlib/atexit
 stdlib/atoi
@@ -69,6 +69,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -183,7 +184,6 @@ graphics/liner
 graphics/lscroll
 graphics/plot
 graphics/abc80/clsgraph
-graphics/abc80/xorgraph
 graphics/abc80/pixel
 graphics/plotpixl_smc
 graphics/respixl_smc
@@ -192,6 +192,7 @@ graphics/putsprite_smc
 graphics/swapgfxbk_foo
 graphics/point
 graphics/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/rscroll
 graphics/uncircle
@@ -205,3 +206,4 @@ graphics/xorplot
 graphics/setxy
 games/joystick
 printflike/ltoa_any
+abc80/abc_inv

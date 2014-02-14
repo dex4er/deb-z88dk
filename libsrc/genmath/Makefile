@@ -1,5 +1,6 @@
 #
 # Wahey, a messed up makefile for building libraries!
+# $Id: Makefile,v 1.21 2008/03/05 20:35:46 dom Exp $
 #
 
 include ../Make.config
@@ -22,10 +23,10 @@ OBJECTS = $(CFILES:.c=.o)
 all: genmath
 
 genmath: $(OBJECTS)
-	$(LIBLINKER) -x$../$(OUTPUT_DIRECTORY)/gen_math @genlist
+	$(LIBLINKER) -x../$(OUTPUT_DIRECTORY)/gen_math @genlist
 
 .c.o:
-	zcc $(CFLAGS) $*.c
+	zcc +test $(CFLAGS) $*.c
 
 clean:
 	$(RM) *.o* *.sym *.map *.err zcc_opt.def *.i $(AFILES)

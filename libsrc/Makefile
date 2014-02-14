@@ -4,14 +4,18 @@
 # Problems? Contact the person to blame(!) above the section
 # for the library
 #
-# $Id: Makefile,v 1.88 2007/06/11 14:48:21 stefano Exp $
+# $Id: Makefile,v 1.111 2008/03/04 11:31:10 aralbrec Exp $
 
 
 include Make.config
 
+# LIBRARIES not built by the global list below:
+# - SP1 (build depends on customization and machine target, "make sp1" for options)
+
 all:	genlibs z88libs tilibs zxlibs \
 	debug.lib \
-	nc_clib.lib vz_clib.lib vzansi_clib.lib abc80_clib.lib \
+	nc_clib.lib vz_clib.lib vzansi_clib.lib \
+	abc80_clib.lib abc80ansi_clib.lib abc800_clib.lib \
 	aceansi_clib.lib aquarius_clib.lib aquansi_clib.lib \
 	cpc_clib.lib cpcansi_clib.lib cpcfs.lib cpc_math.lib cpcgray.lib \
 	cpm_clib.lib c128ansi_clib.lib \
@@ -20,7 +24,8 @@ all:	genlibs z88libs tilibs zxlibs \
 	ozansi_clib.lib rex_clib.lib rcmx000_clib.lib \
 	svi_clib.lib sam_clib.lib samansi_clib.lib \
 	pps_clib.lib ppsansi_clib.lib embedded_clib.lib \
-	zx81_clib.lib zx81ansi_clib.lib
+	test_clib.lib sms_clib.lib \
+	zx81libs
 
 genlibs: gen_math.lib malloc.lib z80_crt0.lib ndos.lib adt.lib balloc.lib \
          im2.lib rect.lib algorithm.lib
@@ -33,33 +38,29 @@ tilibs: ti82ansi_clib.lib ti82_clib.lib ti83ansi_clib.lib ti83_clib.lib \
 	ti86ansi_clib.lib ti86_clib.lib \
 	tigray82.lib tigray83.lib tigray83p.lib tigray85.lib tigray86.lib
 
-zxlibs: ts2068_clib.lib zx_clib.lib zxan_clib.lib ts2068an_clib.lib zxvgs.lib zx_math.lib zx_mathtiny.lib
+zxlibs: ts2068_clib.lib zx_clib.lib zxan_clib.lib ts2068an_clib.lib zxvgs.lib mzx.lib mzx_tiny.lib
 
+zx81libs: zx81_clib.lib zx81ansi_clib.lib gfx81.lib gfx81hr64.lib gfx81hr192.lib m81.lib m81_tiny.lib
 
 # moving external shell scripts to makefile to make life easy on
 # the windows platform devs (ie Me :-) -- gamesdeps.sh, gfxdeps.sh, tideps.sh
 
-#  $Id: Makefile,v 1.88 2007/06/11 14:48:21 stefano Exp $
 #  short script to sort out games dependencies
 gamesdeps:
 	$(RM) -f games/*.o
 
-# $Id: Makefile,v 1.88 2007/06/11 14:48:21 stefano Exp $
 #  short script to sort out gfx dependencies
 gfxdeps:
 	$(RM) -f graphics/*.o
 	$(RM) -f graphics/ticalc/*.o
-	$(RM) -f graphics/ace/*.o
 	$(RM) -f graphics/gray/*.o
+	$(RM) -f graphics/gray/ticalc/*.o
 	$(RM) -f graphics/spectrum/*.o
-	$(RM) -f graphics/vz200/*.o
-	$(RM) -f graphics/zx81/*.o
 	$(RM) -f graphics/z88/*.o
 	$(RM) -f graphics/text/*.o
 	$(RM) -f graphics/text6/*.o
-	$(RM) -f graphics/sam/*.o
+	cd graphics ; $(MAKE) ; cd ..
 
-#  $Id: Makefile,v 1.88 2007/06/11 14:48:21 stefano Exp $
 #  short script to sort out ticalc dependencies
 tideps:
 	$(RM) -f stdio/ticalc/*.o
@@ -70,6 +71,19 @@ tideps:
 	$(RM) -f graphics/ticalc/*.o
 	$(RM) -f graphics/gray/*.o
 	$(RM) -f graphics/gray/ticalc/*.o
+
+zx81deps:
+	$(RM) -f strings/*.o
+	$(RM) -f stdlib/*.o
+	$(RM) -f stdio/*.o
+	$(RM) -f stdio/ansi/zx81/*.o
+	$(RM) -f input/spectrum/*.o
+	$(RM) -f input/zx81/*.o
+	$(RM) -f games/*.o
+	$(RM) -f graphics/*.o
+	$(RM) -f graphics/zx81/*.o
+	$(RM) -f graphics/zx81/hr/*.o
+	$(RM) -f graphics/gray/*.o
 
 # interesting algorithms - aralbrec
 algorithm.lib:
@@ -191,7 +205,7 @@ z88_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) lz88; cd ..
+	cd games ; $(MAKE) lz88 ; cd ..
 	$(LIBLINKER) -DFORz88 -x$(OUTPUT_DIRECTORY)/z88_clib @$(LISTFILE_DIRECTORY)/z88.lst
 
 # z88 ansi library - dom
@@ -243,7 +257,7 @@ zx_clib.lib:
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
 	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx -x$(OUTPUT_DIRECTORY)/zx_clib @$(LISTFILE_DIRECTORY)/zx.lst
 
 # 64/32 column library for TS2068 - dom/stefano/alvin
@@ -263,7 +277,7 @@ ts2068_clib.lib:
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
 	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx -x$(OUTPUT_DIRECTORY)/ts2068_clib @$(LISTFILE_DIRECTORY)/ts2068.lst
 
 # ZXVGS - yarek
@@ -276,17 +290,17 @@ zxvgs.lib:
 	$(LIBLINKER) -DFORzx -x$(OUTPUT_DIRECTORY)/zxvgs @$(LISTFILE_DIRECTORY)/zxvgs.lst
 
 # ZX Spectrum maths library - Stefano
-zx_math.lib:
+mzx.lib:
 	@echo ''
 	@echo '--- Building ZX Spectrum Maths Library ---'
 	@echo ''
-	cd zxmath ; $(MAKE) zx_math ; cd ..
+	cd zxmath ; $(MAKE) mzx ; cd ..
 
-zx_mathtiny.lib:
+mzx_tiny.lib:
 	@echo ''
 	@echo '--- Building ZX Spectrum Tiny Maths Library ---'
 	@echo ''
-	cd zxmath ; $(MAKE) zx_mathtiny ; cd ..
+	cd zxmath ; $(MAKE) mzx_tiny ; cd ..
 
 # vt100 for sprinter - dom
 ppsansi_clib.lib:
@@ -305,7 +319,7 @@ ppsansi_clib.lib:
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
 	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx -x$(OUTPUT_DIRECTORY)/ppsansi_clib @$(LISTFILE_DIRECTORY)/ppsansi.lst
 
 # Native for sprinter - dom
@@ -324,8 +338,8 @@ pps_clib.lib:
 	cd time ; $(MAKE) lpps ; cd ..
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
-	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd spectrum ; $(MAKE) lzx ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx -x$(OUTPUT_DIRECTORY)/pps_clib @$(LISTFILE_DIRECTORY)/pps.lst
 
 # vt100 C lib for spectrum - stefano/dom
@@ -348,7 +362,7 @@ zxan_clib.lib:
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
 	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx $(COLDEFS) -x$(OUTPUT_DIRECTORY)/zxan_clib @$(LISTFILE_DIRECTORY)/zxansi.lst
 
 # vt100 C lib for TS2068 - stefano/dom
@@ -371,7 +385,7 @@ ts2068an_clib.lib:
 	cd rs232 ; $(MAKE) lzx ; cd ..
 	$(MAKE) gamesdeps
 	cd spectrum ; $(MAKE) ; cd ..
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORzx $(COLDEFS) -x$(OUTPUT_DIRECTORY)/ts2068an_clib @$(LISTFILE_DIRECTORY)/ts2068an.lst
 
 # Untested C lib for NC100 machines - dom
@@ -420,28 +434,70 @@ zx81_clib.lib:
 	@echo ''
 	@echo '--- Building ZX81 Library  ---'
 	@echo ''
-	$(MAKE) gfxdeps
+	$(MAKE) zx81deps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
-	cd stdio ; $(MAKE) generic ; cd ..
+	cd stdio ; $(MAKE) generic_iy ; cd ..
 	cd printflike ; $(MAKE) ; cd ..
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(LIBLINKER) -IXIY -DFORzx81 -x$(OUTPUT_DIRECTORY)/zx81_clib @$(LISTFILE_DIRECTORY)/zx81.lst
+	$(MAKE) zx81deps
 
 # ZX81 ansi lib - Stefano
 zx81ansi_clib.lib:
 	@echo ''
 	@echo '--- Building ZX81 ANSI Library  ---'
 	@echo ''
-	$(MAKE) gfxdeps
+	$(MAKE) zx81deps
+	$(RM) stdio/ansi/zx81/f_ansi_char.o
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
-	cd stdio ; $(MAKE) generic ; cd ..
+	cd stdio ; $(MAKE) generic_iy ; cd ..
 	cd printflike ; $(MAKE) ; cd ..
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
-	$(LIBLINKER) -IXIY -DFORzx81 -x$(OUTPUT_DIRECTORY)/zx81ansi_clib @$(LISTFILE_DIRECTORY)/zx81ansi.lst
+	$(LIBLINKER) -IXIY -DFORzx81 $(COLDEFS) -x$(OUTPUT_DIRECTORY)/zx81ansi_clib @$(LISTFILE_DIRECTORY)/zx81ansi.lst
+	$(MAKE) zx81deps
+
+# ZX81 std graphics lib - Stefano
+gfx81.lib:
+	@echo ''
+	@echo '--- Building ZX81 Standard Graphics Library  ---'
+	@echo ''
+	$(MAKE) zx81deps
+	$(LIBLINKER) -IXIY -DFORzx81 -x$(OUTPUT_DIRECTORY)/gfx81 @$(LISTFILE_DIRECTORY)/gfx81.lst
+	$(MAKE) zx81deps
+
+# ZX81 HR graphics lib - Stefano
+gfx81hr64.lib:
+	@echo ''
+	@echo '--- Building ZX81 High Resolution Library (64 rows)  ---'
+	@echo ''
+	$(MAKE) zx81deps
+	$(LIBLINKER) -IXIY -DFORzx81hr64 -x$(OUTPUT_DIRECTORY)/gfx81hr64 @$(LISTFILE_DIRECTORY)/gfx81hr.lst
+	$(MAKE) zx81deps
+
+gfx81hr192.lib:
+	@echo ''
+	@echo '--- Building ZX81 High Resolution Library (192 rows)  ---'
+	@echo ''
+	$(MAKE) zx81deps
+	$(LIBLINKER) -IXIY -DFORzx81hr192 -x$(OUTPUT_DIRECTORY)/gfx81hr192 @$(LISTFILE_DIRECTORY)/gfx81hr.lst
+	$(MAKE) zx81deps
+
+# ZX81 maths library - Stefano
+m81.lib:
+	@echo ''
+	@echo '--- Building ZX 81 Maths Library ---'
+	@echo ''
+	cd zxmath ; $(MAKE) m81 ; cd ..
+
+m81_tiny.lib:
+	@echo ''
+	@echo '--- Building ZX 81 Tiny Maths Library ---'
+	@echo ''
+	cd zxmath ; $(MAKE) m81_tiny ; cd ..
 
 # Texas Instrument's calculators: - stefano/henk
 # almost the same lib code with different -D flag set
@@ -458,7 +514,7 @@ ti82ansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti82 -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ti82ansi_clib @$(LISTFILE_DIRECTORY)/ticansi.lst
 
 ti82_clib.lib:
@@ -473,7 +529,7 @@ ti82_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti82 -x$(OUTPUT_DIRECTORY)/ti82_clib @$(LISTFILE_DIRECTORY)/ticalc.lst
 
 tigray82.lib:
@@ -496,7 +552,7 @@ ti83ansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti83 -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ti83ansi_clib @$(LISTFILE_DIRECTORY)/ticansi.lst
 
 ti83_clib.lib:
@@ -511,7 +567,7 @@ ti83_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti83 -x$(OUTPUT_DIRECTORY)/ti83_clib @$(LISTFILE_DIRECTORY)/ticalc.lst
 
 tigray83.lib:
@@ -533,7 +589,7 @@ ti83pansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti83p -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ti83pansi_clib @$(LISTFILE_DIRECTORY)/ticansi.lst
 
 ti83p_clib.lib:
@@ -548,7 +604,7 @@ ti83p_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti83p -x$(OUTPUT_DIRECTORY)/ti83p_clib @$(LISTFILE_DIRECTORY)/ticalc.lst
 
 tigray83p.lib:
@@ -570,7 +626,7 @@ ti85ansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti85 -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ti85ansi_clib @$(LISTFILE_DIRECTORY)/ticansi.lst
 
 ti85_clib.lib:
@@ -585,7 +641,7 @@ ti85_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti85 -x$(OUTPUT_DIRECTORY)/ti85_clib @$(LISTFILE_DIRECTORY)/ticalc.lst
 
 tigray85.lib:
@@ -607,7 +663,7 @@ ti86ansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti86 -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ti86ansi_clib @$(LISTFILE_DIRECTORY)/ticansi.lst
 
 ti86_clib.lib:
@@ -622,7 +678,7 @@ ti86_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lticalc ; cd ..
 	$(LIBLINKER) -DFORti86 -x$(OUTPUT_DIRECTORY)/ti86_clib @$(LISTFILE_DIRECTORY)/ticalc.lst
 
 tigray86.lib:
@@ -648,7 +704,7 @@ ozansi_clib.lib:
 	cd assert ; $(MAKE) ; cd ..
 	cd oz ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) loz ; cd ..
 	$(LIBLINKER) -DFORoz -DPACKEDFONT -x$(OUTPUT_DIRECTORY)/ozansi_clib @$(LISTFILE_DIRECTORY)/ozansi.lst
 
 # CPM lib - Stefano/dom
@@ -670,6 +726,7 @@ mz_clib.lib:
 	@echo ''
 	@echo '--- Building Sharp MZ Library ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -683,6 +740,7 @@ mzansi_clib.lib:
 	@echo ''
 	@echo '--- Building Sharp MZ ANSI Library ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -691,7 +749,7 @@ mzansi_clib.lib:
 	cd assert ; $(MAKE) ; cd ..
 	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/mzansi_clib @$(LISTFILE_DIRECTORY)/mzansi.lst
 
-# ABC80 ANSI library - Stefano
+# ABC80 library - Stefano
 abc80_clib.lib:
 	@echo ''
 	@echo '--- Building ABC80 Library ---'
@@ -704,6 +762,34 @@ abc80_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/abc80_clib @$(LISTFILE_DIRECTORY)/abc80.lst
+
+# ABC80 ANSI library - Stefano
+abc80ansi_clib.lib:
+	@echo ''
+	@echo '--- Building ABC80 ANSI Library ---'
+	@echo ''
+	$(MAKE) gfxdeps
+	cd strings ; $(MAKE) ; cd ..
+	cd stdlib ; $(MAKE) gen ; cd ..
+	cd stdio ; $(MAKE) generic ; cd ..
+	cd printflike ; $(MAKE) ; cd ..
+	cd setjmp ; $(MAKE) ; cd ..
+	cd assert ; $(MAKE) ; cd ..
+	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/abc80ansi_clib @$(LISTFILE_DIRECTORY)/abc80ansi.lst
+
+# ABC800 library - Stefano
+abc800_clib.lib:
+	@echo ''
+	@echo '--- Building ABC800 Library ---'
+	@echo ''
+	$(MAKE) gfxdeps
+	cd strings ; $(MAKE) ; cd ..
+	cd stdlib ; $(MAKE) gen ; cd ..
+	cd stdio ; $(MAKE) generic ; cd ..
+	cd printflike ; $(MAKE) ; cd ..
+	cd setjmp ; $(MAKE) ; cd ..
+	cd assert ; $(MAKE) ; cd ..
+	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/abc800_clib @$(LISTFILE_DIRECTORY)/abc800.lst
 
 # Jupiter ACE library - Stefano
 aceansi_clib.lib:
@@ -718,7 +804,7 @@ aceansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lace ; cd ..
 	$(LIBLINKER) -DFORjupiter -x$(OUTPUT_DIRECTORY)/aceansi_clib.lib @$(LISTFILE_DIRECTORY)/aceansi.lst
 
 # Mattel Aquarius library - Stefano
@@ -726,6 +812,7 @@ aquarius_clib.lib:
 	@echo ''
 	@echo '--- Building Mattel Aquarius Library ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -733,8 +820,7 @@ aquarius_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
-	$(MAKE) gfxdeps
+	cd games ; $(MAKE) laquarius ; cd ..
 	$(LIBLINKER) -DFORaquarius -x$(OUTPUT_DIRECTORY)/aquarius_clib.lib @$(LISTFILE_DIRECTORY)/aquarius.lst
 
 # Mattel Aquarius ANSI library - Stefano
@@ -742,6 +828,7 @@ aquansi_clib.lib:
 	@echo ''
 	@echo '--- Building Mattel Aquarius ANSI Library ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -749,8 +836,7 @@ aquansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
-	$(MAKE) gfxdeps
+	cd games ; $(MAKE) laquarius ; cd ..
 	$(LIBLINKER) -DFORaquarius -x$(OUTPUT_DIRECTORY)/aquansi_clib.lib @$(LISTFILE_DIRECTORY)/aquansi.lst
 
 # Xircom REX 6000 library - Dominic
@@ -777,7 +863,7 @@ sam_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORsam -x$(OUTPUT_DIRECTORY)/sam_clib @$(LISTFILE_DIRECTORY)/sam.lst
 
 # Sam Coupe library - Stefano & Frode
@@ -793,7 +879,7 @@ samansi_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
 	$(MAKE) gamesdeps
-	cd games ; $(MAKE) ; cd ..
+	cd games ; $(MAKE) lzx ; cd ..
 	$(LIBLINKER) -DFORsam -x$(OUTPUT_DIRECTORY)/samansi_clib @$(LISTFILE_DIRECTORY)/samansi.lst
 
 # Spectravideo SVI library - Stefano
@@ -809,17 +895,20 @@ svi_clib.lib:
 	cd assert ; $(MAKE) ; cd ..
 	$(LIBLINKER) -DFORsvi -x$(OUTPUT_DIRECTORY)/svi_clib @$(LISTFILE_DIRECTORY)/svi.lst
 
-# MSX1 library - Stefano
+# MSX library - Stefano
 msx_clib.lib:
 	@echo ''
 	@echo '--- Building MSX Library  ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
 	cd printflike ; $(MAKE) ; cd ..
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
+	$(MAKE) gamesdeps
+	cd games ; $(MAKE) lmsx ; cd ..
 	$(LIBLINKER) -DFORmsx -x$(OUTPUT_DIRECTORY)/msx_clib @$(LISTFILE_DIRECTORY)/msx.lst
 
 # NASCOM library - Stefano
@@ -867,6 +956,7 @@ cpc_clib.lib:
 	@echo ''
 	@echo '--- Building Amstrad CPC Library  ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -879,6 +969,7 @@ cpcansi_clib.lib:
 	@echo ''
 	@echo '--- Building Amstrad CPC ANSI Library  ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -912,13 +1003,13 @@ c128ansi_clib.lib:
 	@echo ''
 	@echo '--- Building Commodore 128 ANSI Library  ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
 	cd printflike ; $(MAKE) ; cd ..
 	cd setjmp ; $(MAKE) ; cd ..
 	cd assert ; $(MAKE) ; cd ..
-	$(MAKE) gfxdeps
 	$(LIBLINKER) -DFORc128 -x$(OUTPUT_DIRECTORY)/c128ansi_clib @$(LISTFILE_DIRECTORY)/c128ansi.lst
 
 # Grundy NewBrain library - Stefano
@@ -926,6 +1017,7 @@ newbrain_clib.lib:
 	@echo ''
 	@echo '--- Building Grundy NewBrain Library  ---'
 	@echo ''
+	$(MAKE) gfxdeps
 	cd strings ; $(MAKE) ; cd ..
 	cd stdlib ; $(MAKE) gen ; cd ..
 	cd stdio ; $(MAKE) generic ; cd ..
@@ -934,7 +1026,6 @@ newbrain_clib.lib:
 	cd setjmp ; $(MAKE) ; cd ..
 	cd time ; $(MAKE) lnewbrain ; cd ..
 	cd assert ; $(MAKE) ; cd ..
-	$(MAKE) gfxdeps
 	$(LIBLINKER) -DFORnewbrain -x$(OUTPUT_DIRECTORY)/newbrain_clib @$(LISTFILE_DIRECTORY)/newbrain.lst
 	$(LIBLINKER) -DFORnewbrain -x$(OUTPUT_DIRECTORY)/nbcpm_clib @$(LISTFILE_DIRECTORY)/nbcpm.lst
 
@@ -943,13 +1034,13 @@ rcmx000_clib.lib:
 	@echo ''
 	@echo '--- Building RCM2/3000 Library  ---'
 	@echo ''
-	cd strings ; $(MAKE)
+	make -C strings clean all
 	cd stdlib ; $(MAKE) gen
 	cd stdio ; $(MAKE) gen
 	cd printflike ; $(MAKE)
 	cd setjmp ; $(MAKE)
 	cd assert ; $(MAKE)
-	z80asm -IXIY -d -ns -nm -Mo -DFORrcmx000 -x$(OUTPUT_DIRECTORY)/rcmx000_clib @$(LISTFILE_DIRECTORY)/rcmx000.lst
+	z80asm -RCMX000 -d -ns -nm -Mo -DFORrcmx000 -x$(OUTPUT_DIRECTORY)/rcmx000_clib @$(LISTFILE_DIRECTORY)/rcmx000.lst
 
 # embedded target - contributed by Daniel Wallner
 embedded_clib.lib:
@@ -977,8 +1068,50 @@ sms_clib.lib:
 	$(MAKE) -C assert
 	$(LIBLINKER) -DFORsms -x$(OUTPUT_DIRECTORY)/sms_clib @$(LISTFILE_DIRECTORY)/sms.lst
 
+# Test platform - dom
+test_clib.lib:
+	@echo ''
+	@echo '--- Building Test System Library  ---'
+	@echo ''
+	$(MAKE) -C strings
+	$(MAKE) -C stdlib
+	$(MAKE) -C stdio
+	$(MAKE) -C printflike
+	$(MAKE) -C setjmp
+	$(MAKE) -C assert
+	$(LIBLINKER) -x$(OUTPUT_DIRECTORY)/test_clib @$(LISTFILE_DIRECTORY)/test.lst
 
+# SP1 sprite library - aralbrec
+sp1:
+	@echo
+	@echo SP1 Software Sprite Engine
+	@echo
+	@echo Prior to building the library you can customize several
+	@echo parameters such as display size, memory map, etc by editing
+	@echo the file "customize.asm" found in {z88dk}/libsrc/sprites/software/sp1/{target}
+	@echo Otherwise the defaults will be used.
+	@echo 
+	@echo You must specify a target machine to build the library.
+	@echo Only one version of the library can exist at a time.
+	@echo 
+	@echo make sp1-spectrum      (256x192 pixel, 32x24 attribute)
+	@echo make sp1-ts2068hr      (512x192 pixel monochrome)
+	@echo make sp1-zx81hr        (256x192 pixel monochrome)
+	@echo
+	@echo make sp1-clean         (recommended prior to building)
+	@echo
 
+sp1-spectrum:
+	cd sprites/software/sp1 ; $(MAKE) sp1-spectrum; cd ../../..
+
+sp1-ts2068hr:
+	cd sprites/software/sp1 ; $(MAKE) sp1-ts2068hr; cd ../../..
+
+sp1-zx81hr:
+	cd sprites/software/sp1 ; $(MAKE) sp1-zx81hr; cd ../../..
+
+sp1-clean:
+	cd sprites/software/sp1 ; $(MAKE) clean; cd ../../..
 
 clean:
 	cd assert ; $(MAKE) clean ; cd ..
@@ -1011,8 +1144,19 @@ clean:
 	cd im2 ; $(MAKE) clean ; cd ..
 	cd rect ; $(MAKE) clean ; cd ..
 	cd algorithm ; $(MAKE) clean ; cd ..
+	cd debug ; $(MAKE) clean ; cd ..
+	cd oz ; $(MAKE) clean ; cd ..
+	cd input ; $(MAKE) clean ; cd ..
+	cd abc80 ; $(RM) *.o ; cd ..
+	cd abc800 ; $(RM) *.o ; cd ..
+	cd msx ; $(RM) *.o ; cd ..
+	cd newbrain ; $(RM) *.o ; cd ..
+	cd vz ; $(RM) *.o ; cd ..
+	cd zx81 ; $(RM) *.o ; cd ..
 	$(MAKE) -C sms clean
-
+	cd sprites/software/sp1 ; $(MAKE) clean ; cd ../../..
 
 install:
 	cp $(OUTPUT_DIRECTORY)/*.lib ../lib/clibs
+
+

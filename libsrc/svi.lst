@@ -39,7 +39,7 @@ stdio/fabandon
 stdio/svi/fgetc_cons
 stdio/fgets_cons
 stdio/svi/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdio/svi/fputc_cons
 stdlib/abs
 stdlib/atexit
@@ -70,6 +70,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -185,6 +186,7 @@ graphics/plot
 graphics/plotpixl
 graphics/point
 graphics/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/respixl
 graphics/rscroll
@@ -199,3 +201,4 @@ graphics/vz200/pixladdr
 graphics/vz200/swapgfxbk
 graphics/vz200/clsgraph
 printflike/ltoa_any
+games/joystick

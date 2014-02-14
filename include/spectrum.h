@@ -1,7 +1,7 @@
 /*
  * Headerfile for Spectrum specific stuff
  *
- * $Id: spectrum.h,v 1.20 2007/06/23 07:01:10 aralbrec Exp $
+ * $Id: spectrum.h,v 1.26 2008/02/12 14:43:57 stefano Exp $
  */
 
 #ifndef __SPECTRUM_H__
@@ -115,6 +115,7 @@
 #define TK_NEW         230
 #define TK_BORDER      231
 #define TK_CONTINUE    232
+#define TK_CONT        232
 #define TK_DIM         233
 #define TK_REM         234
 #define TK_FOR         235
@@ -132,6 +133,7 @@
 #define TK_RUN         247
 #define TK_SAVE        248
 #define TK_RANDOMIZE   249
+#define TK_RAND        249
 #define TK_IF          250
 #define TK_CLS         251
 #define TK_DRAW        252
@@ -145,8 +147,8 @@
 ///////////////////////////////////////////
 
 extern int  __LIB__ zx_128mode(void);            // true or false
+extern int  __LIB__ zx_floatingbus(void);        // true or false
 extern int  __LIB__ zx_issue3(void);             // true or false
-
 extern int  __LIB__ zx_type(void);		 // 0:48K - 1: 128K - 2: TS2068
 extern int  __LIB__ zx_model(void);
 extern int  __LIB__ zx_basic_length(void);
@@ -158,18 +160,20 @@ extern int  __LIB__ zx_fullerstick(void);
 extern int  __LIB__ zx_kempstonmouse(void);
 extern int  __LIB__ zx_kempston(void);
 extern int  __LIB__ zx_iss_stick(void);
+extern int  __LIB__ zx_mb02(void);
 extern int  __LIB__ zx_multiface(void);
 extern int  __LIB__ zx_disciple(void);
 extern int  __LIB__ zx_plus3fdc(void);
-extern int  __LIB__ zx_trd(void);
 extern int  __LIB__ zx_extsys(void);
 extern int  __LIB__ zx_basemem(void);
+extern int  __LIB__ zx_break(void);
 
 
 ///////////////////////////////
 // INTERFACE FOR CALLING BASIC
 ///////////////////////////////
 
+extern int  __LIB__ __FASTCALL__ zx_syntax(char *statement);
 extern int  __LIB__ __FASTCALL__ zx_goto(int line);
 extern int  __LIB__              zx_getstr(char variable, char *value);
 extern void __LIB__              zx_setstr(char variable, char *value);

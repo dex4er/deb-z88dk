@@ -39,7 +39,7 @@ stdio/8080/fabandon
 stdio/nascom/fgetc_cons
 stdio/fgets_cons
 stdio/nascom/getk
-stdio/spectrum/puts_cons
+stdio/puts_cons
 stdio/nascom/fputc_cons
 stdlib/abs
 stdlib/atexit
@@ -70,6 +70,7 @@ stdlib/ltoa_callee
 stdlib/outp
 stdlib/outp_callee
 stdlib/rand
+stdlib/randomize
 stdlib/srand
 stdlib/strtol
 stdlib/strtol_callee
@@ -192,7 +193,8 @@ graphics/nascom/swapgfxbk
 graphics/text6/div3
 graphics/putsprite2
 graphics/point
-graphics/pointxy
+graphics/nascom/pointxy
+graphics/multipoint
 graphics/rbitmask
 graphics/rscroll
 graphics/uncircle

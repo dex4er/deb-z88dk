@@ -4,7 +4,7 @@
  *      This simply adds in the length of the program
  *      
  *      
- *      $Id: z88shell.c,v 1.1 2003/03/13 14:50:30 dom Exp $
+ *      $Id: z88shell.c,v 1.3 2007/06/24 15:32:04 dom Exp $
  */
 
 
@@ -15,12 +15,10 @@
 static char             *binname      = NULL;
 static char             *crtfile      = NULL;
 static char             *outfile      = NULL;
-static char              truncate     = 0;
 static char              help         = 0;
 
 static unsigned char    *memory;      /* Pointer to Z80 memory */
 static long              zorg;        /* Origin of compiler program */
-static int               truncat = 0; /* Do we want to truncate pages? */
 
 /* Options that are available for this module */
 option_t z88shell_options[] = {
@@ -41,8 +39,7 @@ void save_block(long filesize, char *base, char *ext);
  */
 
 int z88shell_exec(char *target)
-{
-    int     pages;          /* size of card in banks */       
+{ 
     FILE    *binfile;        /* Read in bin file */
     long    filesize;
     long    readlen;
@@ -122,6 +119,7 @@ int z88shell_exec(char *target)
 
 
     myexit(0,0);
+	return 0;
 }
 
 void save_block(long filesize, char *base, char *ext)

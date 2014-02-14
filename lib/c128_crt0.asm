@@ -2,7 +2,7 @@
 ;
 ;       Stefano Bodrato - 22/08/2001
 ;
-;	$Id: c128_crt0.asm,v 1.7 2002/04/24 08:15:02 stefano Exp $
+;	$Id: c128_crt0.asm,v 1.9 2007/06/27 20:49:27 dom Exp $
 ;
 
 
@@ -29,7 +29,7 @@
 
 ; Integer rnd seed
 
-        XDEF    int_seed
+        XDEF    _std_seed
 
 ; vprintf is internal to this file so we only ever include one of the set
 ; of routines
@@ -164,7 +164,7 @@ ENDIF
 
 ;Seed for integer rand() routines
 
-.int_seed       defw    0
+._std_seed       defw    0
 
 ;Atexit routine
 
@@ -186,7 +186,8 @@ ENDIF
 
 ; mem stuff
 
-         defm  "Small C+ C128"&0
+         defm  "Small C+ C128"
+	 defb  0
 
 ;All the float stuff is kept in a different file...for ease of altering!
 ;It will eventually be integrated into the library

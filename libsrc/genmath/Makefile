@@ -2,6 +2,8 @@
 # Wahey, a messed up makefile for building libraries!
 #
 
+include ../Make.config
+
 CFILES = \
 	acos.c \
 	asin.c \
@@ -20,10 +22,10 @@ OBJECTS = $(CFILES:.c=.o)
 all: genmath
 
 genmath: $(OBJECTS)
-	z80asm -d -ns -nm -Mo -x../gen_math @genlist
+	$(LIBLINKER) -x$../$(OUTPUT_DIRECTORY)/gen_math @genlist
 
 .c.o:
-	zcc -vn -make-lib $*.c
+	zcc $(CFLAGS) $*.c
 
 clean:
 	$(RM) *.o* *.sym *.map *.err zcc_opt.def *.i $(AFILES)

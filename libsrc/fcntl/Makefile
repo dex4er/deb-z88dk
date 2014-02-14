@@ -1,33 +1,46 @@
-# $Id: Makefile,v 1.13 2003/09/16 19:00:33 denniz Exp $
+# $Id: Makefile,v 1.15 2007/06/03 15:13:05 stefano Exp $
 
 lcpc:
-	cd cpc ; $(MAKE)
+	cd cpc ; $(MAKE) ; cd ..
 
 lz88:
-	cd z88 ; $(MAKE) z88_fcntl
+	cd z88 ; $(MAKE) z88_fcntl ; cd ..
 
 lzx:	
-	cd spectrum ; $(MAKE)
-	cd dummy    ; $(MAKE)
+	cd spectrum ; $(MAKE) ; cd ..
+	cd dummy    ; $(MAKE) ; cd ..
+
+lnewbrain:
+	@echo ''
+	@echo '---> Building NewBrain File library <---'
+	@echo ''
+	cd newbrain ; $(MAKE) ; cd ..
 
 lcpm:
-	cd cpm ; $(MAKE)
+	@echo ''
+	@echo '---> Building CP/M File library <---'
+	@echo ''
+	cd cpm ; $(MAKE) ; cd ..
 
 lpps:
-	cd sprinter ; $(MAKE)
+	@echo ''
+	@echo '---> Building P.P.Sprinter File library <---'
+	@echo ''
+	cd sprinter ; $(MAKE) ; cd ..
 
 lzxvgs:
-	cd zxvgs; $(MAKE)
+	cd zxvgs ; $(MAKE) ; cd ..
 
 lcpcold:
-	cd cpc ; $(MAKE)
-	cd dummy    ; $(MAKE)
+	cd cpc ; $(MAKE) ; cd ..
+	cd dummy ; $(MAKE) ; cd ..
 
 clean:
-	cd cpm ; $(MAKE) clean
-	cd dummy ; $(MAKE) clean
-	cd spectrum ; $(MAKE) clean
-	cd sprinter ; $(MAKE) clean
-	cd z88 ; $(MAKE) clean
-	cd zxvgs ; $(MAKE) clean
-	cd cpc ; $(MAKE) clean
+	cd cpm ; $(MAKE) clean ; cd ..
+	cd dummy ; $(MAKE) clean ; cd ..
+	cd spectrum ; $(MAKE) clean ; cd ..
+	cd newbrain ; $(MAKE) clean ; cd ..
+	cd sprinter ; $(MAKE) clean ; cd ..
+	cd z88 ; $(MAKE) clean ; cd ..
+	cd zxvgs ; $(MAKE) clean ; cd ..
+	cd cpc ; $(MAKE) clean ; cd ..

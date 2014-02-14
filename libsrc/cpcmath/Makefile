@@ -2,6 +2,8 @@
 # Wahey, a messed up makefile for building libraries!
 #
 
+include ../Make.config
+
 CFILES = \
 	amax.c \
 	amin.c \
@@ -38,25 +40,25 @@ lcpc_math: cpc_math
 cpc_math: 
 	$(MAKE) clean
 	$(MAKE) objs
-	z80asm -d -ns -nm -Mo -x../cpc_math @cpclist
+	$(LIBLINKER) -x../$(OUTPUT_DIRECTORY)/cpc_math @cpclist
 
 464_math: 
 	$(MAKE) clean
 	$(MAKE) objs
-	z80asm -d -ns -nm -Mo -DforCPC464 -x../464_math @468list
+	$(LIBLINKER) -DforCPC464 -x../$(OUTPUT_DIRECTORY)/464_math @468list
 
 664_math: 
 	$(MAKE) clean
 	$(MAKE) objs
-	z80asm -d -ns -nm -Mo -DforCPC664 -x../664_math @468list
+	$(LIBLINKER) -DforCPC664 -x../$(OUTPUT_DIRECTORY)/664_math @468list
 
 6128_math:
 	$(MAKE) clean
 	$(MAKE) objs
-	z80asm -d -ns -nm -Mo -DforCPC6128 -x../6128_math @468list
+	$(LIBLINKER) -DforCPC6128 -x../$(OUTPUT_DIRECTORY)/6128_math @468list
 
 .c.o:
-	zcc -vn -D__CPC__ -D__NATIVE_MATH__ -make-lib $*.c
+	zcc $(CFLAGS) -D__CPC__ -D__NATIVE_MATH__  $*.c
 
 clean:
 	$(RM) *.o* *.sym *.map *.err  zcc_opt.def *.i $(AFILES)

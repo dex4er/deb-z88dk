@@ -2,7 +2,7 @@
 ;
 ;       Stefano Bodrato May 2000
 ;
-;       $Id: abc80_crt0.asm,v 1.4 2002/04/24 08:15:02 stefano Exp $
+;       $Id: abc80_crt0.asm,v 1.6 2007/06/27 20:49:27 dom Exp $
 ;
 
                 MODULE  abc80_crt0
@@ -28,7 +28,7 @@
 
 ; Integer rnd seed
 
-        XDEF    int_seed
+        XDEF    _std_seed
 
 ; vprintf is internal to this file so we only ever include one of the set
 ; of routines
@@ -131,7 +131,7 @@ ENDIF
 
 ;Seed for integer rand() routines
 
-.int_seed       defw    0
+._std_seed       defw    0
 
 ;Atexit routine
 
@@ -150,7 +150,8 @@ ENDIF
 		defw	0
 .coords		defw	0
 
-         defm  "Small C+ ABC80"&0
+         defm  "Small C+ ABC80"
+	 defb  0
 
 ;All the float stuff is kept in a different file...for ease of altering!
 ;It will eventually be integrated into the library

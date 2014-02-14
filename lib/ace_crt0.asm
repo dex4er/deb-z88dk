@@ -2,7 +2,7 @@
 ;
 ;       Stefano Bodrato - Feb 2001
 ;
-;	$Id: ace_crt0.asm,v 1.5 2002/04/24 08:15:02 stefano Exp $
+;	$Id: ace_crt0.asm,v 1.7 2007/06/27 20:49:27 dom Exp $
 ;
 
 
@@ -29,7 +29,7 @@
 
 ; Integer rnd seed
 
-        XDEF    int_seed
+        XDEF    _std_seed
 
 ; vprintf is internal to this file so we only ever include one of the set
 ; of routines
@@ -128,7 +128,7 @@ ENDIF
 
 ;Seed for integer rand() routines
 
-.int_seed       defw    0
+._std_seed       defw    0
 
 ;Atexit routine
 
@@ -149,7 +149,8 @@ ENDIF
 .coords		defw	0
 .snd_tick	defb	0
 
-         defm  "Small C+ J.ACE"&0
+         defm  "Small C+ J.ACE"
+	 defb  0
 
 ;All the float stuff is kept in a different file...for ease of altering!
 ;It will eventually be integrated into the library

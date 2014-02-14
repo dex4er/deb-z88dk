@@ -2,7 +2,7 @@
 ;
 ;       Created 1/4/99 djm
 ;
-;	$Id: bas_crt0.asm,v 1.3 2001/10/15 21:05:02 dom Exp $
+;	$Id: bas_crt0.asm,v 1.5 2007/06/27 20:49:27 dom Exp $
 
 
 ;-----------
@@ -169,7 +169,7 @@ ENDIF
 .base_graphics  defw	0	; Address of the Graphics map
 .gfx_bank       defb    0	; And the bank
 
-.int_seed       defw    0	; Seed for integer rand() routines
+._std_seed       defw    0	; Seed for integer rand() routines
 
 .exitsp		defw	0	; Address of where the atexit() stack is
 .exitcount	defb	0	; How many routines on the atexit() stack
@@ -189,7 +189,8 @@ ENDIF
 ;-----------
 ; Unnecessary file signature
 ;-----------
-		defm	"Small C+ z88"&0
+		defm	"Small C+ z88"
+		defb	0
 
 ;-----------
 ; Floating point

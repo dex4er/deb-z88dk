@@ -4,7 +4,7 @@
  *
  *      This part deals with statements
  *
- *      $Id: stmt.c,v 1.11 2004/03/03 15:40:28 dom Exp $
+ *      $Id: stmt.c,v 1.14 2007/07/10 20:06:04 dom Exp $
  */
 
 #include "ccdefs.h"
@@ -378,10 +378,10 @@ void dofor()
 
 		jump(l_condition);		/*         goto condition             */
 		postlabel(wq.loop);		/* .loop                              */
-		statement();			/*         statement                  */
 		clearbuffer(buf3);		/*         modification               */
-		postlabel(l_condition);	/* .condition                         */
+		postlabel(l_condition);		/* .condition                         */
 		clearbuffer(buf2);		/*         if (!condition) goto exit  */
+		statement();			/*         statement                  */
 		jump(wq.loop);			/*         goto loop                  */
 		postlabel(wq.exit);		/* .exit                              */
 
@@ -413,7 +413,7 @@ void doswitch()
 		endlab=getlabel();
 		/* jump(endlab) ; */
 
-		buf = startbuffer(5);
+		buf = startbuffer(100);
 		statement() ;           /* cases, etc. */
 		/* jump(wq.exit) ; */
 		suspendbuffer();
@@ -690,7 +690,7 @@ void doasm()
  */
 			lab=0;
 			if (label[0]=='_') {
-				strcpy(label,label+1);
+				memmove(label,label+1,strlen(label+1)+1);
 				lab=2; 
                         } else if ( strncmp(label,"smc_",4)==0 ) {
                          	strcpy(label,label+4);
@@ -704,7 +704,7 @@ void doasm()
                                         myptr->storage = DECLEXTN;
                           }
 			  line[1]='_';
-			  strcpy(line+2,&line[(int)lab]);
+			  memmove(line+2,&line[(int)lab],strlen(&line[(int)lab])+1);
 			}
                 }
 #if 0

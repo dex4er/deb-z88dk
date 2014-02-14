@@ -1,13 +1,11 @@
 #
 # Wahey, a messed up makefile for building libraries!
 #
-# $Id: Makefile,v 1.7 2002/10/22 19:15:23 dom Exp $
+# $Id: Makefile,v 1.11 2006/12/31 22:14:53 aralbrec Exp $
 
-all: atol.o
-
-atol.o:  atol.c
-	zcc  +z88 -Wn43 -vn -make-lib atol.c
+all:
+	@echo ''
 
 
 clean:
-	$(RM) *.o* *.sym *.map zcc_opt.def *.i
+	$(RM) *.o* *.sym *.map zcc_opt.def

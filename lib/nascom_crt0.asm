@@ -5,7 +5,7 @@
 ;
 ; - - - - - - -
 ;
-;       $Id: nascom_crt0.asm,v 1.2 2003/06/27 14:04:12 stefano Exp $
+;       $Id: nascom_crt0.asm,v 1.5 2007/06/27 20:49:27 dom Exp $
 ;
 ; - - - - - - -
 
@@ -27,7 +27,7 @@
 	XDEF    cleanup         ;jp'd to by exit()
 	XDEF    l_dcal          ;jp(hl)
 
-	XDEF    int_seed        ;Integer rand() seed
+	XDEF    _std_seed        ;Integer rand() seed
 
 	XDEF    _vfprintf       ;jp to the printf() core
 
@@ -39,7 +39,7 @@
 	XDEF	heaplast	;Near malloc heap variables
 	XDEF	heapblocks
 
-	XDEF    base_graphics   ;Graphical variables
+	XDEF    base_graphics   ;Graphical variables (useless with NASCOM)
 	XDEF    coords          ;Current xy position
 
 	XDEF    montest         ;NASCOM: check the monitor type
@@ -57,8 +57,16 @@
 .start
 
 	ld	(start1+1),sp	;Save entry stack
-	ld      hl,-64		;Create an atexit() stack
-	add     hl,sp
+
+	; search for the top of writeble memory and set the stack pointer
+	ld	hl,ffffh
+	ld	a,55
+.stackloop
+	ld	(hl),a
+	cp	(hl)
+	dec	hl
+	jr	nz,stackloop
+
 	ld      sp,hl
 	ld      (exitsp),sp
 
@@ -144,7 +152,7 @@ ENDIF
 .coords         defw    0       ; Current graphics xy coordinates
 .base_graphics  defw    0       ; Address of the Graphics map
 
-.int_seed       defw    0       ; Seed for integer rand() routines
+._std_seed       defw    0       ; Seed for integer rand() routines
 
 .exitsp         defw    0       ; Address of where the atexit() stack is
 .exitcount      defb    0       ; How many routines on the atexit() stack
@@ -153,7 +161,8 @@ ENDIF
 .heaplast       defw    0       ; Address of last block on heap
 .heapblocks     defw    0       ; Number of blocks
 
-         	defm  "Small C+ NASCOM"&0	;Unnecessary file signature
+         	defm  "Small C+ NASCOM"	;Unnecessary file signature
+		defb	0
 
 ;-----------------------
 ; Floating point support

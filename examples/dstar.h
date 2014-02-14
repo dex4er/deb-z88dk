@@ -40,7 +40,7 @@ char Board[144];        /* Space for decompressed Level */
 #define K_CLEAR   '9'
 #endif
 
-#if defined __ZX81__ || defined __VZ200__
+#if defined __ZX81__ || defined __VZ200__ || defined __NASCOM__
 #define K_UP       'Q'  /* arrow up     */
 #define K_DOWN     'A' /* arrow down   */
 #define K_LEFT     'O'  /* arrow left   */
@@ -50,7 +50,8 @@ char Board[144];        /* Space for decompressed Level */
 #define K_CLEAR    'H'
 #endif
 
-#if defined __SPECTRUM__ || defined __Z88__ || defined __ACE__ || defined __CPC__
+//#if defined __SPECTRUM__ || defined __Z88__ || defined __ACE__ || defined __CPC__
+#ifndef K_UP
 #define K_UP       'q'  /* arrow up     */
 #define K_DOWN     'a' /* arrow down   */
 #define K_LEFT     'o'  /* arrow left   */
@@ -63,6 +64,47 @@ char Board[144];        /* Space for decompressed Level */
 extern char levels[];
 extern char sprites[];
 
+#if (spritesize == 5)
+#asm
+._sprites
+ defb    5,5
+ defb    @00000000 ; empty sprite
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+
+ defb    5,5
+ defb    @11110000	;1=edge,
+ defb    @10110000
+ defb    @11010000
+ defb    @11110000
+ defb    @00000000
+
+ defb    5,5
+ defb    @01100000	;2=bubble
+ defb    @10010000
+ defb    @10010000
+ defb    @01100000
+ defb    @00000000
+
+ defb    5,5
+ defb    @01100000	;3=moveable ball
+ defb    @11010000
+ defb    @11110000
+ defb    @01100000
+ defb    @00000000
+
+ defb    5,5
+ defb    @11110000	;4=moveable block
+ defb    @10010000
+ defb    @10010000
+ defb    @11110000
+ defb    @00000000
+#endasm
+#endif
+
+#if (spritesize == 6)
 #asm
 ._sprites
  defb    6,6
@@ -104,7 +146,199 @@ extern char sprites[];
  defb    @01001000
  defb    @01111000
  defb    @00000000
+#endasm
+#endif
 
+
+#if (spritesize == 7)
+#asm
+._sprites
+                        
+ defb	7,7	;0=blank
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+
+defb	8,7	;1=edge,
+ defb    @01111110
+ defb    @10101001
+ defb    @11000111
+ defb    @10110001
+ defb    @11001011
+ defb    @10100101
+ defb    @01111110
+
+defb	7,7	;2=clear ball
+ defb    @00000000
+ defb    @00011000
+ defb    @00100100
+ defb    @00100100
+ defb    @00011000
+ defb    @00000000
+ defb    @00000000
+
+defb	7,7	;3=moveable ball
+ defb    @00000000
+ defb    @00011000
+ defb    @00110100
+ defb    @00111100
+ defb    @00011000
+ defb    @00000000
+ defb    @00000000
+
+defb	7,7	;4=moveable block
+ defb    @00000000
+ defb    @00111100
+ defb    @00111100
+ defb    @00111100
+ defb    @00111100
+ defb    @00000000
+ defb    @00000000
+
+#endasm
+#endif
+
+#if (spritesize == 8)
+#asm
+._sprites
+ defb    8,8
+ defb    @00000000	; empty sprite
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+ defb    @00000000
+
+ defb    8,8
+ defb    @01111110	;1=edge,
+ defb    @10101001
+ defb    @11000111
+ defb    @10110001
+ defb    @11001011
+ defb    @10100101
+ defb    @10101001
+ defb    @01111110
+
+ defb    8,8
+ defb    @00000000	;2=bubble
+ defb    @00000000
+ defb    @00011000
+ defb    @00100100
+ defb    @00100100
+ defb    @00011000
+ defb    @00000000
+ defb    @00000000
+
+ defb    8,8
+ defb    @00000000	;3=moveable ball
+ defb    @00111100
+ defb    @01110110
+ defb    @01111010
+ defb    @01111010
+ defb    @01111110
+ defb    @00111100
+ defb    @00000000
+
+ defb    8,8
+ defb    @00000000	;4=moveable block
+ defb    @01111110
+ defb    @01000010
+ defb    @01000010
+ defb    @01000010
+ defb    @01000010
+ defb    @01111110
+ defb    @00000000
+#endasm
+#endif
+
+#if (spritesize == 16)
+#asm
+._sprites
+ defb    16,16
+ defw    0,0,0,0,0,0,0,0	; empty sprite
+ defw    0,0,0,0,0,0,0,0
+ 
+ defb    16,16
+ defb    @01111111, @11111110	;1=edge,
+ defb    @10101010, @10101001
+ defb    @11010101, @01000001
+ defb    @10101000, @00000001
+ defb    @11010000, @00000001
+ defb    @10100000, @00000001
+ defb    @11000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @10000000, @00000001
+ defb    @01111111, @11111110
+
+ defb    16,16
+ defb    @00000000, @00000000	;2=bubble,
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+ defb    @00000011, @11000000
+ defb    @00000100, @00100000
+ defb    @00001000, @10010000
+ defb    @00001000, @01010000
+ defb    @00001000, @00010000
+ defb    @00001000, @00010000
+ defb    @00000100, @00100000
+ defb    @00000011, @11000000
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+
+ defb    16,16
+ defb    @00000000, @00000000	;3=moveable ball
+ defb    @00000000, @00000000
+ defb    @00000011, @11000000
+ defb    @00001111, @00110000
+ defb    @00011111, @11011000
+ defb    @00011111, @11101000
+ defb    @00111111, @11101100
+ defb    @00111111, @11111100
+ defb    @00111111, @11111100
+ defb    @00111111, @11111100
+ defb    @00011111, @11111000
+ defb    @00011111, @11111000
+ defb    @00001111, @11110000
+ defb    @00000011, @11000000
+ defb    @00000000, @00000000
+ defb    @00000000, @00000000
+
+ defb    16,16
+ defb    @00000000, @00000000	;4=moveable block
+ defb    @01111111, @11111110
+ defb    @01001101, @10110010
+ defb    @01011111, @11111010
+ defb    @01110000, @00001110
+ defb    @01110000, @00001110
+ defb    @01010000, @00001010
+ defb    @01110000, @00001110
+ defb    @01110000, @00001110
+ defb    @01010000, @00001010
+ defb    @01110000, @00001110
+ defb    @01110000, @00001110
+ defb    @01011111, @11111010
+ defb    @01001101, @10110010
+ defb    @01111111, @11111110
+ defb    @00000000, @00000000
+#endasm
+#endif
+
+#asm
 ._levels
  defb    17,30    ;ball offset, box offset
  defb    @01010101,@01010101,@01010101,@01010101

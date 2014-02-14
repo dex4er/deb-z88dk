@@ -14,8 +14,6 @@ override_dh_auto_configure:
 	mkdir -p bin usr
 	rm -f include/X11
 	ln -s x11 include/X11
-	find examples -type f -exec chmod 644 {} \;
-	find examples -type d -exec chmod 755 {} \;
 
 override_dh_auto_build-arch:
 	make -e prefix=/usr

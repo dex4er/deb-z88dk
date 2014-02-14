@@ -1,7 +1,11 @@
+/*.debhelper
 /*.log
 /*.substvars
 /files
 /tmp/
+
+/bin/
+/usr/
 
 /z88dk/
 /z88dk-bin/

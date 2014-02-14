@@ -1,0 +1,163 @@
+;
+;	Header file which contains all required variables from the
+;	startup that need to be exposed to individual C files
+;
+;	Stick in this file any routines which are needed or implicitly
+;	implied by sccz80.
+;
+;       This file is included by every module
+;       To handle multi module programs which use floating point
+;       routines in different modules, we have got rid of
+;       the conditional assembly around the float routines
+;
+;	$Id: z80_crt0.hdr,v 1.5 2002/04/07 12:31:14 dom Exp $
+
+        XREF    base_graphics	; Address of graphics screen
+
+	XREF	_cpfar2near	; Far->near conversion (z88)
+	XREF	packintrout	; Process interrupt (z88 apps)
+
+        XREF    l_dcal		; jp(hl)
+        XREF    cleanup		; cleanup before program exit
+
+
+;------------------------------------
+; Scopes for integer library routines
+;------------------------------------
+
+	LIB    l_getptr		;Get 3 byte pointer
+	LIB    l_putptr		;Put 3 byte pointer
+        LIB    l_gchar		;Get signed char
+        LIB    l_sxt		;Sign extend char
+        LIB    l_gint		;Get int
+	LIB    l_gint_eq	;Get int and test == 0
+	LIB    l_ghtonsint	;Get reverse order int
+        LIB    l_pint		;Put int
+	LIB    l_pint_eq	;Put int and test == 0
+	LIB    l_pint_pop	;Put int and pop place address
+	LIB    l_pint_ex	;Put int hl to addr de return addr in hl
+        LIB    l_or		;Int logical or
+        LIB    l_xor		;Int logical xor
+        LIB    l_and		;Int logical and
+        LIB    l_eq		;Int equality
+        LIB    l_ne		;Int inequality
+        LIB    l_gt		;Int signed >
+        LIB    l_le		;Int signed <=
+        LIB    l_ge		;Int signed >=
+        LIB    l_lt		;Int signed <
+        LIB    l_uge		;Int unsigned >=
+        LIB    l_ult		;Int unsigned <
+        LIB    l_ugt		;Int unsigned >
+        LIB    l_ule		;Int unsigned <=
+        LIB    l_cmp		;Int signed compare
+        LIB    l_ucmp		;Int unsigned compare
+        LIB    l_asr		;Int signed >>
+	LIB    l_asr_u		;Int unsigned >>
+        LIB    l_asl		;Int <<
+        LIB    l_sub		;Int subtract
+        LIB    l_neg		;Int negate
+        LIB    l_com		;Int ~
+        LIB    l_lneg		;Int logical negate
+        LIB    l_bool		;Int boolean tetst
+        LIB    l_cm_de		;
+        LIB    l_cm_bc
+        LIB    l_deneg
+        LIB    l_bcneg
+        LIB    l_case		;Integer case
+        LIB    l_mult		;Integer *
+        LIB    l_div		;Integer signed /
+        LIB    l_div_u		;Integer unsigned /
+
+;------------------
+;Long functions now
+;------------------
+
+	LIB	lpush2		;Push a long under the stack
+	LIB     l_int2long_s	;Int->long signed conversion
+	LIB     l_long2int_s	;Long->int signed conversion
+	LIB     l_glong		;Get long
+	LIB     l_long_add
+	LIB     l_long_and
+	LIB     l_long_asl
+	LIB     l_long_asr
+	LIB     l_long_aslo	;Long << shift in c
+	LIB     l_long_asro	;Long >> shift in c (signed)
+	LIB     l_long_bool
+	LIB     l_long_cmp
+	LIB     l_long_com
+	LIB     l_long_eq
+	LIB     l_long_ge
+	LIB     l_long_gt
+	LIB     l_long_le
+	LIB     l_long_lneg
+	LIB     l_long_lt
+	LIB     l_long_ne
+	LIB     l_long_neg
+	LIB     l_long_or
+	LIB     l_long_sub
+	LIB     l_long_ucmp
+	LIB     l_long_uge
+	LIB     l_long_ugt
+	LIB     l_long_ule
+	LIB     l_long_ult
+	LIB     l_long_xor
+	LIB     l_plong
+	LIB     l_inclong	;Increment long
+	LIB     l_declong	;Decrement long
+	LIB     l_long_div
+	LIB     l_long_div_u
+	LIB     l_long_mult
+	LIB     l_long_asr_u	;Long unsigned >>
+	LIB     l_long_asr_uo	;Long unsigned >> shift in c
+	LIB     l_long_case
+
+;--------------------------------------------------------------
+; Floating point support routines, mostly in library
+;--------------------------------------------------------------
+
+	LIB	dadd
+	LIB	ddiv
+	LIB	dsub
+	LIB	dmul
+
+	LIB	dge
+	LIB	dgt
+	LIB	dleq
+	LIB	dlt
+	LIB	deq
+	LIB	dne
+
+	LIB	minusfa		;FA=-FA
+
+	LIB	dswap		;Exchange FA with top of stack
+        LIB   	float		;Convert int to float
+	LIB   	ufloat		;unsigned int to float
+        LIB   	ifix		;Convert float to int
+
+	XREF	dstore		;FA->(de)
+	XREF	dload		;FA<-(hl)
+	XREF	dldpsh		;(hl)->(stack)
+	XREF	dpush		;FA->(stack)
+	XREF	dpush2		;FA->(stack under)
+
+	XREF	fa		;may not be needed in this file
+	XREF	extra		;dittot
+	XREF  	__atof2		;string->fa convsersion
+
+
+;--------------------------------------------------
+; Routines for picking up variables from far memory
+;--------------------------------------------------
+
+	LIB	lp_gchar
+	LIB	lp_gdoub
+	LIB	lp_gint
+	LIB	lp_glong
+	LIB	lp_gptr
+	LIB	lp_pchar
+	LIB	lp_pdoub
+	LIB	lp_pint
+	LIB	lp_plong
+	LIB	lp_pptr
+
+

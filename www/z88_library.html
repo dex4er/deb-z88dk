@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Z88dk Z88 Library Routines</title>
+             
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+   
+<h2>Z88DK - Z88 Library Functions</h2>
+   
+<p>The z88 was the first machine target of z88dk, and as such has a large
+ amount of library routines to support its operating system, OZ. Much of
+the  API provided by OZ is available to z88 C programmers, to use as you
+wish.  Z88dk is also capable of producing the full range of z88 <a href="z88_applications.html">
+  applications</a> and documentation is provided to help you create them. 
+It is also possible to create z88 <a href="z88_packages.html">packages</a>
+  - the z88 equivalent of shared libraries. To obtain the functions listed 
+in this file, you should link your program with the z88 library using the 
+-lz88 flag.</p>
+   
+<h4>#include &lt;z88.h&gt;</h4>
+   
+<pre>#define FILEMAIL "FILE"<br>#define DATEMAIL "DATE"<br><br>int readmail(char *type, char *info, int length);<br>int sendmail(char *type, char *info, int length);<br></pre>
+   
+<p>These two functions read and write `application mail'. The only two supported
+ types are FILEMAIL and DATEMAIL which on a standard z88 are produced by
+the  Filer and Calendar applications. Both functions return 1 on success
+and 0  on failure.</p>
+   
+<pre>int savescr();<br>int restsrc(int handle);<br>int freescr(int handle);<br></pre>
+   
+<p>These functions cause OZ to save a copy of the application screen, restore
+ the image and free the memory<br>
+  associated with the image. savescr() returns a handle on success or 0 on
+ failure. The handle returned should be retained and supplied to the subsequent
+ functions. NB These function calls should be used sparsely if at all due
+to the limited memory available on an unexpanded z88.</p>
+   
+<pre>void nameapp(char *name);</pre>
+   
+<p>This function enables an application program to name an instance of an
+ application. This name appears in the index of suspended applications.</p>
+   
+<pre>int opendor(char *filename);<br>void readdor(int dor, char type, char len, void *buf);<br>void closedor(int dor);<br>void writedor(int dor, char type, char len, void *buf);<br>void deletedor(int dor);<br>int sondor(int dor, char *store);<br>int brotherdor(int dor, char *store);<br></pre>
+   
+<p>Routines for DOR manipulation. See the <a href="http://www.z88forever.org.uk/dn323/index.html">
+  Developers Notes</a> for more information.</p>
+   
+<pre>wild_t wcopen(far char *name, int mode);<br>int wcnext(wild_t handle, void *buf, size_t len, wildcard_t *dest);<br>int wcclose(wild_t handle);<br></pre>
+   
+<p>These routines are for wildcard manipulation. For more information see
+ the <a href="http://www.z88forever.org.uk/dn323/index.html">Developers Notes</a>
+  . wcopen() opens a wildcard handler, returning a handle on success or 0 
+on failure. mode should be a logical or WILD_SCANDIR and WILD_PARENTS. wcclose()
+ will close the wildcard handler opened by wcopen(). wcnext() returns the
+next entry from the wildcard handler into the memory pointed to by buf up
+to maximum length len. Infomation about the entry is placed in dest which
+is a pointer to a structure of type wildcard_t. If this information is not
+required then NULL should be supplied.</p>
+   
+<pre>typedef struct wildcard_st {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp; *endptr;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u8_t&nbsp;&nbsp;&nbsp; segments;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u8_t&nbsp;&nbsp;&nbsp; length;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u8_t&nbsp;&nbsp;&nbsp; dortype;<br>} wildcard_t;</pre>
+   
+<pre><br>int exec_cli(char *cli_command);</pre>
+   
+<p>Execute the cli command supplied.<br>
+  </p>
+   
+<pre>char *stripdev(char *explicitname);<br>char *strippath(char *explicitname);<br></pre>
+   
+<p>stripdev() returns a pointer in explicitname to after the device specifier.
+ strippath returns a pointer in explicitname to the filename i.e. after the
+ path and device.</p>
+   
+<pre>void openpopup(int wid, int tlx, int tly, int width, int height, char *name);<br>void openwindow(int wid, int tlx, int tly, int width, int height);<br>void opentitled(int wid, int tllx, int tly, int width, int height, char *name);</pre>
+   
+<p>These functions open various forms of windows on the z88 console.<br>
+  </p>
+   
+<hr width="100%" size="1">   
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+    <tbody>
+      <tr>
+        <td valign="Top"><a href="index.html">
+z88dk</a>  /z88_library.html<br>
+        </td>
+        <td valign="Top" align="Right">Last Updated 20/1/2002 <a href="mailto:dom@RMME.users.sourceforge.net">
+   dom</a><br>
+        </td>
+      </tr>
+       
+  </tbody>  
+</table>
+   
+<p><br>
+  </p>
+   
+<p><br>
+  </p>
+   
+</body>
+</html>

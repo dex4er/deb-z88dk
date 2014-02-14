@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Z88DK - Library Functions</title>
+      
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+ 
+<h2>Z88DK Library</h2>
+ <br>
+ 
+<h4>&lt;assert.h&gt;</h4>
+ 
+<pre>void assert(int expression);</pre>
+ 
+<p>assert() prints an error message to standard output and terminates the 
+program if expression is false. This only happens when the macro NDEBUG was 
+undefined when &lt;assert.h&gt; was included.</p>
+ 
+<p></p>
+ 
+<h4>&lt;ctype.h&gt;</h4>
+ 
+<pre>extern&nbsp;int isalpha(int c);<br>extern&nbsp;int isalnum(int c);<br>extern&nbsp;int isascii(int c);<br>extern&nbsp;int iscntrl(int c);<br>extern&nbsp;int isdigit(int c);<br>extern&nbsp;int isupper(int c);<br>extern&nbsp;int islower(int c);<br>extern&nbsp;int isprint(int c);<br>extern&nbsp;int ispunct(int c);<br>extern&nbsp;int isspace(int c);<br>extern&nbsp;int isxdigit(int c);<br></pre>
+ 
+<p>isalnum() checks for an alphanumeric character<br>
+ isalpha() checks for an alphabetic character<br>
+ isascii() checks whether c is a 7-bit unsigned char value that fits into 
+the ASCII character set<br>
+ iscntrl() checks for a control character (i.e c &lt; 32 )<br>
+ isdigit() checks for a digit (0 to 9)<br>
+ isupper() checks for an upper-case character<br>
+ islower() checks for a lower-case character<br>
+ isprint() checks for any printable character including space<br>
+ ispunct() checks for punctuation character<br>
+ isspace() checks for a white space character<br>
+ isxdigit() checks for a hexadecimal digit i.e. one of 1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,a,b,c,d,e,f</p>
+ 
+<pre><br>extern&nbsp;int toascii(int c);<br>extern&nbsp;int toupper(int c);<br>extern&nbsp;int tolower(int c);<br><br></pre>
+ 
+<p>toascii() converts the c into a 7-bit ASCII character<br>
+ toupper() converts the letter c into an upper-case character if possible<br>
+ tolower() converts the letter c into a lower-case character if possible.<br>
+ </p>
+ 
+<h4>&lt;fcntl.h&gt;</h4>
+ 
+<h4>&lt;float.h&gt;</h4>
+ 
+<h4>&lt;limits.h&gt;</h4>
+ 
+<h4>&lt;malloc.h&gt;</h4>
+ 
+<h4>&lt;math.h&gt;</h4>
+ 
+<h4>&lt;setjmp.h&gt;</h4>
+ 
+<h4>&lt;stdarg.h&gt;</h4>
+ 
+<h4>&lt;stdio.h&gt;</h4>
+ 
+<h4>&lt;stdlib.h&gt;</h4>
+<pre>extern&nbsp;int system(char *command);<br></pre>
+Executes an external command. This is only available for z88 shell programs.<br>
+ 
+<h4>&lt;string.h&gt;</h4>
+ 
+<h4>&lt;time.h&gt;</h4>
+ 
+<h4>&lt;sys/types.h&gt;</h4>
+ 
+<p>Ostensibly defines a set of standard types for the compiler. The most useful
+are:</p>
+ 
+<pre>u8_t 		Unsigned 8 bit number<br>u16_t		Unsigned 16 bit number<br>u32_t		Unsigned 32 bit number<br><br>i8_t		Signed 8 bit number<br>i16_t 		Signed 16 bit number<br>i32_t		Signed 32 bit number<br></pre>
+ <br>
+ 
+<hr width="100%" size="1"> 
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+   <tbody>
+     <tr>
+       <td valign="top"><a href="index.html">z88dk</a> /library.html<br>
+       </td>
+       <td valign="top" align="right">Last Updated 20/1/2002 <a
+ href="mailto:dom@RMME.users.sourceforge.net">  dom</a><br>
+       </td>
+     </tr>
+   
+  </tbody> 
+</table>
+   <br>
+</body>
+</html>

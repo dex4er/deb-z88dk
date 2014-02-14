@@ -1,0 +1,8 @@
+calloc
+clrmem
+free
+getfree
+getlarge
+heapinit
+malloc
+strings/strdup

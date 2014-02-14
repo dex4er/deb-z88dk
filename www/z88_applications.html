@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Z88DK - Z88 Application Building</title>
+      
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+ 
+<h2>Z88DK - Z88 Application Building</h2>
+<p>Writing z88 application DORs is not fun, in fact almost impossible first 
+time, then once you find a setup that works you constantly recycle the DOR 
+for each application. I've been there, done that, given up, asked for help, 
+got it and then recycled it, and here it is again in the kit!</p>
+ 
+<p>One of the original aims of the Z88dk was to be able to create applications 
+simply and easily without having to go into the messy bits of how to construct 
+the DOR - simply give it your parameters and away it goes and creates it without
+you having to know whats going on.</p>
+ 
+<p>Well, I've finally implemented it, hopefully in a non messy way within 
+the limits the system, so read on, and find out how easy it is to create applications
+with the z88dk.<br>
+ </p>
+ 
+<h3>How to do it</h3>
+ 
+<p>For the creation of applications two header files are important: dor.h 
+and application.h - both of these need to be included in order to construct 
+the application DOR.</p>
+ 
+<p>dor.h&nbsp;&nbsp; contains&nbsp;&nbsp; some&nbsp;&nbsp; constants&nbsp;&nbsp; 
+for&nbsp; the&nbsp; application&nbsp; type&nbsp; and application.h&nbsp; uses&nbsp;
+these&nbsp; constants to construct the DOR, hence they should&nbsp; be included
+in this order. However! It's not as simple as that -&nbsp; application.h&nbsp; 
+needs&nbsp; some information from you such as application name&nbsp; etc&nbsp; 
+-&nbsp; there&nbsp; are defaults, but I don't think you'd want to use those!</p>
+ 
+<p>The&nbsp; information is given courtesy of #define in between the including 
+of dor.h and application.h, you should define the following:</p>
+ 
+<pre>#define HELP1&nbsp;&nbsp; "..."<br>#define HELP2&nbsp;&nbsp; "..."<br>#define HELP3&nbsp;&nbsp; "..."<br>#define HELP4&nbsp;&nbsp; "..."<br>#define HELP5&nbsp;&nbsp; "..."<br>#define HELP6&nbsp;&nbsp; "..."<br><br></pre>
+ 
+<p>The information for the application help page, if HELP1 is not defined 
+then&nbsp; the&nbsp; standard&nbsp; HELP&nbsp; page&nbsp; is&nbsp; used &lt;grin&gt;, 
+if any of the others (HELP2 to HELP6) is not defined then "" is substituted.</p>
+ 
+<pre>#define APP_NAME "..."</pre>
+ 
+<p>The name of the application (as appears in the Index).</p>
+ 
+<pre>#define APP_KEY&nbsp; '[KEY]'</pre>
+ 
+<p>The hotkey for the application.</p>
+ 
+<pre>#define APP_INFO "..."</pre>
+ 
+<p>The equivalent of *name from BASIC.</p>
+ 
+<pre>#define APP_TYPE [constants or'd together as from dor.def]</pre>
+ 
+<p>The&nbsp; application&nbsp; type, if you don't define this then the default 
+type is bad with OZ preserving the screen (i.e. very, very bad!)</p>
+ 
+<p>All&nbsp; of&nbsp; the&nbsp; constants&nbsp; above&nbsp; are in z80asm 
+format - not C style, so insert&nbsp; Z88&nbsp; control&nbsp; sequences&nbsp; 
+in&nbsp; the form ".." &amp;blah &amp;".." and not \[blah] or you might get 
+a bit of surprise!</p>
+ 
+<h3>Extra Features</h3>
+ 
+<p>As&nbsp; I&nbsp; said&nbsp; above,&nbsp; the default application type is
+bad and to let OZ redraw the screen, this isn't particularly friendly as
+you can imagine so&nbsp; you&nbsp; can&nbsp; turn&nbsp; off&nbsp; the&nbsp; 
+redraw&nbsp; screen&nbsp; flag by #define APP_TYPE yourself,&nbsp; this&nbsp; 
+does&nbsp; however leave you with a bit of a problem - you won't be able to
+redraw your screen, so, to this end, I've provided an facility&nbsp; for&nbsp; 
+you to be able to do it - simply have a function called redrawscreen which 
+is defined thus:</p>
+ 
+<pre>void __APPFUNC__ redrawscreen() <br>{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Put some code here */<br>}</pre>
+ 
+<p>The&nbsp; __APPFUNC__ flag causes the flag DEFINED_[function] to be written 
+to&nbsp; the&nbsp; zcc_opt.def&nbsp; file. This is then picked up by the startup
+code and&nbsp; appropriate code is generated to call this function - NB it
+won't automatically turn off OZ preservation of the screen. This __APPFUNC__
+call&nbsp; could&nbsp; be applied to other functions to enable your code
+to take over&nbsp; error&nbsp; handling for example, however that isn't supported
+at the moment.</p>
+ 
+<p>For an example of this see the examples/app/dstar.c demo.</p>
+ 
+<h3>Menus and Topics</h3>
+ 
+<p>[Or&nbsp; whatever&nbsp; the&nbsp; name&nbsp; is!]&nbsp; In&nbsp; a fit 
+of conscience and against my better&nbsp;&nbsp; principles(!)&nbsp;&nbsp; 
+I've&nbsp;&nbsp; implemented&nbsp;&nbsp; topics.&nbsp;&nbsp; They're&nbsp; 
+fully implemented&nbsp; except for help pages (maybe coming soon!). This is
+where things get a little complicated, so listen up!</p>
+ 
+<p>You&nbsp; are&nbsp; allowed&nbsp; up&nbsp; to 7 topics per application 
+and 24 items within each topic (if you ever fit this many into an app please 
+let me know!) you define a topic with #define TOPIC[num] "[name]". Each item 
+under a topic&nbsp; is&nbsp; named via #define TOPIC[num]_[item], it's hotkey 
+by #define TOP[num]_[item]KEY,&nbsp; code&nbsp; by #define TOPIC(...)CODE 
+and its attribute (see dev notes and dor,h) by #define TOPIC(...)ATTR. But 
+thats getting confusing,&nbsp; so&nbsp; have&nbsp; a look at the dstar.c example
+in examples/app to see what I mean.</p>
+ 
+<p>Each&nbsp; topic&nbsp; and each command on a topic may have a help page 
+attached to&nbsp; it, have a look at useless.c to see how it's done - remember 
+don't specify&nbsp; so&nbsp; much help that it goes over the 8k limit or all
+hell will break loose (I'm sure you can live with that limitation!)</p>
+ 
+<p>As&nbsp; an aside, topics also have an attribute byte, which can be defined 
+by&nbsp; #define&nbsp; TOPIC[num]ATTR.&nbsp; All&nbsp; attributes can be left
+out in which case they default to 0.</p>
+ 
+<p>In order to handle menu selections you should define a function thus:</p>
+ 
+<pre>void __APPFUNC__ handlecmds(int code)<br>{<br>&nbsp;&nbsp;&nbsp; /* Put some code here */<br>}</pre>
+ 
+<p>Where code is the command code that has been selected. If you don't do 
+this then you can't react to your menus!</p>
+ 
+<h3>Bad, but not so bad Applications</h3>
+ 
+<p>&nbsp;If&nbsp; the&nbsp; amount&nbsp; of&nbsp; static variables used by 
+your application is less than&nbsp; 8k (the minimum amount of bad memory that
+can be allocated) then give&nbsp; the&nbsp; flag -reqpag=num to the frontend
+where num is the number of 256 byte pages of bad memory required - the unused
+memory up to the 8k limit&nbsp; is given back to OZ on pre-emption. To find
+out what num is for your application look at the .opt/.asm file and search
+for DEFVARS and count&nbsp; the&nbsp; number of bytes there. Sorry, there
+is no foolproof way to do this automatically. For example the dstar.c program
+needs -reqpag=5 and&nbsp; rpn.c&nbsp; needs&nbsp; -reqpag=1.&nbsp; Remember&nbsp;
+that&nbsp; the startup code (maybe unnecessarily)&nbsp; reserves&nbsp; a&nbsp;
+byte&nbsp; at&nbsp; $2000 so add 1 to your variable count before dividing
+by 256!</p>
+ 
+<h3>Good Applications</h3>
+ It should in theory be possible to write good applicatons with the kit -&nbsp; 
+simply don't use any static variables, supply the flag -reqpag=0 to the frontend 
+and of course set the the appropriate APP_TYPE.<br>
+ <br>
+ I&nbsp; have&nbsp; placed&nbsp; all&nbsp; variables&nbsp; used&nbsp; by&nbsp; 
+the&nbsp; startup code into safe workspace&nbsp; area&nbsp; to&nbsp; allow 
+this facility - I reserve 50 bytes which is more&nbsp; than&nbsp; sufficient&nbsp; 
+for&nbsp; our&nbsp; needs&nbsp; (we need 47 ATM) to allow for future expansion.<br>
+ <br>
+ [Untested&nbsp; feature!!]&nbsp; If&nbsp; you're&nbsp; feeling particularly 
+cocky, you can write good apps that have static variables...as long as you 
+don't have too many of them that is. You can specify the flag -safedata=[n 
+bytes] where&nbsp; n&nbsp; is&nbsp; the&nbsp; amount&nbsp; of static data 
+that you want, this space is taken&nbsp; from&nbsp; the&nbsp; safe workspace, 
+which remember is also shared by the stack,&nbsp; mail and other such things. 
+A suppose a safe limit would be in the&nbsp; region&nbsp; of&nbsp; 500&nbsp; 
+bytes&nbsp; or&nbsp; so, but experiment, if you don't have arrays&nbsp; of&nbsp; 
+local&nbsp; variables and no recursion you might be able to get away with 
+more, as the saying goes, your mileage may vary!!<br>
+ 
+<h3>Changing the origin of the application<br>
+ </h3>
+ The&nbsp; default origin for an application is 49152 - this should give
+you plenty&nbsp; of space to do whatever you like, however, perhaps you want 
+to slot&nbsp; it&nbsp; in elsewhere in an eprom - in this case use the -zorg= 
+flag. NB.&nbsp; The application DOR created assumes that it is located in 
+top top bank&nbsp; (63)&nbsp; of&nbsp; an&nbsp; EPROM&nbsp; cartridge,&nbsp; 
+so&nbsp; unless&nbsp; you&nbsp; have&nbsp; a&nbsp; large application&nbsp; 
+don't&nbsp; relocate it to &lt; 49152 [This is to ensure that the application&nbsp; 
+entry&nbsp; point&nbsp; is&nbsp; in segment 3 - the DOR contains a dummy startup
+which then jumps to the real start address.]<br>
+ 
+<h3>Using the Near Heap</h3>
+ It is possible to use the near heap routines from an application, however, 
+please define your heapsize thusly (or strange things will happen!):<br>
+ 
+<pre>#define HPSIZE [size]<br>HEAPSIZE(HPSIZE)<br>#pragma set HEAPSIZE HPSIZE</pre>
+ #pragma&nbsp; set&nbsp; is a synonym for #define that gets passed through 
+to the compiler&nbsp; (as opposed to being expanded out by the preprocessoe). 
+When the&nbsp; time&nbsp; comes&nbsp; to write the zcc_opt.def file the compiler 
+looks for the&nbsp; #define HEAPSIZE divides by 256 (for the number of pages) 
+adds it to&nbsp; 32&nbsp; (mininum&nbsp; size&nbsp; of&nbsp; bad&nbsp; memory)&nbsp; 
+and writes this value to the zcc_opt.def&nbsp; file,&nbsp; this&nbsp; allows&nbsp; 
+the DOR to be created requesting the correct amount of bad memory.<br>
+ <br>
+ However, this can be a bit wasteful to say the least, say you only had 50&nbsp; 
+bytes&nbsp; of&nbsp; static&nbsp; variables and an 8k heap, the application 
+would request&nbsp; 16k&nbsp; of&nbsp; bad memory when in fact it only needs 
+8448 bytes (to the&nbsp; nearest&nbsp; 256&nbsp; byte&nbsp; page), so in this
+case supply the parameter -reqpag=33 and only 8448 bytes will be requested 
+- smart eh?<br>
+ <br>
+ 
+<h3>Sending/receiving mail</h3>
+ 
+<p>I've&nbsp; now&nbsp; implemented&nbsp; functions to allow passing and sending
+of mail between functions, the two functions are called: readmail and sendmail
+and&nbsp; both have the prototype (char *type, far char *info, int length).
+Don't&nbsp; worry&nbsp; about the far char * type - a near pointer (eg for
+local variables)&nbsp; is&nbsp; automatically&nbsp; extended&nbsp; to&nbsp;
+far&nbsp; when&nbsp; needed. For an example&nbsp; of&nbsp; the usage of readmail
+look at examples/app/viewer.c which is&nbsp; a&nbsp; simple&nbsp; text&nbsp;
+viewer&nbsp; which accepts the NAME type so to use it, select a file from
+the filer and switch to to the Textview popdown.</p>
+ 
+<p>NB.&nbsp; To&nbsp; save&nbsp; heartache&nbsp; from&nbsp; typos (I'm a fine
+one to talk!) in the z88.h&nbsp; header file I've defined the two OZ supported
+mail types, these are&nbsp; FILEMAIL&nbsp; and DATEMAIL, use these instead
+of typing the character string yourself!</p>
+ 
+<h3>The appmake Program</h3>
+ 
+<p>This&nbsp; is a quick knock up of a program which will generate bank images 
+from&nbsp; an&nbsp; application binary - it creates the ROM header and the 
+front DOR&nbsp; as&nbsp; appropriate,&nbsp; call it from the frontend using 
+the -create-app flag&nbsp; at&nbsp; the same time as compile time. Internally 
+it callocs 64k and then&nbsp; loads&nbsp; the appropriate addresses with the
+necessary information. It obtains information about the application from the
+z88_crt0.map and z88_crt0.sym files and as such should not be run alone.<br>
+ <br>
+ The&nbsp; algorithm&nbsp; used&nbsp; to&nbsp; generate&nbsp; a&nbsp; Card&nbsp; 
+ID is based on the time() function,&nbsp; I&nbsp; don't&nbsp; know whether 
+this will be sufficient to guarantee exclusive-ness, but hopefully it will 
+be sufficient - does anyone have a&nbsp; better algorithm for thus - rand() 
+is useless since it isn't random -&nbsp; i.e. given the same seed it will 
+of course generate the same random number - (It seem that picking up ROM values
+via the r register on the Z80 is more random!)</p>
+ 
+<h3>A few precautionary notes</h3>
+ 
+<p>Due&nbsp; to&nbsp; a&nbsp; small&nbsp; feechure&nbsp; in&nbsp; z80asm&nbsp; 
+which causes DEFVARS -1 to be incorrectly&nbsp; resolved&nbsp; when linking 
+object files, all assembling takes place&nbsp; at one time, this means that 
+the -a flag is ineffective, and is equivalent&nbsp; to&nbsp; -c&nbsp; when&nbsp; 
+the&nbsp; -create-app&nbsp; flag is supplied. So, as a result&nbsp; don't&nbsp; 
+compile&nbsp; to&nbsp; object&nbsp; files then link - you'll trash the lower 
+memory of the Z88! [Been there, done that!]</p>
+ 
+<h3>In Summary</h3>
+ To create an application supply the following command line to zcc:<br>
+ 
+<pre>zcc -create-app -make-app [-reqpag=] [-zorg=] [libraries] [files]</pre>
+ After of course including dor.h and application.h in your application. The&nbsp; 
+two&nbsp; flags&nbsp; -create-app&nbsp; and&nbsp; -make-app&nbsp; are&nbsp; 
+needed&nbsp; so that the compiler&nbsp; doesn't&nbsp; become&nbsp; to&nbsp; 
+specifically Z88 orientated - other Z80 machines&nbsp; might&nbsp; require&nbsp; 
+different&nbsp; flags to the compiler in order to create&nbsp; a&nbsp; different&nbsp; 
+type&nbsp; of&nbsp; executable,&nbsp; this way thinks are quite transparent 
+and the zcc.cfg file doesn't become even more overloaded!!<br>
+ <br>
+ If&nbsp; you&nbsp; wish&nbsp; to&nbsp; use&nbsp; graphic&nbsp; functions 
+then you have to supply the application&nbsp; graphics&nbsp; library&nbsp; 
+which&nbsp; is&nbsp; -lgfxapp&nbsp; -&nbsp; this pages the graphics&nbsp; 
+page&nbsp; into&nbsp; the 16384 segment instead of the 49152 segment - I've&nbsp; 
+taken&nbsp; the&nbsp; needed routines from standard.lib and placed them in 
+gfx[app].lib&nbsp; due&nbsp; to&nbsp; a&nbsp; label&nbsp; clash&nbsp; with&nbsp; 
+some of the standard.lib routines.<br>
+<br>
+ 
+<hr width="100%" size="1"> 
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+   <tbody>
+     <tr>
+       <td valign="Top"><a href="file:///home/dom/z88dk/www/index.html">z88dk</a>
+ /z88_application.html<br>
+       </td>
+       <td valign="Top" align="Right">Last Updated 20/1/2002 <a href="mailto:dom@RMME.users.sourceforge.net">
+  dom</a><br>
+       </td>
+     </tr>
+   
+  </tbody> 
+</table>
+ 
+<p><br>
+ </p>
+ <br>
+ 
+</body>
+</html>

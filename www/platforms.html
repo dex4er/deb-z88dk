@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>z88dk Supported Platforms</title>
+            
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+ 
+<h2>Z88DK - Machine Capabilities</h2>
+ 
+<p>All of the machines supported by z88dk have access to a core set of <a
+ href="documentation.html"> library</a> functions which are typically those
+specified by the ANSI standard. However there are many features within the
+z88dk library that only available to specific machines. This table shows graphically
+what special features each port has.<br>
+ <br>
+ </p>
+ 
+<table cellpadding="2" cellspacing="2" border="1" width="100%"
+ align="center">
+   <tbody>
+     <tr>
+       <td valign="top" align="left"><b>Machine</b><br>
+       </td>
+       <td valign="top" align="center"><b>Native Console I/O</b><br>
+       </td>
+       <td valign="top" align="center"><b>VT100 Console I/O</b><br>
+       </td>
+       <td valign="top" align="center"><b>Graphics</b><br>
+       </td>
+       <td valign="top" align="center"><b>Grey Graphics</b><br>
+       </td>
+       <td valign="top" align="center"><b>File I/O</b><br>
+       </td>
+       <td valign="top" align="center"><b>ZSock Network</b><br>
+       </td>
+       <td valign="top" align="center"><b>Sound</b><br>
+       </td>
+       <td valign="top" align="left"><b>Other features</b><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">ABC80<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">40x24 (buggy)<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Amstrad CPC<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">Yes (buggy)<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Amstrad NC100<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Cambridge Z88 </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">256x64<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left">Far memory support + many other features<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Commodore 128 (z80)<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">40x25<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">CP/M<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">If hardware supported<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Jupiter Ace<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">32x24 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">96x64 (emulated)<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">MSX 1<br>
+       </td>
+       <td valign="top" align="center">40x24<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Mattel Aquarius<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">40x24<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Sam Coupe<br>
+       </td>
+       <td valign="top" align="center">32x24<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Sharp MZ (80,700,800)<br>
+       </td>
+       <td valign="top" align="center">40x25<br>
+       </td>
+       <td valign="top" align="center">40x25<br>
+       </td>
+       <td valign="top" align="center">80x50<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left">Unstable under the MZ700WIN emulator<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">SORD M5<br>
+       </td>
+       <td valign="top" align="center">32x24<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Spectravideo<br>
+       </td>
+       <td valign="top" align="center">40x24<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+      <td valign="top">Sprinter<br>
+      </td>
+      <td valign="top" align="center">80x35(?)<br>
+      </td>
+      <td valign="top" align="center">80x35(?) (Colour)<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top" align="center">Yes<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top">Experimental port. Developed under the <a
+ href="http://robots.ural.net/nedopc/sprinter/">SPRINT</a> emulator<br>
+      </td>
+    </tr>
+    <tr>
+       <td valign="top" align="left">TI82<br>
+       </td>
+       <td valign="top" align="center">16x8<br>
+       </td>
+       <td valign="top" align="center">32x4 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">96x64<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">TI83<br>
+       </td>
+       <td valign="top" align="center">16x8<br>
+       </td>
+       <td valign="top" align="center">32x4 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">96x64<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">In Progress<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">TI83+<br>
+       </td>
+       <td valign="top" align="center">16x8<br>
+       </td>
+       <td valign="top" align="center">32x4 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">96x64<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">TI85<br>
+       </td>
+       <td valign="top" align="center">21x8<br>
+       </td>
+       <td valign="top" align="center">32x4 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">128x64<br>
+       </td>
+       <td valign="top" align="center">Yes<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">TI86<br>
+       </td>
+       <td valign="top" align="center">21x8<br>
+       </td>
+       <td valign="top" align="center">32x4 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">128x64<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">VZ/Laser 200<br>
+       </td>
+       <td valign="top" align="center">32x16<br>
+       </td>
+       <td valign="top" align="center">32x12 (B&amp;W)<br>
+       </td>
+       <td valign="top" align="center">128x64<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left"><br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">Xircom Rex 6000<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">Soon<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left">Graham Cobb's <a
+ href="http://www.cobb.uk.net/Rex/Stdio/">stdio</a> library is due to be integrated
+into z88dk v1.6       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">ZX81<br>
+       </td>
+       <td valign="top" align="center">32x21<br>
+       </td>
+       <td valign="top" align="center">32x21 (B/W)<br>
+       </td>
+       <td valign="top" align="center">96x64 (emulated)<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="left">Unstable<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top" align="left">ZX Spectrum<br>
+       </td>
+       <td valign="top" align="center">32x24 and 64x24<br>
+       </td>
+       <td valign="top" align="center">24-85x25 (Colour)<br>
+       </td>
+       <td valign="top" align="center">256x192<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">+3<br>
+       </td>
+       <td valign="top" align="center">No<br>
+       </td>
+       <td valign="top" align="center">1 bit<br>
+       </td>
+       <td valign="top" align="left">Native console I/O is dynamically switchable
+between 64 and 32 columns<br>
+       </td>
+     </tr>
+    <tr>
+      <td valign="top">ZXVGS<br>
+      </td>
+      <td valign="top" align="center">-<br>
+      </td>
+      <td valign="top" align="center">NO<br>
+      </td>
+      <td valign="top" align="center">-<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top" align="center">Yes<br>
+      </td>
+      <td valign="top" align="center">No<br>
+      </td>
+      <td valign="top" align="center">-<br>
+      </td>
+      <td valign="top">Not entirely integrated since we're not sure how to
+classify it!<br>
+      </td>
+    </tr>
+      
+  </tbody> 
+</table>
+ <br>
+ 
+<hr width="100%" size="1">    
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+   <tbody>
+     <tr>
+       <td valign="top"><a href="index.html">z88dk</a>/platforms.html<br>
+       </td>
+       <td valign="top" align="right">Last Updated 16/12/2002 <a
+ href="mailto:dom@RMME.users.sourceforge.net"> dom</a><br>
+       </td>
+     </tr>
+      
+  </tbody> 
+</table>
+ 
+<p><br>
+ </p>
+ <br>
+</body>
+</html>

@@ -1,0 +1,9 @@
+/*.log
+/*.substvars
+/files
+/tmp/
+
+/z88dk/
+/z88dk-bin/
+/z88dk-data/
+/z88dk-doc/
